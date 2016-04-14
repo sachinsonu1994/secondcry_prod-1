@@ -21,6 +21,7 @@ gem 'compass', '~> 0.13.alpha'
 gem 'jquery-rails', '3.1.3'
 
 # Bundle the extra gems:
+gem 'activesupport-json_encoder'
 
 # gem 'heroku' install the Heroku toolbelt (https://toolbelt.heroku.com/) instead (as gem had some problems)
 gem "passenger", "~> 5.0.18"
