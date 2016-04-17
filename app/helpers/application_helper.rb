@@ -162,6 +162,7 @@ module ApplicationHelper
     "font-awesome" => {
       "map" => "icon-map-marker",
       "thumbnails" => "icon-th",
+      "grid" => "icon-th",
       "new_listing" => "icon-plus-sign-alt",
 
       "search"  => "icon-search",
@@ -186,7 +187,7 @@ module ApplicationHelper
       "user" => "icon-user",
       "settings" => " icon-cog",
       "facebook" => "icon-facebook",
-      "invite" => "icon-users",
+      "invite" => "icon-user-md",
       "download" => "icon-download",
       "link" => "icon-link",
       "external_link" => "icon-external-link",
@@ -630,7 +631,7 @@ module ApplicationHelper
       {
         :topic => :manage,
         :text => t("admin.communities.edit_details.invite_people"),
-        :icon_class => "ss-adduser",
+        :icon_class => "icon-user",
         :path => new_invitation_path,
         :name => "invite_people"
       },
@@ -644,14 +645,14 @@ module ApplicationHelper
       {
         :topic => :configure,
         :text => t("admin.communities.edit_details.community_details"),
-        :icon_class => "ss-page",
+        :icon_class => "icon-circle-blank",
         :path => edit_details_admin_community_path(@current_community),
         :name => "tribe_details"
       },
       {
         :topic => :configure,
         :text => t("admin.communities.edit_details.community_look_and_feel"),
-        :icon_class => "ss-paintroller",
+        :icon_class => "icon-circle-blank",
         :path => edit_look_and_feel_admin_community_path(@current_community),
         :name => "tribe_look_and_feel"
       },
