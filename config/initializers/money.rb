@@ -4,7 +4,7 @@ MoneyRails.configure do |config|
 
   # To set the default currency
   #
-  config.default_currency = :eur
+  config.default_currency = :inr
 
   # Set default bank object
   #
@@ -80,6 +80,17 @@ MoneyRails.configure do |config|
     smallest_denomination:  1
   }
 
+  config.register_currency = {
+    :priority            => 2,
+    :iso_code            => "INR",
+    :name                => "Indian Rupee",
+    :symbol              => "₹",
+    :symbol_first        => true,
+    :subunit             => "paisa",
+    :subunit_to_unit     => 100,
+    :thousands_separator => ",",
+    :decimal_mark        => "."
+  }
 
   # Register a custom currency
   #
