@@ -162,7 +162,7 @@ module ApplicationHelper
     "font-awesome" => {
       "map" => "icon-map-marker",
       "thumbnails" => "icon-th",
-      "grid" => "icon-th",
+      "grid" => "icon-th-large",
       "new_listing" => "icon-plus-sign-alt",
 
       "search"  => "icon-search",
@@ -187,7 +187,7 @@ module ApplicationHelper
       "user" => "icon-user",
       "settings" => " icon-cog",
       "facebook" => "icon-facebook",
-      "invite" => "icon-user-md",
+      "invite" => "icon-user",
       "download" => "icon-download",
       "link" => "icon-link",
       "external_link" => "icon-external-link",
