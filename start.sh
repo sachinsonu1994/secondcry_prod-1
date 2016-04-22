@@ -1,6 +1,8 @@
+bundle exec rake RAILS_ENV=production assets:clean
+
 bundle exec rake RAILS_ENV=production ts:index
 bundle exec rake RAILS_ENV=production ts:start
-bundle exec rake assets:precompile
+bundle exec rake RAILS_ENV=production assets:precompile
 
 sudo service mysql restart
 nohup bundle exec rake RAILS_ENV=production jobs:work > log/delayed-job-worker.log 2>&1 &
