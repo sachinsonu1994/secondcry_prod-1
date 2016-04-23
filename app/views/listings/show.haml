@@ -88,6 +88,26 @@
                 = t(".listing_created_at")
                 = l @listing.created_at, :format => :short_date
 
+    - if @recent_listings.count > 0
+      .row
+        .col-12
+          .related-listings-title
+            %h1{:class => "listing-related-menu"}
+              Recently Viewed
+          .row{style: "overflow: auto; overflow-y: hidden;"}
+            .listings-thumb-list
+              = render :partial => "listing_thumb", :collection => @recent_listings, :as => :listing
+
+    - if @related_listings.count > 0
+      .row
+        .col-12
+          .related-listings-title
+            %h1{:class => "listing-related-menu"}
+              You May Also Like
+          .row{:style => "overflow: auto; overflow-y: hidden;"}
+            .listings-thumb-list
+              = render :partial => "listing_thumb", :collection => @related_listings, :as => :listing
+
     - if !@current_community.private?
       .row
         .col-12

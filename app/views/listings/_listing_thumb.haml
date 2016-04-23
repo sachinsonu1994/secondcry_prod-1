@@ -1,0 +1,20 @@
+- frontpage_fragment_cache("grid_item", listing) do
+  .listing-thumb
+    .thumb-image
+      = link_to(listing_path(listing.url)) do
+        = image_tag listing.thumb_image_url, {:alt => "asd", :class => ""}
+    .clear
+    .thumb-name
+      = link_to(listing.title, listing_path(listing.url), {:style => "color: #014f54;"})
+    .clear
+    - if listing.price
+      %span.thumb-price
+        = humanized_money_with_symbol(listing.price).upcase
+        - price_unit = price_quantity_slash_unit(listing)
+      - if !price_unit.blank?
+        - price_text = " " + price_unit
+        %span.fluid-thumbnail-grid-image-quantity{:title => price_text}
+          = price_text
+    - else
+      %span.thumb-price
+        = shape_name(listing)

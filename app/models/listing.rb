@@ -215,4 +215,14 @@ class Listing < ActiveRecord::Base
     Maybe(read_attribute(:unit_type)).to_sym.or_else(nil)
   end
 
+  def url
+    self.id.to_s + "-" + self.title.to_url
+  end
+
+  def thumb_image_url
+    "/system/images/" +
+    self.listing_images.first.id.to_s + "/small_3x2/" +
+    self.listing_images.first.image_file_name
+  end
+
 end

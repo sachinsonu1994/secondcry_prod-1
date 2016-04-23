@@ -217,3 +217,68 @@ $listing-author-avatar-height: 108;
 .listings-how-paypal-works-link {
   font-size: em(14);
 }
+
+.listing-related-menu{
+  width: 180px;
+  padding: 10px;
+  margin-bottom: 0;
+  text-transform: uppercase;
+  text-align: center;
+  font-size: 17px;
+  font-weight: bold;
+  color: #FFFFFF;
+  background-color: #FCBE03;
+}
+
+.related-listings-title{
+  border-bottom: 1px solid #000;
+}
+
+.listings-thumb-list {
+  width: 640px;
+
+  .listing-thumb {
+    width: 110px;
+    margin-top: 1.17em;
+    float: left;
+
+    .thumb-image{
+      height: 125px;
+      width: 100px;
+      border-width: 1px;
+      border-style: solid;
+      padding: 2px;
+      line-height: 126px;
+      text-align: center;
+      margin: 0 auto;
+
+      img {
+        border: 0;
+        max-width: 100%;
+        max-height: 100%;
+        width: auto;
+        height: auto;
+        vertical-align: middle;
+        float: none;
+        display: inline-block;
+        text-align: center;
+      }
+    }
+
+    .thumb-price {
+      width: 102px;
+      text-align: center;
+      text-transform: uppercase;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      display: block;
+      float: left;
+    }
+
+    .thumb-name {
+      @extend .thumb-price;
+      margin-top: 0.8em;
+    }
+  }
+}

@@ -186,6 +186,49 @@ class ListingsController < ApplicationController
     received_positive_testimonials = TestimonialViewUtils.received_positive_testimonials_in_community(@listing.author, @current_community)
     feedback_positive_percentage = @listing.author.feedback_positive_percentage_in_community(@current_community)
 
+    @related_listings = @listing.category.listings.where(["open=1 AND deleted=0 AND id != ?", @listing.id])
+    @recent_listings=[]
+
+    if @current_user.nil? then
+      @related_listings = @related_listings.order("created_at desc").limit(5)
+
+      if cookies[:recent_views].blank?
+        cookies[:recent_views] = @listing.id.to_s + ","
+      else
+        recent_ids = cookies[:recent_views].split(",").map(&:to_i)
+        recent_ids.delete_if {|id| id == @listing.id }
+        recent_ids.delete_at(0) if recent_ids.length > 5
+
+        recent_ids.each{|id|
+          listing = Listing.find_by_id(id)
+          @recent_listings << listing unless listing.nil?
+        }
+
+        recent_ids.push(@listing.id)
+        cookies[:recent_views] = recent_ids.join(",")
+      end
+    else
+      @related_listings = @related_listings.where.not(id: @current_user.listings.ids).order("created_at desc").limit(5)
+
+      if @current_user.recent_views.blank?
+        @current_user.recent_views = @listing.id.to_s + ","
+      else
+        recent_ids = @current_user.recent_views.split(",").map(&:to_i)
+        recent_ids.delete_if {|id| id == @listing.id }
+        recent_ids.delete_at(0) if recent_ids.length > 5
+
+        recent_ids.each{|id|
+          listing = Listing.find_by_id(id)
+          @recent_listings << listing unless listing.nil?
+        }
+
+        recent_ids.push(@listing.id)
+        @current_user.recent_views = recent_ids.join(",")
+      end
+
+      @current_user.save
+    end
+
     render locals: {
              form_path: form_path,
              payment_gateway: payment_gateway,
