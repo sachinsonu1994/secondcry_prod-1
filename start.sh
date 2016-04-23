@@ -1,5 +1,9 @@
+set -x
+
 rm -rf public/assets
 rake RAILS_ENV=production tmp:clear tmp:cache:clear assets:clean assets:precompile
+rake RAILS_ENV=production sharetribe:generate_customization_stylesheets_immediately
+
 sudo service mysql restart
 sudo service memcached restart
 
