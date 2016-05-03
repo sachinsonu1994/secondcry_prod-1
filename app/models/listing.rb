@@ -220,9 +220,11 @@ class Listing < ActiveRecord::Base
   end
 
   def thumb_image_url
-    "/system/images/" +
-    self.listing_images.first.id.to_s + "/small_3x2/" +
-    self.listing_images.first.image_file_name
+    if self.listing_images and self.listing_images.first
+      return "/system/images/" + self.listing_images.first.id.to_s + "/small_3x2/" + self.listing_images.first.image_file_name
+    else
+      return "/system/images/no_image.gif"
+    end
   end
 
 end

@@ -2,7 +2,7 @@
   .listing-thumb
     .thumb-image
       = link_to(listing_path(listing.url)) do
-        = image_tag listing.thumb_image_url, {:alt => "asd", :class => ""}
+        = image_tag listing.thumb_image_url, {:alt => "No Image", :class => ""}
     .clear
     .thumb-name
       = link_to(listing.title, listing_path(listing.url), {:style => "color: #014f54;"})

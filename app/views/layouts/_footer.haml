@@ -1,5 +1,5 @@
 #footer
-  = image_tag 'footer.png', style: "bottom:0; width: 100%; position: absolute;"
+  = image_tag 'footer.png', style: "bottom:0; width: 100%; position: absolute; z-index: -1"
   .row
     .col-2
     .col-2
@@ -7,42 +7,40 @@
         .title
           Information
         .content
-          Home
+          %a{:href=>"/"} Home
           %br
-          About us
+          %a{:href=>"/en/infos/about"} About us
           %br
-          Contact us
-          %br
-          Invite new members
+          %a{:href=>"/en/invitations/new"} Invite new members
     .col-2
       .about-us 
         .title
           Contact us
         .content
-          Email: secondcry.com@gmail.com
+          %a{:href=>"mailto:secondcry.com@gmail.com", :target=>"_blank"} E-Mail
           %br
-          Phone: +91-8095117799
-        .split-line
-        .title
-          Keep in touch
-        .facebook-icon
-          =icon_tag("facebook", ["icon"])
+          %a{:href=>"tel:+91-8095117799"} Mobile
+          %br
+          %a{:href=>"/en/user_feedbacks/new"} Online feedback
     .col-2
       .about-us
         .title
           My Account
         .content
-          Messages
+          %a{:href=>"/en/my/inbox"} Messages
           %br
           Profile
           %br
           Manage Listings
           %br
           Settings
-    .col-2
+    .col-3
       .about-us 
         .title
-          Facebook Group
+          Facebook group
         .content
-          https://www.facebook.com/groups/secondcry
-    .col-2
+          .fb-page{:data => {:href=>"https://www.facebook.com/Secondcry-383832128455555", :width=>"280", :small_header=>"false", :adapt_container_width=>"true", :hide_cover=>"true", :show_facepile=>"true"}}
+          %br
+          %br
+          %br
+    .col-1
