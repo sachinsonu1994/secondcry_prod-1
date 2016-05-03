@@ -40,6 +40,7 @@
           - if @current_community.require_verification_to_post_listings
             %th{:style => "text-align: center"}= render partial: "layouts/sort_link", locals: { column: "posting_allowed", direction: sort_link_direction("posting_allowed"), title: t("admin.communities.manage_members.posting_allowed") }
           %th= t("admin.communities.manage_members.admin")
+          %th= t("admin.communities.manage_members.premium")
           %th= t("admin.communities.manage_members.ban_user")
       %tbody
         - @memberships.each do |membership|
@@ -54,6 +55,7 @@
               - if @current_community.require_verification_to_post_listings
                 %td{:style => "text-align: center"}= check_box_tag "posting-allowed[#{member.id}]", member.id, membership.can_post_listings, :class => "admin-members-can-post-listings"
               %td{:style => "text-align: center"}= check_box_tag "is_admin[#{member.id}]", member.id, member.is_admin_of?(@community), :class => "admin-members-is-admin", :disabled => member.eql?(@current_user)
+              %td{:style => "text-align: center"}= check_box_tag "is_premium[#{member.id}]", member.id, member.is_premium?, :class => "admin-members-is-premium", :disabled => member.eql?(@current_user)
               %td{:style => "text-align: center"}
                 = link_to(icon_tag("cross"), ban_admin_community_community_membership_path(@current_community.id, membership.id), method: :put, :data => {:confirm => t("admin.communities.manage_members.ban_user_confirmation")}, :class => "admin-members-remove-user")
 

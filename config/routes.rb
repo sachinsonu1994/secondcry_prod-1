@@ -153,6 +153,7 @@ Kassi::Application.routes.draw do
           end
           collection do
             post :promote_admin
+            post :promote_premium
             post :posting_allowed
           end
         end

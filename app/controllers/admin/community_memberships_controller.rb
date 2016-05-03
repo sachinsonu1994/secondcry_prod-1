@@ -63,6 +63,17 @@ class Admin::CommunityMembershipsController < ApplicationController
     end
   end
 
+  def promote_premium
+    if removes_itself?(params[:remove_admin], @current_user, @current_community)
+      render nothing: true, status: 405
+    else
+      Person.where(id: params[:add_premium]).update_all("is_premium = 1")
+      Person.where(id: params[:remove_premium]).update_all("is_premium = 0")
+
+      render nothing: true, status: 200
+    end
+  end
+
   def posting_allowed
     @current_community.community_memberships.where(person_id: params[:allowed_to_post]).update_all("can_post_listings = 1")
     @current_community.community_memberships.where(person_id: params[:disallowed_to_post]).update_all("can_post_listings = 0")

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160317160034) do
+ActiveRecord::Schema.define(version: 20160415073433) do
 
   create_table "auth_tokens", force: :cascade do |t|
     t.string   "token",            limit: 255
@@ -892,6 +892,7 @@ ActiveRecord::Schema.define(version: 20160317160034) do
     t.string   "organization_name",                  limit: 255
     t.boolean  "deleted",                                          default: false
     t.string   "recent_views",                       limit: 255
+    t.boolean  "is_premium",                                       default: false
   end
 
   add_index "people", ["authentication_token"], name: "index_people_on_authentication_token", using: :btree

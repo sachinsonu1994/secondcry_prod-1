@@ -27,6 +27,7 @@ module ListingIndexViewUtils
     :last_name,
     :organization_name,
     :is_organization,
+    :is_premium,
     :avatar,
     :is_deleted,
     :num_of_reviews)
@@ -48,6 +49,7 @@ module ListingIndexViewUtils
             l[:author][:last_name],
             l[:author][:organization_name],
             l[:author][:is_organization],
+            l[:author][:is_premium],
             ListingImage.new(
               l[:author][:avatar][:thumb]
             ),

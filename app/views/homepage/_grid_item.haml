@@ -3,6 +3,11 @@
     %div
       -# Listing image
       = render :partial => "layouts/grid_item_listing_image", :locals => {:listing => listing, :modifier_class => ""}
+      -#premium listings
+      - if listing.author.is_premium
+        .premium
+          = image_tag 'premium.png', style: "position:absolute;z-index:1;"
+        -# Listing author details
 
       -# Listing author details
       .home-fluid-thumbnail-grid-author

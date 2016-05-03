@@ -259,6 +259,7 @@ en:
         name: Name
         join_date: Joined
         admin: Admin
+        premium: Premium
         posting_allowed: "Posting allowed"
         ban_user: "Ban user"
         saving_user_status: Saving...

@@ -9,6 +9,7 @@ module MarketplaceService
         :first_name,
         :last_name,
         :avatar,
+        :is_premium,
         :is_deleted
       )
 
@@ -20,6 +21,7 @@ module MarketplaceService
           username: person_model.username,
           first_name: person_model.given_name,
           last_name: person_model.family_name,
+          is_premium: person_model.is_premium,
           avatar: person_model.image.present? ? person_model.image.url(:thumb) : ActionController::Base.helpers.image_path("profile_image/thumb/missing.png"),
           is_deleted: person_model.deleted?
         ]

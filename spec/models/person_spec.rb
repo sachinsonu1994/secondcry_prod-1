@@ -42,6 +42,7 @@
 #  organization_name                  :string(255)
 #  deleted                            :boolean          default(FALSE)
 #  recent_views                       :string(255)
+#  is_premium                         :boolean          default(FALSE)
 #
 # Indexes
 #

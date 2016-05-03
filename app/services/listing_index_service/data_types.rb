@@ -45,6 +45,7 @@ module ListingIndexService::DataTypes
     [:last_name, :string, :optional], # For organization, last_name is optional
     [:organization_name, :string],
     [:is_organization, :bool, default: false],
+    [:is_premium, :bool, default: false],
     [:avatar, entity: AvatarImage],
     [:is_deleted, :bool, default: false],
     [:num_of_reviews, :fixnum, default: 0]
