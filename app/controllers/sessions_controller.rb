@@ -115,7 +115,14 @@ class SessionsController < ApplicationController
 
     if @person
       flash[:notice] = t("devise.omniauth_callbacks.success", :kind => "Facebook")
-      sign_in_and_redirect @person, :event => :authentication
+
+      if session[:return_to_content]
+        sign_in @person, :event => :authentication
+        redirect_to session[:return_to_content]
+        session[:return_to_content] = nil
+      else
+        sign_in_and_redirect @person, :event => :authentication
+      end
     else
       data = request.env["omniauth.auth"].extra.raw_info
 
