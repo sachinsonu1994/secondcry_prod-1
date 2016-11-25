@@ -5,6 +5,12 @@
 <!--[if (gt IE 8)|!(IE)]><!--> <html lang="#{I18n.locale}" class="no-js"> <!--<![endif]-->
 
 %head
+  = javascript_include_tag "//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js", :async => true
+  :javascript
+    (adsbygoogle = window.adsbygoogle || []).push({
+      google_ad_client: "ca-pub-4275681173501591",
+      enable_page_level_ads: true
+    });
   %meta{charset: "utf-8"}
 
   = render :partial => "layouts/kissmetrics"
