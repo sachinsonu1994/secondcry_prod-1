@@ -113,6 +113,7 @@ gem 'demoji', "~> 0.0.5"
 gem 'faraday', '~> 0.9.1'
 gem 'faraday_middleware', '~> 0.10.0'
 gem 'ads-rails'
+gem 'payuindia'
 
 group :staging, :production do
   gem 'newrelic_rpm', '~> 3.9.1.236'
