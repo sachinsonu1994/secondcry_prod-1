@@ -16,6 +16,8 @@
 #  checkout_password                    :string(255)
 #  created_at                           :datetime         not null
 #  updated_at                           :datetime         not null
+#  payu_merchant_id                     :string(255)
+#  payu_salt                            :string(255)
 #
 
 require 'spec_helper'

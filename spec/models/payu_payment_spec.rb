@@ -24,22 +24,8 @@
 #  index_payments_on_payer_id         (payer_id)
 #
 
-class BraintreePayment < Payment
-  attr_accessible :braintree_transaction_id, :currency, :sum
+require 'rails_helper'
 
-  monetize :sum_cents, allow_nil: true, with_model_currency: :currency
-
-  def sum_exists?
-    !sum_cents.nil?
-  end
-
-  def total_sum
-    sum
-  end
-
-  # Build default payment sum by listing
-  # Note: Consider removing this :(
-  def default_sum(listing, vat=0)
-    self.sum = listing.price
-  end
+RSpec.describe PayuPayment, type: :model do
+  pending "add some examples to (or delete) #{__FILE__}"
 end

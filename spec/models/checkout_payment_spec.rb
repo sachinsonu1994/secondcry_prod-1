@@ -16,6 +16,7 @@
 #  currency                 :string(255)
 #  type                     :string(255)      default("CheckoutPayment")
 #  braintree_transaction_id :string(255)
+#  payu_transaction_id      :integer
 #
 # Indexes
 #

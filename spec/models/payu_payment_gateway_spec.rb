@@ -20,35 +20,8 @@
 #  payu_salt                            :string(255)
 #
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe Checkout, type: :model do
-  let(:gateway) { FactoryGirl.build(:checkout_payment_gateway) }
-
-  describe "#configured?" do
-
-    it "is not configured" do
-      gateway.checkout_environment = "production"
-      gateway.checkout_user_id = ""
-      gateway.checkout_password = ""
-
-      expect(gateway.configured?).to be_falsey
-    end
-
-    it "is configured if it's in testing mode" do
-      gateway.checkout_environment = "stub"
-      gateway.checkout_user_id = ""
-      gateway.checkout_password = ""
-
-      expect(gateway.configured?).to be_truthy
-    end
-
-    it "production and configured" do
-      gateway.checkout_environment = "production"
-      gateway.checkout_user_id = "1234user"
-      gateway.checkout_password = "xxxxyyyyyzzzzz"
-
-      expect(gateway.configured?).to be_truthy
-    end
-  end
+RSpec.describe PayuPaymentGateway, type: :model do
+  pending "add some examples to (or delete) #{__FILE__}"
 end
