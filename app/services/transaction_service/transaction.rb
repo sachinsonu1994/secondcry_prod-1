@@ -8,14 +8,16 @@ module TransactionService::Transaction
     paypal: TransactionService::Gateway::PaypalSettingsAdapter.new,
     braintree: TransactionService::Gateway::BraintreeSettingsAdapter.new,
     checkout: TransactionService::Gateway::BraintreeSettingsAdapter.new, # Checkout handles configuration the same way as BT
-    none: TransactionService::Gateway::FreeSettingsAdapter.new
+    none: TransactionService::Gateway::FreeSettingsAdapter.new,
+    payu: TransactionService::Gateway::PayuSettingsAdapter.new
   }
 
   GATEWAY_ADAPTERS = {
     paypal: TransactionService::Gateway::PaypalAdapter.new,
     braintree: TransactionService::Gateway::BraintreeAdapter.new,
     checkout: TransactionService::Gateway::CheckoutAdapter.new,
-    none: TransactionService::Gateway::FreeAdapter.new
+    none: TransactionService::Gateway::FreeAdapter.new,
+    payu: TransactionService::Gateway::PayuAdapter.new
   }
 
   TX_PROCESSES = {

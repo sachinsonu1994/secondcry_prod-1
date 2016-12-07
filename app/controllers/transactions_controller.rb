@@ -186,6 +186,29 @@ class TransactionsController < ApplicationController
     PaypalService::API::Api.process
   end
 
+  def payu_return
+    notification = PayuIndia::Notification.new(request.query_string, options = {:key => 'gtKFFx', :salt => 'eCwWELxi', :params => params})
+
+    @transaction = Transaction.find(notification.invoice) # notification.invoice is order id/cart id which you have submited from payment direction page.
+
+    if notification.acknowledge
+      begin
+        if notification.complete?
+          @transaction.status = 'success'
+          # @transaction.purchased_at = Time.now
+          # @order = Order.create(:total => notification.gross, :card_holder_name => params['name_on_card'], :order_number => notification.invoice)
+          reset_session
+          redirect_to @order
+        else
+          @transaction.status = "failed"
+          render :text => "Order Failed! #{notification.message}"
+        end
+      ensure
+        @transaction.save
+      end
+    end
+  end
+
   private
 
   def ensure_can_start_transactions(listing_model:, current_user:, current_community:)

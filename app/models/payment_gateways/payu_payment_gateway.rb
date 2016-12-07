@@ -32,4 +32,44 @@ class PayuPaymentGateway < PaymentGateway
     edit_person_message_braintree_payment_path(:id => message.payment.id, :person_id => person.id.to_s, :message_id => message.id.to_s, :locale => locale)
   end
 
+  def new_payment_url(person, message, locale, other_params={})
+    edit_person_message_braintree_payment_url(other_params.merge(
+      :id => message.payment.id,
+      :person_id => person.id.to_s,
+      :message_id => message.id.to_s,
+      :locale => locale
+    ))
+  end
+
+  def has_additional_terms_of_use
+    true
+  end
+
+  def name
+    "lemonway"
+  end
+
+  def form_template_dir
+    "payments/simple_form"
+  end
+
+  def invoice_form_type
+    "simple"
+  end
+
+  def new_payment
+    payment = PayuPayment.new
+    payment.payment_gateway = self
+    payment.community = community
+    payment.currency = "INR"
+    payment
+  end
+
+  def hold_in_escrow
+    true
+  end
+
+  def gateway_type
+    :payu
+  end
 end

@@ -23,6 +23,7 @@ class PreauthorizeTransactionsController < ApplicationController
     .with_validations { validates_presence_of :content, :listing_id }
 
   BraintreeForm = Form::Braintree
+  PayuForm = Form::Payu
 
   PreauthorizeMessageForm = FormUtils.define_form("ListingConversation",
     :content,

@@ -14,6 +14,14 @@ module Form
     :credit_card_expiration_year
   )
 
+  Payu = FormUtils.define_form("Payu",
+    :cardholder_name,
+    :credit_card_number,
+    :cvv,
+    :credit_card_expiration_month,
+    :credit_card_expiration_year
+  )
+
   class EmailAvailableValidator < ActiveModel::Validator
     def validate(form)
       options[:fields].each do |f|
