@@ -1,0 +1,26 @@
+<script type="text/javascript">
+    window.onload=function() {
+        document.forms["payment-form"].submit();
+    }
+</script>
+
+<form accept-charset="UTF-8" action= "<%= pay_url %>" id="payment-form" method="post">
+  <div style="display:none">
+    KEY: <input id="key" name="key" value="<%= key %>"></input><BR/>
+    UNIQUE ID: <input id="txnid" name="txnid" value="<%= orderId %>"></input><br/>
+    Amount: <input id="amount" name="amount" value="<%= amount %>"></input><br/>
+    Product Name: <input id="productinfo" name="productinfo" value="<%= product_name %>"></input><br/>
+    First Name: <input id="firstname" name="firstname" value="<%= firstName %>"></input><br/>
+    Email: <input id="email" name="email" value="<%= email %>"></input><br/>
+    Number:<input id="phone" name="phone" value="<%= phoneNo %>"></input><br/>
+    UDF1:<input id="udf1" name="udf1" value="<%= udf1 %>"></input><br/>
+    Surl: <input id="surl" name="surl" value="<%= surl %>"></input><br/>
+    Furl: <input id="furl" name="furl" value="<%= furl %>"></input><br/>
+    Hash: <input id="hash" name="hash" value="<%= hash %>"></input><br/>
+    <input type="submit">/</input>
+  </div>
+</form>
+
+<h1>Redirecting to payment ...</h1>
+
+

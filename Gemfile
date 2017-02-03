@@ -4,6 +4,8 @@ ruby '2.2.4'
 
 gem 'rails', '4.2.5.2'
 
+gem 'payuindia'
+
 gem 'coffee-rails', "~> 4.0.1"
 gem 'uglifier', "~> 2.7.2"
 

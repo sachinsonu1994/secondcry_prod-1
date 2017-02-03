@@ -1,9 +1,10 @@
 class TransactionsController < ApplicationController
 
+  skip_before_filter :verify_authenticity_token, :only => :payu_response
+
   before_filter only: [:show] do |controller|
     controller.ensure_logged_in t("layouts.notifications.you_must_log_in_to_view_your_inbox")
   end
-
   before_filter do |controller|
     controller.ensure_logged_in t("layouts.notifications.you_must_log_in_to_do_a_transaction")
   end
@@ -30,6 +31,19 @@ class TransactionsController < ApplicationController
       booking = listing_model.unit_type == :day
 
       transaction_params = HashUtils.symbolize_keys({listing_id: listing_model.id}.merge(params.slice(:start_on, :end_on, :quantity, :delivery)))
+
+      # Only selling and renting listings should get payment button
+      listing = Listing.where("id = #{params[:listing_id]}").first
+      @payment_button = 1
+      if (listing.listing_shape_id !=1 && listing.listing_shape_id != 2)
+        @payment_button = 0
+      end
+
+      # fill the phone number from user profile (if present)
+      person = Person.find_by_id(@current_user.id)
+      if !person.blank?
+        @phone_number = person.phone_number
+      end
 
       case [process[:process], gateway, booking]
       when matches([:none])
@@ -92,11 +106,100 @@ class TransactionsController < ApplicationController
     ).on_success { |(_, (_, _, _, process), _, _, tx)|
       after_create_actions!(process: process, transaction: tx[:transaction], community_id: @current_community.id)
       flash[:notice] = after_create_flash(process: process) # add more params here when needed
-      redirect_to after_create_redirect(process: process, starter_id: @current_user.id, transaction: tx[:transaction]) # add more params here when needed
+
+      # proceed to payment page only when listing is of type selling and renting
+      listing = Listing.where("id = #{params[:listing_id]}").first
+      if (listing.listing_shape_id != 1 && listing.listing_shape_id != 2)
+        redirect_to after_create_redirect(process: process, starter_id: @current_user.id, transaction: tx[:transaction]) # add more params here when needed
+      else
+        transaction = Transaction.find(tx[:transaction][:id])
+        listing = Listing.where("id = '#{transaction.listing_id}'").first
+
+        user = Person.find(@current_user.id)
+        email = Email.where("person_id = '#{@current_user.id}'").first
+        transaction_amount = transaction.unit_price * transaction.listing_quantity
+        date = "#{Date.today}".gsub('-','')
+
+        render "transactions/payu", locals: {
+          pay_url: "#{PAYU_URL}",
+          key:     "#{PAYU_KEY}",
+          orderId: "#{date}#{transaction.id}",
+          amount:  "#{transaction_amount}",
+          product_name: "#{transaction.listing_title}",
+          firstName: "#{user.given_name}",
+          email:     "#{email.address}",
+          phoneNo:   "#{params[:phone_number]}",
+          udf1: "#{transaction.conversation_id}",
+          surl: "#{request.protocol}#{request.host_with_port}/payu_response",
+          furl: "#{request.protocol}#{request.host_with_port}/payu_response",
+          hash: Digest::SHA2.new(512).hexdigest("#{PAYU_KEY}|#{date}#{transaction.id}|#{transaction_amount}|#{transaction.listing_title}|#{user.given_name}|#{email.address}|#{transaction.conversation_id}||||||||||#{PAYU_SALT}")
+        }
+      end
     }.on_error { |error_msg, data|
       flash[:error] = Maybe(data)[:error_tr_key].map { |tr_key| t(tr_key) }.or_else("Could not start a transaction, error message: #{error_msg}")
       redirect_to(session[:return_to_content] || root)
     }
+  end
+
+  def payu_response
+    hash_value = params[:hash]
+    transaction_id = params[:txnid].slice(8..-1)
+    transaction = Transaction.where("id = #{transaction_id}").first
+    buyer = Person.find_by_id(@current_user.id)
+    seller = Person.find_by_id(transaction.listing.author_id)
+    if !buyer.blank? && buyer.phone_number.blank?
+      buyer.phone_number = params[:phone]
+      buyer.save
+    end
+    value = "#{PAYU_SALT}|#{params[:status]}||||||||||#{params[:udf1]}|#{params[:email]}|#{params[:firstname]}|#{params[:productinfo]}|#{params[:amount]}|#{params[:txnid]}|#{PAYU_KEY}"
+    reshashvalue = Digest::SHA2.new(512).hexdigest("#{value}")
+
+    is_payment_success = !hash_value.blank? && params[:status] == "success" && (hash_value == reshashvalue)
+
+    if is_payment_success
+      payment_string = "Dear #{seller.given_name},
+I have successfully made the payment of Gé¦#{params[:amount]} to SecondCry towards your listing \"#{params[:productinfo]}\". Transaction reference number is #{params[:txnid]}.
+Kindly acknowledge that the product is with you and ready to ship by replying \"I accept\" to this message. Along with this, please ensure your bank details are updated.
+Once the product reaches me and is acceptable, I will also reply back \"I accept\" to your message and Secondcry will release the payment to your bank account.
+Thanks."
+
+      transaction.listing.open = 0
+      transaction.listing.save
+      shipping_address = ShippingAddress.new
+      shipping_address.phone = params[:phone]
+      shipping_address.name = params[:firstname]
+      shipping_address.transaction_id = transaction_id
+      shipping_address.status = "Initial"
+      shipping_address.save
+    else
+      payment_string = "Dear #{seller.given_name},
+Attempt to make payment of Gé¦#{params[:amount]} to SecondCry towards your listing \"#{params[:productinfo]}\" failed due to some reason.
+If I am still interested, I will retry. This transaction stands closed.
+Thanks."
+    end
+
+    # add payment status message to the transaction message log
+    messageController = MessagesController.new
+    messageController.request = request
+    messageController.response = response
+    post_params = {
+      :post_payu_flow => true,
+      :current_user_id => @current_user.id,
+      :message => {
+        :conversation_id => "#{params[:udf1]}",
+        :content => "#{payment_string}"
+      }
+    }
+    messageController.params = post_params
+    messageController.create
+
+    # email admins
+    payment_status = params[:status]
+    transaction_url = "#{request.protocol}#{request.host_with_port}/en/transactions/#{params[:udf1]}"
+    MailCarrier.deliver_now(TransactionMailer.order_created(transaction_url, payment_status, transaction.listing.id, params))
+
+    # redirect to transaction's history of conversations
+    redirect_to "#{request.protocol}#{request.host_with_port}/en/transactions/#{params[:udf1]}"
   end
 
   def show

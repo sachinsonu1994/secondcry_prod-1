@@ -1,0 +1,20 @@
+Dear  <%= @buyer_name %>,<BR/><BR/>
+
+Your transaction with SecondCry <%= @payment_status_string %><BR/><BR/>
+
+<b>Payment Details:</b><BR/>
+Transaction ID: <%= @transaction_id %><BR/>
+Amount Paid: Gé¦<%= @payment_amount %><BR/>
+Order Date: <%= @payment_datetime %><BR/>
+<% if !@payment_failure_reason.blank? %>
+Failure Reason: <%= @payment_failure_reason %><BR/>
+<% end %>
+<BR/>
+
+<b>Listing Details:</b><BR/>
+Product: <a href="https://secondcry.com/en/listings/<%= @listing_id %>" target="_blank"><%= @listing_title %></a>
+
+For any information pertaining to the status of your order, you can reply back to the same email or call us at +91-8095117799.<BR/><BR/>
+
+Best Regards,<BR/>
+SecondCry Team
