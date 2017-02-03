@@ -34,9 +34,10 @@ class TransactionsController < ApplicationController
 
       # Only selling and renting listings should get payment button
       listing = Listing.where("id = #{params[:listing_id]}").first
-      @payment_button = 1
-      if (listing.listing_shape_id !=1 && listing.listing_shape_id != 2)
-        @payment_button = 0
+      listing_shape = ListingShape.find(listing.listing_shape_id)
+      @payment_button = 0
+      if (listing_shape.name == "selling" || listing_shape.name == "renting-out")
+        @payment_button = 1
       end
 
       # fill the phone number from user profile (if present)
@@ -109,7 +110,9 @@ class TransactionsController < ApplicationController
 
       # proceed to payment page only when listing is of type selling and renting
       listing = Listing.where("id = #{params[:listing_id]}").first
-      if (listing.listing_shape_id != 1 && listing.listing_shape_id != 2)
+      listing_shape = ListingShape.find(listing.listing_shape_id)
+
+      if (listing_shape.name != "selling" && listing_shape.name != "renting-out")
         redirect_to after_create_redirect(process: process, starter_id: @current_user.id, transaction: tx[:transaction]) # add more params here when needed
       else
         transaction = Transaction.find(tx[:transaction][:id])
