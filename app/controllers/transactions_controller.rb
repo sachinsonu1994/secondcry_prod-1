@@ -116,7 +116,7 @@ class TransactionsController < ApplicationController
         listing = Listing.where("id = '#{transaction.listing_id}'").first
 
         user = Person.find(@current_user.id)
-        email = Email.where("person_id = '#{@current_user.id}'").first
+        email = Email.where("person_id = '#{@current_user.id}' and confirmed_at is not null").first
         transaction_amount = transaction.unit_price * transaction.listing_quantity
         date = "#{Date.today}".gsub('-','')
 
@@ -158,7 +158,7 @@ class TransactionsController < ApplicationController
 
     if is_payment_success
       payment_string = "Dear #{seller.given_name},
-I have successfully made the payment of Gé¦#{params[:amount]} to SecondCry towards your listing \"#{params[:productinfo]}\". Transaction reference number is #{params[:txnid]}.
+I have successfully made the payment of Rs.#{params[:amount]} to SecondCry towards your listing \"#{params[:productinfo]}\". Transaction reference number is #{params[:txnid]}.
 Kindly acknowledge that the product is with you and ready to ship by replying \"I accept\" to this message. Along with this, please ensure your bank details are updated.
 Once the product reaches me and is acceptable, I will also reply back \"I accept\" to your message and Secondcry will release the payment to your bank account.
 Thanks."
@@ -173,7 +173,7 @@ Thanks."
       shipping_address.save
     else
       payment_string = "Dear #{seller.given_name},
-Attempt to make payment of Gé¦#{params[:amount]} to SecondCry towards your listing \"#{params[:productinfo]}\" failed due to some reason.
+Attempt to make payment of Rs.#{params[:amount]} to SecondCry towards your listing \"#{params[:productinfo]}\" failed due to some reason.
 If I am still interested, I will retry. This transaction stands closed.
 Thanks."
     end
@@ -196,10 +196,11 @@ Thanks."
     # email admins
     payment_status = params[:status]
     transaction_url = "#{request.protocol}#{request.host_with_port}/en/transactions/#{params[:udf1]}"
-    MailCarrier.deliver_now(TransactionMailer.order_created(transaction_url, payment_status, transaction.listing.id, params))
+    listing_url = "#{request.protocol}#{request.host_with_port}/en/listings/#{transaction.listing.id}"
+    MailCarrier.deliver_now(TransactionMailer.order_created(transaction_url, payment_status, listing_url, params))
 
     # redirect to transaction's history of conversations
-    redirect_to "#{request.protocol}#{request.host_with_port}/en/transactions/#{params[:udf1]}"
+    redirect_to "#{request.protocol}#{request.host_with_port}/en/transactions/#{transaction_id}"
   end
 
   def show

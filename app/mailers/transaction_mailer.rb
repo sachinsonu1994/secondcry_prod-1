@@ -19,21 +19,23 @@ class TransactionMailer < ActionMailer::Base
 
   add_template_helper(EmailTemplateHelper)
 
-  def order_created(transaction_url, payment_status, listing_id, params)
+  def order_created(transaction_url, payment_status, listing_url, params)
     @transaction_url = transaction_url
     @payment_status = payment_status
     @buyer_name = params[:firstname]
     @payment_status_string = (payment_status == "success") ? "was successful" : "has failed"
     @transaction_id = params[:txnid]
     @payment_amount = params[:amount]
-    @payment_datetime = "#{Time.Now}"
-    @payment_failure_reason = params[:error]
-    @listing_id = listing_id
+    @payment_datetime = "#{Time.now}"
+    @payment_failure_reason = (payment_status == "success") ? "" : params[:error_Message]
+    @listing_url = listing_url
+    @listing_title = params[:productinfo]
 
     premailer_mail(
       :to => "#{params[:email]}",
-      :cc => "payments@secondcry.com",
-      :subject => "Your Order at SecondCry #{@payment_status_string}"
+      :from => "payments@secondcry.com",
+      :bcc => "ops@secondcry.com",
+      :subject => "Your Order ##{params[:txnid]} at SecondCry #{@payment_status_string}"
     )
   end
 
