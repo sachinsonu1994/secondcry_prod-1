@@ -11,21 +11,29 @@ class MessagesController < ApplicationController
   end
 
   def create
-    unless is_participant?(@current_user, params[:message][:conversation_id])
-      flash[:error] = t("layouts.notifications.you_are_not_authorized_to_do_this")
-      return redirect_to root
+    is_post_payu_flow = params.key?(:post_payu_flow)
+    if !is_post_payu_flow
+      unless is_participant?(@current_user, params[:message][:conversation_id])
+        flash[:error] = t("layouts.notifications.you_are_not_authorized_to_do_this")
+        return redirect_to root
+      end
     end
 
     message_params = params.require(:message).permit(
       :conversation_id,
       :content
     ).merge(
-      sender_id: @current_user.id
+      sender_id: (is_post_payu_flow ? params[:current_user_id] : @current_user.id)
     )
 
     @message = Message.new(message_params)
+
     if @message.save
-      Delayed::Job.enqueue(MessageSentJob.new(@message.id, @current_community.id))
+      if !is_post_payu_flow
+        Delayed::Job.enqueue(MessageSentJob.new(@message.id, @current_community.id))
+      else
+        return
+      end
     else
       flash[:error] = "reply_cannot_be_empty"
     end

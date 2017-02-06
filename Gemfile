@@ -4,6 +4,8 @@ ruby '2.2.4'
 
 gem 'rails', '4.2.5.2'
 
+gem 'payuindia'
+
 gem 'coffee-rails', "~> 4.0.1"
 gem 'uglifier', "~> 2.7.2"
 
@@ -112,7 +114,6 @@ gem 'demoji', "~> 0.0.5"
 
 gem 'faraday', '~> 0.9.1'
 gem 'faraday_middleware', '~> 0.10.0'
-gem 'ads-rails'
 
 group :staging, :production do
   gem 'newrelic_rpm', '~> 3.9.1.236'

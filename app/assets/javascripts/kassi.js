@@ -546,7 +546,7 @@ function initialize_update_profile_info_form(locale, person_id, name_required) {
       "person[street_address]": {required: false, address_validator: true},
       "person[given_name]": {required: name_required, maxlength: 30},
       "person[family_name]": {required: name_required, maxlength: 30},
-      "person[phone_number]": {required: false, maxlength: 25},
+      "person[phone_number]": {required: true, maxlength: 11},
       "person[image]": { accept: "(jpe?g|gif|png)" }
     },
     onkeyup: false,

@@ -32,4 +32,10 @@ Kassi::Application.configure do
   m_config[:log_level].each { |log_level|
     config.log_level = log_level
   }
+
+  # PayU configuration
+  PAYU_KEY = APP_CONFIG.payu_key
+  PAYU_SALT = APP_CONFIG.payu_salt
+  PAYU_URL = APP_CONFIG.payu_url
+
 end

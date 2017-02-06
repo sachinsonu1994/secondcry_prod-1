@@ -11,6 +11,8 @@ Kassi::Application.routes.draw do
 
   get "/robots.txt" => RobotsGenerator
 
+  post '/payu_response' => 'transactions#payu_response'
+
   # A route for DV test file
   # A CA will check if there is a file in this route
   get "/:dv_file" => "domain_validation#index", constraints: {dv_file: /.*\.txt/}
