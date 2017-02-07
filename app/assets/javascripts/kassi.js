@@ -266,17 +266,9 @@ function initialize_braintree_account_form(locale) {
   var form_id = "#braintree_account_form";
   $(form_id).validate({
     rules: {
-      "braintree_account[first_name]": {required: true},
-      "braintree_account[last_name]": {required: true},
-      "braintree_account[email]": {required: true, email: true},
-      "braintree_account[phone]": {required: true},
-      "braintree_account[address_street_address]": {required: true},
-      "braintree_account[address_postal_code]": {required: true, minlength: 2, maxlength: 6},
-      "braintree_account[address_locality]": {required: true},
-      "braintree_account[address_region]": {required: true},
-      "braintree_account[date_of_birth]": {required: true},
-      "braintree_account[routing_number]": {required: true, minlength: 9, maxlength: 9},
+      "braintree_account[ifsc_number]": {required: true},
       "braintree_account[account_number]": {required: true},
+      "braintree_account[bank_name_and_branch]": {required: true}
     },
     messages: {
     },

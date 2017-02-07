@@ -770,7 +770,7 @@ en:
   braintree_accounts:
     new:
       add_payout_details: "Add your payout details"
-      first_name: "First name"
+      first_name: "Account holder name"
       last_name: "Last name"
       email: "Email address"
       phone: "Phone number"
@@ -779,13 +779,16 @@ en:
       address_locality: City
       address_region: State
       date_of_birth: "Date of birth"
+      bank_address: "Bank Address"
+      bank_name: "Bank Name"
       ssn: SSN
-      routing_number: "Routing number"
+      routing_number: "Ifsc number"
       account_number: "Account number"
+      bank_name_and_branch: "Bank name and branch"
       save: Save
     show:
       payout_details: "Your payout details"
-      first_name: "First name"
+      first_name: "Account holder name"
       last_name: "Last name"
       email: "Email address"
       phone: "Phone number"
@@ -795,8 +798,13 @@ en:
       address_region: State
       date_of_birth: "Date of birth"
       ssn: SSN
-      routing_number: "Routing number"
+      routing_number: "Ifsc number"
       account_number: "Account number"
+      bank_address: "Bank Address"
+      bank_name: "Bank Name"
+      bank_name_and_branch: "Bank name and branch"
+      save: Update
+      
   braintree_payments:
     edit:
       new_credit_card_payment: "New credit card payment"
