@@ -10,6 +10,7 @@ Kassi::Application.routes.draw do
   # first created -> highest priority.
 
   get "/robots.txt" => RobotsGenerator
+  get "/sitemap.xml.gz" => "sitemap#sitemap", format: :xml
 
   post '/payu_response' => 'transactions#payu_response'
 
