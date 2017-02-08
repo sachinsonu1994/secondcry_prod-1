@@ -1,4 +1,6 @@
 class BraintreeAccountsController < ApplicationController
+  require 'net/http'
+
   LIST_OF_STATES = [
       ['Alabama', 'AL'],
       ['Alaska', 'AK'],
@@ -60,6 +62,32 @@ class BraintreeAccountsController < ApplicationController
   before_filter :ensure_user_does_not_have_account, :only => [:new,:create]
   before_filter :ensure_user_does_not_have_account_for_another_community
 
+  def check_ifsc_code
+    response_hash = Hash.new
+    if !params[:ifsc_code].blank?
+      log = Logger.new(STDOUT)
+      log.level = Logger::INFO
+      log.info(params[:ifsc_code])
+      uri = URI("https://ifsc.razorpay.com/#{params[:ifsc_code]}")
+      response = Net::HTTP.get(uri)
+      log.info(response)
+      if response.include?('Not Found')
+        response_hash[:status] = "failure"
+      else
+        api_response = JSON.parse(response)
+        response_hash[:bank_name] = api_response["BANK"]
+        #@ifsc = api_response["IFSC"]
+        response_hash[:branch] = api_response["BRANCH"]
+        response_hash[:address] = api_response["ADDRESS"]
+        response_hash[:city] = api_response["CITY"]
+        response_hash[:state] = api_response["STATE"]
+        response_hash[:district] = api_response["DISTRICT"]
+        response_hash[:status] = "success"
+      end
+    end
+    render :json => response_hash.to_json, :callback => params[:callback]
+  end
+  
   def new
     redirect_to action: :show and return if @current_user.braintree_account
     @braintree_account = create_new_account_object

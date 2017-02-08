@@ -12,6 +12,8 @@ Kassi::Application.routes.draw do
   get "/robots.txt" => RobotsGenerator
 
   post '/payu_response' => 'transactions#payu_response'
+  get 'braintree_accounts/check_ifsc_code'
+  post 'braintree_accounts/check_ifsc_code'
 
   # A route for DV test file
   # A CA will check if there is a file in this route

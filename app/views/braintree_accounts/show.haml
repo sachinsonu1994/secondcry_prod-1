@@ -1,5 +1,34 @@
 -content_for :javascript do
   initialize_braintree_account_form("#{I18n.locale}");
+
+:javascript
+  function check_ifsc_number(){
+    var ifsc_number = jQuery('#ifsc_number').val()
+    if (ifsc_number.length != 11)
+    { 
+      alert("Please enter correct IFSC number")
+      jQuery('#ifsc_number').val('')
+    }
+    if (ifsc_number.length == 11)
+    {
+      jQuery.ajax({
+        url: '/braintree_accounts/check_ifsc_code?ifsc_code='+ ifsc_number,
+        success: function (response_data) {
+          if(response_data.status == "failure")
+          {
+            alert("Please enter correct IFSC number");
+            jQuery('#ifsc_number').val('')
+          }
+          else if(response_data.status == "success")
+          {
+            merge_bank_string = response_data.bank_name + " " + "," + response_data.branch
+            alert("success")
+            jQuery('#bank_name_and_branch').val(merge_bank_string)
+          }
+        }
+      });
+    }
+  }
   
 = render :partial => "layouts/left_hand_navigation", :locals => { :links => settings_links_for(@current_user, @current_community) }
 
@@ -13,13 +42,13 @@
     = form.text_field :first_name, :class => "auto_width", :size => 30, :required => "required"
 
     = form.label :ifsc_number, t(".ifsc_number"), :class => "input"
-    = form.text_field :ifsc_number, :class => "auto_width", :required => "required"
+    = form.text_field :ifsc_number, :class => "auto_width", :required => "required", :onblur => "check_ifsc_number();"
 
     = form.label :account_number, t(".account_number"), :class => "input"
     = form.text_field :account_number, :class => "auto_width", :required => "required"
     
     = form.label :bank_name_and_branch, t(".bank_name_and_branch"), :class => "input"
-    = form.text_field :bank_name_and_branch, :class => "auto_width", :size => 30, :required => "required"
+    = form.text_field :bank_name_and_branch, :class => "auto_width", :id =>"bank_name_and_branch", :size => 30, :required => "required"
 
     %br/
 
