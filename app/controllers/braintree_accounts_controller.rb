@@ -1,5 +1,5 @@
 class BraintreeAccountsController < ApplicationController
-   LIST_OF_STATES = [
+  LIST_OF_STATES = [
       ['Alabama', 'AL'],
       ['Alaska', 'AK'],
       ['Arizona', 'AZ'],
@@ -39,7 +39,7 @@ class BraintreeAccountsController < ApplicationController
       ['Oklahoma', 'OK'],
       ['Oregon', 'OR'],
       ['Pennsylvania', 'PA'],
-        ['West Virginia', 'WV'],
+      ['West Virginia', 'WV'],
       ['Wisconsin', 'WI'],
       ['Wyoming', 'WY']
     ]
@@ -70,7 +70,7 @@ class BraintreeAccountsController < ApplicationController
     redirect_to action: :new and return unless @current_user.braintree_account
     @braintree_account = BraintreeAccount.find_by_person_id(@current_user.id)
     render locals: { form_action: @update_path }
-end
+  end
 
   def create
     braintree_params = params.require(:braintree_account).permit(
@@ -87,8 +87,7 @@ end
       .merge(account_number: params[:braintree_account][:account_number])
       
     @braintree_account = BraintreeAccount.new(model_attributes)
-   
-   if @braintree_account.valid?
+    if @braintree_account.valid?
       @braintree_account.save
       redirect_to @show_path
     else
@@ -105,9 +104,9 @@ end
     braintree_account.bank_name_and_branch = params[:braintree_account][:bank_name_and_branch]
     braintree_account.save   
     if braintree_account.save   
-         redirect_to @show_path
+      redirect_to @show_path
     else
-         render :new, locals: { form_action: @create_path } and return
+      render :new, locals: { form_action: @create_path } and return
     end
   end
 
@@ -118,7 +117,7 @@ end
     braintree_account = BraintreeAccount.find_by_person_id(@current_user.id)
 
     unless braintree_account.blank?
-    #  flash[:error] = "Cannot create a new Braintree account. You already have one"
+      #flash[:error] = "Cannot create a new Braintree account. You already have one"
       redirect_to @show_path
     end
   end
@@ -131,16 +130,16 @@ end
 
     if @braintree_account
       # Braintree account exists
- if @braintree_account.community_id.present? && @braintree_account.community_id != @current_community.id
+     if @braintree_account.community_id.present? && @braintree_account.community_id != @current_community.id
         # ...but is associated to different community
-        account_community = Community.find(@braintree_account.community_id)
-        flash[:error] = "You have payment account for community #{account_community.name(I18n.locale)}. Unfortunately, you cannot have payment accounts for multiple communities. You are unable to receive money from transactions in community #{@current_community.name(I18n.locale)}. Please contact administrators."
+       account_community = Community.find(@braintree_account.community_id)
+       flash[:error] = "You have payment account for community #{account_community.name(I18n.locale)}. Unfortunately, you cannot have payment accounts for multiple communities. You are unable to receive money from transactions in community #{@current_community.name(I18n.locale)}. Please contact administrators."
 
-        error_msg = "User #{@current_user.id} tried to create a Braintree payment account for community #{@current_community.name(I18n.locale)} even though she has existing account for #{account_community.name(I18n.locale)}"
-        BTLog.error(error_msg)
-        ApplicationHelper.send_error_notification(error_msg, "BraintreePaymentAccountError")
-        redirect_to person_settings_path(@current_user)
-      end
+       error_msg = "User #{@current_user.id} tried to create a Braintree payment account for community #{@current_community.name(I18n.locale)} even though she has existing account for #{account_community.name(I18n.locale)}"
+       BTLog.error(error_msg)
+       ApplicationHelper.send_error_notification(error_msg, "BraintreePaymentAccountError")
+       redirect_to person_settings_path(@current_user)
+     end
     end
   end
 

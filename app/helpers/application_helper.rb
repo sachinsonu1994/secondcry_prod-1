@@ -770,13 +770,13 @@ module ApplicationHelper
         :path => account_person_settings_path(person) ,
         :name => "account"
       },
-       {
-         :id => "settings-tab-bank-details",
-         :text => t("layouts.settings.bank_details"),
-         :icon_class => icon_class("bank_details"),
-         :path => bank_details_person_settings_path(person),
-         :name => "bank_details"
-       },
+      {
+        :id => "settings-tab-bank-details",
+        :text => t("layouts.settings.bank_details"),
+        :icon_class => icon_class("bank_details"),
+        :path => bank_details_person_settings_path(person),
+        :name => "bank_details"
+      },
       {
         :id => "settings-tab-notifications",
         :text => t("layouts.settings.notifications"),

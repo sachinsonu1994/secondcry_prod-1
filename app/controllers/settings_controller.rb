@@ -72,7 +72,7 @@ class SettingsController < ApplicationController
     current_user || Maybe(AuthToken.find_by_token(auth_token)).person.or_else { nil }
   end
   
- def add_bank_details_to_person
+  def add_bank_details_to_person
     unless @person.bank
       @person.build_bank
     end
