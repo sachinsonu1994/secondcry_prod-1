@@ -26,7 +26,6 @@ ActiveRecord::Schema.define(version: 20160415073433) do
 
   add_index "auth_tokens", ["token"], name: "index_auth_tokens_on_token", unique: true, using: :btree
 
-  add_index "banks", ["person_id"], name: "index_banks_on_person_id", using: :btree
 
   create_table "billing_agreements", force: :cascade do |t|
     t.integer  "paypal_account_id",    limit: 4,   null: false
