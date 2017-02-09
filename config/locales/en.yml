@@ -1256,6 +1256,7 @@ en:
       inbox: Inbox
       settings: Settings
       feedback: "Contact us"
+      bank_details: Bank Details
     application:
       join_this_community: "Join marketplace"
       read_more: "Read more"
@@ -1436,6 +1437,7 @@ en:
       profile: "Profile info"
       settings: Settings
       payments: Payments
+      bank_details: Bank Details
   listings:
     bubble_listing_not_visible:
       listing_not_visible: "You do not have permission to view this listing."
