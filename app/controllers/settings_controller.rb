@@ -71,7 +71,7 @@ class SettingsController < ApplicationController
   def find_person_to_unsubscribe(current_user, auth_token)
     current_user || Maybe(AuthToken.find_by_token(auth_token)).person.or_else { nil }
   end
-  
+ 
   def add_bank_details_to_person
     unless @person.bank
       @person.build_bank

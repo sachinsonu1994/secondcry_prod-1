@@ -4,10 +4,11 @@
 :javascript
   function check_ifsc_number(){
     var ifsc_number = jQuery('#ifsc_number').val()
-    if (ifsc_number.length != 11)
+    if (ifsc_number.length != 11 && ifsc_number.length != 0)
     { 
       alert("Please enter correct IFSC number")
       jQuery('#ifsc_number').val('')
+      jQuery('#btn_submit').attr('disabled',true);
     }
     if (ifsc_number.length == 11)
     {
@@ -22,7 +23,6 @@
           else if(response_data.status == "success")
           {
             merge_bank_string = response_data.bank_name + "," + "  "+ response_data.branch
-            alert("success")
             jQuery('#bank_name_and_branch').val(merge_bank_string)
           }
         }

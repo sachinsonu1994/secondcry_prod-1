@@ -65,23 +65,14 @@ class BraintreeAccountsController < ApplicationController
   def check_ifsc_code
     response_hash = Hash.new
     if !params[:ifsc_code].blank?
-      log = Logger.new(STDOUT)
-      log.level = Logger::INFO
-      log.info(params[:ifsc_code])
       uri = URI("https://ifsc.razorpay.com/#{params[:ifsc_code]}")
       response = Net::HTTP.get(uri)
-      log.info(response)
       if response.include?('Not Found')
         response_hash[:status] = "failure"
       else
         api_response = JSON.parse(response)
         response_hash[:bank_name] = api_response["BANK"]
-        #@ifsc = api_response["IFSC"]
         response_hash[:branch] = api_response["BRANCH"]
-        #response_hash[:address] = api_response["ADDRESS"]
-        #response_hash[:city] = api_response["CITY"]
-        #response_hash[:state] = api_response["STATE"]
-        #response_hash[:district] = api_response["DISTRICT"]
         response_hash[:status] = "success"
       end
     end
@@ -162,7 +153,6 @@ class BraintreeAccountsController < ApplicationController
         # ...but is associated to different community
        account_community = Community.find(@braintree_account.community_id)
        flash[:error] = "You have payment account for community #{account_community.name(I18n.locale)}. Unfortunately, you cannot have payment accounts for multiple communities. You are unable to receive money from transactions in community #{@current_community.name(I18n.locale)}. Please contact administrators."
-
        error_msg = "User #{@current_user.id} tried to create a Braintree payment account for community #{@current_community.name(I18n.locale)} even though she has existing account for #{account_community.name(I18n.locale)}"
        BTLog.error(error_msg)
        ApplicationHelper.send_error_notification(error_msg, "BraintreePaymentAccountError")
