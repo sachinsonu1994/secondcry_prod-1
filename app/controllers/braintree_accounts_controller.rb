@@ -78,10 +78,10 @@ class BraintreeAccountsController < ApplicationController
         response_hash[:bank_name] = api_response["BANK"]
         #@ifsc = api_response["IFSC"]
         response_hash[:branch] = api_response["BRANCH"]
-        response_hash[:address] = api_response["ADDRESS"]
-        response_hash[:city] = api_response["CITY"]
-        response_hash[:state] = api_response["STATE"]
-        response_hash[:district] = api_response["DISTRICT"]
+        #response_hash[:address] = api_response["ADDRESS"]
+        #response_hash[:city] = api_response["CITY"]
+        #response_hash[:state] = api_response["STATE"]
+        #response_hash[:district] = api_response["DISTRICT"]
         response_hash[:status] = "success"
       end
     end
