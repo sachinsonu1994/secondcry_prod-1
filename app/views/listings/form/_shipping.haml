@@ -1,3 +1,5 @@
+= render partial: "layouts/info_text", locals: { text: t("listings.form.price.commission") }
+
 - if shape[:shipping_enabled]
   .delivery-options-container
     = field_set_tag t("listings.form.price.delivery"), class: "delivery-title" do
