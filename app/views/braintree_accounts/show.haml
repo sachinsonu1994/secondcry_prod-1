@@ -3,7 +3,6 @@
 
 :javascript
   function check_ifsc_number(){
-    jQuery("#bank_detail").attr('disabled',true);
     var ifsc_number = jQuery('#ifsc_number').val()
     if (ifsc_number.length != 11 && ifsc_number.length != 0)
     { 
@@ -12,22 +11,29 @@
     }
     if (ifsc_number.length == 11)
     {
-      
+      jQuery('#bank_detail').html('Please wait....');
+      jQuery("#bank_detail").attr('disabled',true);
       jQuery.ajax({
         url: '/braintree_accounts/check_ifsc_code?ifsc_code='+ ifsc_number,
         success: function (response_data) {
           if(response_data.status == "failure")
           {
             alert("Please enter correct IFSC number");
-            jQuery('#ifsc_number').val('')
-            jQuery("#verify-msg").html(" ");
+            jQuery('#ifsc_number').val('');
+            jQuery('#account_number').val('');
+            jQuery('#bank_detail').html('Update');
+            jQuery('#verify-msg').html(" ");
+            jQuery("#bank_detail").attr('disabled',false);
           }
           else if(response_data.status == "success")
           {
+            jQuery('#bank_detail').html('Please wait....');
             merge_bank_string = response_data.bank_name + "," + "  "+ response_data.branch
             jQuery('#bank_name_and_branch').val(merge_bank_string)
-            jQuery("#verify-msg").html(" ");
+            jQuery('#verify-msg').html(" ");
             jQuery("#bank_detail").attr('disabled',false);
+            jQuery('#account_number').val('');
+            jQuery('#bank_detail').html('Update'); 
           }
         },
            
@@ -36,7 +42,7 @@
         },
             
         beforeSend : function() {
-          jQuery("#verify-msg").html("Verifying.....");
+          jQuery('#verify-msg').html("Verifying.....");
         }
       });
     }
@@ -59,7 +65,7 @@
     %span#verify-msg
 
     = form.label :account_number, t(".account_number"), :class => "input"
-    = form.number_field :account_number, :class => "auto_width", :required => "required"
+    = form.number_field :account_number, :class => "auto_width", :id => "account_number", :required => "required"
     
     = form.label :bank_name_and_branch, t(".bank_name_and_branch"), :class => "input"
     = form.text_area :bank_name_and_branch, :class => "auto_width", :id =>"bank_name_and_branch", :size => 30, :required => "required", :readonly => true, :style => "width: 35%"

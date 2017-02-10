@@ -3,16 +3,16 @@
   
 :javascript
   function check_ifsc_number(){
-    jQuery("#bank_detail").attr('disabled',true);
     var ifsc_number = jQuery('#ifsc_number').val()
     if (ifsc_number.length != 11 && ifsc_number.length != 0)
     { 
       alert("Please enter correct IFSC number")
-      jQuery('#ifsc_number').val('')
-      jQuery('#btn_submit').attr('disabled',true);
+      jQuery('#ifsc_number').val('') 
     }
     if (ifsc_number.length == 11)
     {
+      jQuery('#bank_detail').html('Please wait....');
+      jQuery("#bank_detail").attr('disabled',true);
       jQuery.ajax({
         url: '/braintree_accounts/check_ifsc_code?ifsc_code='+ ifsc_number,
         success: function (response_data) {
@@ -20,13 +20,18 @@
           {
             alert("Please enter correct IFSC number");
             jQuery('#ifsc_number').val('')
+            jQuery('#bank_detail').html('Save');
+            jQuery('#verify-msg').html(" ");
+            jQuery("#bank_detail").attr('disabled',false);
           }
           else if(response_data.status == "success")
           {
+            jQuery('#bank_detail').html('Please wait....');
             merge_bank_string = response_data.bank_name + "," + "  "+ response_data.branch
             jQuery('#bank_name_and_branch').val(merge_bank_string)
-            jQuery("#verify-msg").html(" ");
-            jQuery("#bank_detail").attr('disabled',false);
+            jQuery('#verify-msg').html(" ");
+            jQuery('#bank_detail').attr('disabled',false);
+            jQuery('#bank_detail').html('Save'); 
           }
         },
         error: function(response_data) {
@@ -34,7 +39,7 @@
         },
             
         beforeSend : function() {
-          jQuery("#verify-msg").html("Verifying.....");
+          jQuery('#verify-msg').html("Verifying.....");
         }
       });
     }
