@@ -1,45 +1,53 @@
 #footer
   = image_tag 'footer.png', style: "bottom:0; width: 100%; position: absolute; z-index: -1"
   .row
-    .col-2
-    .col-2
+    .col-3
+    .col-4
       .about-us 
         .title
-          Information
+          About us
         .content
-          %a{:href=>"/"} Home
+          = link_to "/" do
+            = icon_tag("home", ["icon-with-text"])
+            = t("header.home")
           %br
-          %a{:href=>"/en/infos/about"} About us
+          = link_to "/info/" do
+            = icon_tag("information", ["icon-with-text"])
+            = t("header.how_it_works")
           %br
-          %a{:href=>"/en/invitations/new"} Invite new members
-    .col-2
-      .about-us 
-        .title
-          Contact us
-        .content
-          %a{:href=>"mailto:secondcry.com@gmail.com", :target=>"_blank"} E-Mail
+          = link_to privacy_infos_path do
+            = icon_tag("lock", ["icon-with-text"])
+            Privacy Policy
           %br
-          %a{:href=>"tel:+91-8095117799"} Mobile
+          = link_to terms_infos_path do
+            = icon_tag("terms", ["icon-with-text"])
+            = t("layouts.infos.terms")
           %br
-          %a{:href=>"/en/user_feedbacks/new"} Online feedback
-    .col-2
+          = link_to new_user_feedback_path do
+            = icon_tag("feedback", ["icon-with-text"])
+            = t("header.contact_us")
+    .col-4
       .about-us
         .title
           My Account
         .content
-          %a{:href=>"/en/my/inbox"} Messages
+          = link_to "/en/my/inbox" do
+            = icon_tag("mail", ["icon-with-text"])
+            = t("layouts.conversations.messages")
+          - if @current_user && @current_community
+            %br
+            = link_to person_path(@current_user, :show_closed => true) do
+              = icon_tag("list", ["icon-with-text"])
+              = t("footer.manage_listings")
+            %br
+            = link_to person_settings_path(@current_user) do
+              = icon_tag("settings", ["icon-with-text"])
+              = t("layouts.logged_in.settings")
           %br
-          Profile
+          = link_to new_invitation_path do
+            = icon_tag("invite", ["icon-with-text"])
+            = t("header.invite")
           %br
-          Manage Listings
-          %br
-          Settings
-    .col-3
-      .about-us 
-        .title
-          Facebook group
-        .content
-          .fb-page{:data => {:href=>"https://www.facebook.com/Secondcry-383832128455555", :width=>"280", :small_header=>"false", :adapt_container_width=>"true", :hide_cover=>"true", :show_facepile=>"true"}}
           %br
           %br
           %br
