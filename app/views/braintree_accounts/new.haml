@@ -3,6 +3,7 @@
   
 :javascript
   function check_ifsc_number(){
+    jQuery("#bank_detail").attr('disabled',true);
     var ifsc_number = jQuery('#ifsc_number').val()
     if (ifsc_number.length != 11 && ifsc_number.length != 0)
     { 
@@ -24,8 +25,17 @@
           {
             merge_bank_string = response_data.bank_name + "," + "  "+ response_data.branch
             jQuery('#bank_name_and_branch').val(merge_bank_string)
+            jQuery("#verify-msg").html(" ");
+            jQuery("#bank_detail").attr('disabled',false);
           }
-        }
+        },
+        error: function(response_data) {
+            alert("Something went wrong, Please contact us.")
+            },
+            
+            beforeSend : function() {
+            jQuery("#verify-msg").html("Verifying.....");
+            }
       });
     }
   }
@@ -43,17 +53,19 @@
 
     = form.label :ifsc_number, t(".ifsc_number"), :class => "input"
     = form.text_field :ifsc_number, :class => "auto_width", :id => "ifsc_number", :required => "required", :onblur => "check_ifsc_number();"
+    
+    %span#verify-msg
 
     = form.label :account_number, t(".account_number"), :class => "input"
     = form.number_field :account_number, :class => "auto_width", :required => "required"
     
     = form.label :bank_name_and_branch, t(".bank_name_and_branch"), :class => "input"
-    = form.text_area :bank_name_and_branch, :class => "auto_width", :readonly => true, :id =>"bank_name_and_branch", :size => 30, :required => "required", :style => "width: 39%"
+    = form.text_area :bank_name_and_branch, :class => "auto_width", :readonly => true, :id =>"bank_name_and_branch", :size => 30, :required => "required", :style => "width: 35%"
     
     
 
     %br/
 
-    = form.button t(".save"), :class => "send_button"
+    = form.button t(".save"), :class => "send_button", :id => "bank_detail"
 
   %br/

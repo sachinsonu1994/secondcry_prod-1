@@ -103,7 +103,6 @@ class BraintreeAccountsController < ApplicationController
     model_attributes = braintree_params
       .merge(person: @current_user)
       .merge(community_id: @current_community.id)
-      .merge(account_number: params[:braintree_account][:account_number])
       
     @braintree_account = BraintreeAccount.new(model_attributes)
     if @braintree_account.valid?
