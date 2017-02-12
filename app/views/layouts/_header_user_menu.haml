@@ -8,10 +8,6 @@
       .mobile-badge{:class => get_badge_class(unread_count)}
         = unread_count
 
-  = link_to person_path(user) do
-    = icon_tag("user", ["icon-with-text"])
-    = t("header.profile")
-
   = link_to person_path(user, :show_closed => true) do
     = icon_tag("list", ["icon-with-text"])
     = t("header.manage_listings")

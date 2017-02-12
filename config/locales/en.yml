@@ -1116,6 +1116,7 @@ en:
       request_partitive: request
   header:
     about: About
+    how_it_works: How it works
     home: Home
     members: Community
     new_listing: "New listing"
@@ -1274,7 +1275,7 @@ en:
       join_without_facebook: "...or alternatively %{join_without_facebook_link}"
       join_without_facebook_link: "sign up without using Facebook"
     conversations:
-      messages: Messages
+      messages: Inbox
       notifications: Notifications
       received: Received
       sent: Sent
@@ -1518,6 +1519,7 @@ en:
       location:
         location: Location
       price:
+        commission: "Please note that 10% of this price will be deducted by SecondCry towards payment gateway, handling and shipping across India."
         price: Price
         per: per
         per_day: "per day"
@@ -1842,6 +1844,7 @@ en:
         other: "The access to %{service_name} is restricted. You need an email address that proves that you are entitled to join."
       family_name: "Last name"
       given_name: "First name"
+      phone_number: "Phone Number"
       i_accept_the: "I accept the"
       invalid_invitation_code: "The invitation code is not valid."
       invitation_code: "Invitation code"
