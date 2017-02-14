@@ -5,9 +5,9 @@
   function check_ifsc_number(){
     var ifsc_number = jQuery('#ifsc_number').val()
     if (ifsc_number.length != 11 && ifsc_number.length != 0)
-    { 
+    {
       alert("Please enter correct IFSC number");
-      jQuery('#ifsc_number').val('')
+      jQuery('#ifsc_number').val('');
     }
     if (ifsc_number.length == 11)
     {
@@ -33,21 +33,21 @@
             jQuery('#verify-msg').html(" ");
             jQuery("#bank_detail").attr('disabled',false);
             jQuery('#account_number').val('');
-            jQuery('#bank_detail').html('Update'); 
+            jQuery('#bank_detail').html('Update');
           }
         },
-           
+
         error: function(response_data) {
           alert("Something went wrong, Please contact us.")
         },
-            
+
         beforeSend : function() {
           jQuery('#verify-msg').html("Verifying.....");
         }
       });
     }
   }
-    
+
 = render :partial => "layouts/left_hand_navigation", :locals => { :links => settings_links_for(@current_user, @current_community) }
 
 .left-navi-section.settings-section
@@ -61,12 +61,12 @@
 
     = form.label :ifsc_number, t(".ifsc_number"), :class => "input"
     = form.text_field :ifsc_number, :class => "auto_width", :required => "required", :id => "ifsc_number", :onblur => "check_ifsc_number();"
-    
+
     %span#verify-msg
 
     = form.label :account_number, t(".account_number"), :class => "input"
     = form.number_field :account_number, :class => "auto_width", :id => "account_number", :required => "required"
-    
+
     = form.label :bank_name_and_branch, t(".bank_name_and_branch"), :class => "input"
     = form.text_area :bank_name_and_branch, :class => "auto_width", :id =>"bank_name_and_branch", :size => 30, :required => "required", :readonly => true, :style => "width: 35%"
 

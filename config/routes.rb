@@ -108,8 +108,8 @@ Kassi::Application.routes.draw do
     get '/:person_id/settings/bank_details' => 'braintree_accounts#new', :as => :new_braintree_settings_payment
     get '/:person_id/settings/bank_details/show' => 'braintree_accounts#show', :as => :show_braintree_settings_payment
     post '/:person_id/settings/bank_details/create' => 'braintree_accounts#create', :as => :create_braintree_settings_payment
-    get '/:person_id/settings/payments/paypal_account' => 'paypal_accounts#index', :as => :paypal_account_settings_payment
     post '/:person_id/settings/bank_details/update' => 'braintree_accounts#update', :as => :update_braintree_settings_payment
+    get '/:person_id/settings/payments/paypal_account' => 'paypal_accounts#index', :as => :paypal_account_settings_payment
 
     namespace :paypal_service do
       resources :checkout_orders do

@@ -1,6 +1,6 @@
 class BraintreeAccountsController < ApplicationController
   require 'net/http'
-  
+
   before_filter do |controller|
     controller.ensure_logged_in t("layouts.notifications.you_must_log_in_to_change_payment_settings")
   end
@@ -15,6 +15,7 @@ class BraintreeAccountsController < ApplicationController
 
   # New/create
   before_filter :ensure_user_does_not_have_account, :only => [:new, :create]
+
   before_filter :ensure_user_does_not_have_account_for_another_community
 
   def check_ifsc_code
@@ -33,15 +34,17 @@ class BraintreeAccountsController < ApplicationController
     end
     render :json => response_hash.to_json, :callback => params[:callback]
   end
-  
+
   def new
     redirect_to action: :show and return if @current_user.braintree_account
+
     @braintree_account = create_new_account_object
     render locals: { form_action: @create_path }
   end
 
   def show
     redirect_to action: :new and return unless @current_user.braintree_account
+
     @braintree_account = BraintreeAccount.find_by_person_id(@current_user.id)
     render locals: { form_action: @update_path }
   end
@@ -52,7 +55,7 @@ class BraintreeAccountsController < ApplicationController
       :first_name,
       :ifsc_number,
       :account_number,
-      :bank_name_and_branch   
+      :bank_name_and_branch
     )
 
     model_attributes = braintree_params
@@ -61,8 +64,15 @@ class BraintreeAccountsController < ApplicationController
 
     @braintree_account = BraintreeAccount.new(model_attributes)
     if @braintree_account.valid?
-      @braintree_account.save!
-      redirect_to @show_path
+      success = @braintree_account.save
+      if success
+        flash[:notice] = t("layouts.notifications.payment_details_add_successful")
+        redirect_to @show_path
+      else
+        flash[:error] = t("layouts.notifications.payment_details_add_error")
+        @braintree_account.destroy
+        render :new, locals: { form_action: @create_path } and return
+      end
     else
       flash[:error] = @braintree_account.errors.full_messages
       render :new, locals: { form_action: @create_path } and return
@@ -75,10 +85,12 @@ class BraintreeAccountsController < ApplicationController
     braintree_account.account_number = params[:braintree_account][:account_number]
     braintree_account.ifsc_number = params[:braintree_account][:ifsc_number]
     braintree_account.bank_name_and_branch = params[:braintree_account][:bank_name_and_branch]
-    braintree_account.save   
-    if braintree_account.save   
+    success = braintree_account.save
+    if success
+      flash[:notice] = t("layouts.notifications.payment_details_update_successful")
       redirect_to @show_path
     else
+      flash[:error] = t("layouts.notifications.payment_details_add_error")
       render :new, locals: { form_action: @create_path } and return
     end
   end
@@ -107,6 +119,7 @@ class BraintreeAccountsController < ApplicationController
         # ...but is associated to different community
         account_community = Community.find(@braintree_account.community_id)
         flash[:error] = "You have payment account for community #{account_community.name(I18n.locale)}. Unfortunately, you cannot have payment accounts for multiple communities. You are unable to receive money from transactions in community #{@current_community.name(I18n.locale)}. Please contact administrators."
+
         error_msg = "User #{@current_user.id} tried to create a Braintree payment account for community #{@current_community.name(I18n.locale)} even though she has existing account for #{account_community.name(I18n.locale)}"
         BTLog.error(error_msg)
         ApplicationHelper.send_error_notification(error_msg, "BraintreePaymentAccountError")
