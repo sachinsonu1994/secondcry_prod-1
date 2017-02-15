@@ -1,67 +1,48 @@
-- content_for :javascript do
+-content_for :javascript do
   initialize_braintree_account_form("#{I18n.locale}");
-
+  
 :javascript
-  function reset_ifsc_form() {
-    jQuery('#braintree_account_ifsc_number').val('');
-    jQuery('#braintree_account_bank_name_and_branch').val('');
-    jQuery('#braintree_account_account_number').val('');
-  }
-
-  function displayMore(isShown) {
-    if (isShown) {
-      jQuery('#bank_name_and_branch_label').show();
-      jQuery('#braintree_account_bank_name_and_branch').show();
-      jQuery('#account_number_label').show();
-      jQuery('#braintree_account_account_number').show();
-      jQuery('button[type="submit"]').html("Save");
-    } else {
-      jQuery('#bank_name_and_branch_label').hide();
-      jQuery('#braintree_account_bank_name_and_branch').hide();
-      jQuery('#account_number_label').hide();
-      jQuery('#braintree_account_account_number').hide();
-      jQuery('button[type="submit"]').html("Fetch Bank Details");
+  function check_ifsc_number(){
+    var ifsc_number = jQuery('#ifsc_number').val()
+    if (ifsc_number.length != 11 && ifsc_number.length != 0)
+    { 
+      alert("Please enter correct IFSC number")
+      jQuery('#ifsc_number').val('') 
     }
-  }
-
-  function check_ifsc_number(event) {
-    var ifsc_number = jQuery('#braintree_account_ifsc_number').val();
-    if (ifsc_number.length != 11)
+    if (ifsc_number.length == 11)
     {
-      return false;
-    }
-
-    jQuery.ajax({
-      url: "/braintree_accounts/check_ifsc_code?ifsc_code=" + encodeURIComponent(ifsc_number),
-
-      success: function (response_data) {
-        jQuery('#verify-msg').hide();
-        if(response_data.status == "success")
-        {
-          merge_bank_string = response_data.bank_name + ",\n" + response_data.branch;
-          jQuery('#braintree_account_bank_name_and_branch').val(merge_bank_string);
-          displayMore(true);
-        } else {
-          reset_ifsc_form();
-          displayMore(false);
-          alert("Please enter valid IFSC code.");
+      jQuery('#bank_detail').html('Please wait....');
+      jQuery("#bank_detail").attr('disabled',true);
+      jQuery.ajax({
+        url: '/braintree_accounts/check_ifsc_code?ifsc_code='+ ifsc_number,
+        success: function (response_data) {
+          if(response_data.status == "failure")
+          {
+            alert("Please enter correct IFSC number");
+            jQuery('#ifsc_number').val('')
+            jQuery('#bank_detail').html('Save');
+            jQuery('#verify-msg').html(" ");
+            jQuery("#bank_detail").attr('disabled',false);
+          }
+          else if(response_data.status == "success")
+          {
+            jQuery('#bank_detail').html('Please wait....');
+            merge_bank_string = response_data.bank_name + "," + "  "+ response_data.branch
+            jQuery('#bank_name_and_branch').val(merge_bank_string)
+            jQuery('#verify-msg').html(" ");
+            jQuery('#bank_detail').attr('disabled',false);
+            jQuery('#bank_detail').html('Save'); 
+          }
+        },
+        error: function(response_data) {
+            alert("Something went wrong, Please contact us.")
+        },
+            
+        beforeSend : function() {
+          jQuery('#verify-msg').html("Verifying.....");
         }
-      },
-
-      error: function(response_data) {
-        jQuery('#verify-msg').hide();
-        reset_ifsc_form();
-        displayMore(false);
-        alert("Server error. Please try again later.");
-      },
-
-      beforeSend : function() {
-        jQuery('#verify-msg').html("Fetching details...").show();
-      }
-    });
-    event.preventDefault();
-    event.stopPropagation();
-    return false;
+      });
+    }
   }
 
 = render :partial => "layouts/left_hand_navigation", :locals => { :links => settings_links_for(@current_user, @current_community) }
@@ -70,22 +51,26 @@
 
   %h2= t(".add_payout_details")
 
-  = form_for @braintree_account, :url => form_action, :html => {:method => "post", :id => "braintree_account_form"} do |form|
+  = form_for @braintree_account, :url => form_action, :html => { :id => "braintree_account_form"} do |form|
 
     = form.label :first_name, t(".first_name"), :class => "input"
-    = form.text_field :first_name, :class => "auto_width", :size => 30
+    = form.text_field :first_name, :class => "auto_width", :size => 30, :required => "required"
 
     = form.label :ifsc_number, t(".ifsc_number"), :class => "input"
-    = form.text_field :ifsc_number, :class => "auto_width"
-
+    = form.text_field :ifsc_number, :class => "auto_width", :id => "ifsc_number", :required => "required", :onblur => "check_ifsc_number();"
+    
     %span#verify-msg
 
-    = form.label :bank_name_and_branch, t(".bank_name_and_branch"), :class => "input", :id => "bank_name_and_branch_label", :hidden => true
-    = form.text_area :bank_name_and_branch, :class => "auto_width", :readonly => true, :style => "width: 50%; height: 50%;", :hidden => true
-
-    = form.label :account_number, t(".account_number"), :class => "input", :id => "account_number_label", :hidden => true
-    = form.text_field :account_number, :class => "auto_width", :size => 17, :hidden => true
+    = form.label :account_number, t(".account_number"), :class => "input"
+    = form.number_field :account_number, :class => "auto_width", :required => "required"
+    
+    = form.label :bank_name_and_branch, t(".bank_name_and_branch"), :class => "input"
+    = form.text_area :bank_name_and_branch, :class => "auto_width", :readonly => true, :id =>"bank_name_and_branch", :size => 30, :required => "required", :style => "width: 35%"
+    
+    
 
     %br/
 
-    = form.button "Fetch Bank Details", :class => "send_button", :onclick => "check_ifsc_number();"
+    = form.button t(".save"), :class => "send_button", :id => "bank_detail"
+
+  %br/
