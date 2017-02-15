@@ -266,9 +266,8 @@ function initialize_braintree_account_form(locale) {
   var form_id = "#braintree_account_form";
   $(form_id).validate({
     rules: {
-      "braintree_account[ifsc_number]": {required: true},
-      "braintree_account[account_number]": {required: true},
-      "braintree_account[bank_name_and_branch]": {required: true}
+      "braintree_account[first_name]": {required: true},
+      "braintree_account[ifsc_number]": {required: true, minlength: 11, maxlength: 11}
     },
     messages: {
     },

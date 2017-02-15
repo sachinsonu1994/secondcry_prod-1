@@ -35,4 +35,5 @@ class BraintreeAccount < ActiveRecord::Base
   validates_presence_of :first_name
   validates_presence_of :ifsc_number
   validates_presence_of :account_number
+  validates_presence_of :bank_name_and_branch
 end

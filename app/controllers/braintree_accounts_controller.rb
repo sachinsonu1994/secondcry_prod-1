@@ -85,14 +85,19 @@ class BraintreeAccountsController < ApplicationController
     braintree_account.account_number = params[:braintree_account][:account_number]
     braintree_account.ifsc_number = params[:braintree_account][:ifsc_number]
     braintree_account.bank_name_and_branch = params[:braintree_account][:bank_name_and_branch]
-    success = braintree_account.save
-    if success
-      flash[:notice] = t("layouts.notifications.payment_details_update_successful")
-      redirect_to @show_path
+
+    if braintree_account.valid?
+      success = braintree_account.save
+      if success
+        flash[:notice] = t("layouts.notifications.payment_details_update_successful")
+      else
+        flash[:error] = t("layouts.notifications.payment_details_update_error")
+      end
     else
-      flash[:error] = t("layouts.notifications.payment_details_add_error")
-      render :new, locals: { form_action: @create_path } and return
+      flash[:error] = @braintree_account.errors.full_messages
     end
+
+    redirect_to @show_path
   end
 
   private
@@ -142,7 +147,7 @@ class BraintreeAccountsController < ApplicationController
   def create_new_account_object
     person = @current_user
     person_details = {
-      first_name: person.given_name,
+      first_name: "#{person.given_name} #{person.family_name}",
       last_name: person.family_name,
       email: person.confirmed_notification_email_to, # Our best guess for "primary" email
       phone: person.phone_number

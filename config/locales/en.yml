@@ -1428,6 +1428,7 @@ en:
       payment_details_add_successful: "Successfully added payment details"
       payment_details_update_successful: "Successfully updated payment details"
       payment_details_add_error: "Could not add payment details"
+      payment_details_update_error: "Could not update payment details"
       listing_author_payment_details_missing: "Please contact the author by pressing the 'Contact' button below. They need to update their payment details to receive payments."
       stylesheet_needs_recompiling: "Stylesheet is recompiling. Please, reload the page after a while."
     settings:
