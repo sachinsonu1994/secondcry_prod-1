@@ -784,6 +784,7 @@ en:
       ifsc_number: "IFSC Code"
       account_number: "Account Number"
       bank_name_and_branch: "Bank Name and Branch"
+      invalid_account_number_error: "Invalid account number. Please refer your bank records."
       save: Save
     show:
       payout_details: "Your payout details"
@@ -801,6 +802,7 @@ en:
       ifsc_number: "IFSC Code"
       account_number: "Account Number"
       bank_name_and_branch: "Bank Name and Branch"
+      invalid_account_number_error: "Invalid account number. Refresh the page to get back your original value."
       save: Update
   braintree_payments:
     edit:

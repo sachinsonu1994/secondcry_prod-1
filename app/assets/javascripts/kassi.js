@@ -262,16 +262,17 @@ function initialize_payments_form(locale) {
   });
 }
 
-function initialize_braintree_account_form(locale) {
+function initialize_braintree_account_form(locale, invalid_account_number_error) {
   var form_id = "#braintree_account_form";
   $(form_id).validate({
     rules: {
       "braintree_account[first_name]": {required: true},
       "braintree_account[ifsc_number]": {required: true, minlength: 11, maxlength: 11},
-      "braintree_account[account_number]": {required :true},
+      "braintree_account[account_number]": {required :true, regex: "^([a-zA-Z0-9]+)?$"},
       "braintree_account[bank_name_and_branch]": {required: true}
     },
     messages: {
+      "braintree_account[account_number]" : {regex : invalid_account_number_error}
     },
     onkeyup: false, //Only do validations when form focus changes
     submitHandler: function(form) {

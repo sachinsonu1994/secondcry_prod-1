@@ -1,25 +1,17 @@
 - content_for :javascript do
-  initialize_braintree_account_form("#{I18n.locale}");
+  initialize_braintree_account_form("#{I18n.locale}", "#{t('.invalid_account_number_error')}");
 
 :javascript
-  function reset_ifsc_form() {
-    jQuery('#braintree_account_bank_name_and_branch').val('');
-  }
-
   function displayMore(isShown) {
     if (isShown) {
+      jQuery("#fetch_bank_detail_button").hide();
       jQuery('#bank_name_and_branch_label').show();
       jQuery('#braintree_account_bank_name_and_branch').show();
-      jQuery("#fetch_bank_detail_button").hide();
-      jQuery('#fetch_bank_detail_button').html('Fetch Bank Details');
-      jQuery("#fetch_bank_detail_button").attr('disabled',false);
       jQuery('button[type="submit"]').show();
     } else {
+      jQuery('#fetch_bank_detail_button').attr('disabled', false).html('Fetch Bank Details').show();
       jQuery('#bank_name_and_branch_label').hide();
-      jQuery('#braintree_account_bank_name_and_branch').hide();
-      jQuery('#fetch_bank_detail_button').html('Fetch Bank Details');
-      jQuery("#fetch_bank_detail_button").attr('disabled',false);
-      jQuery("#fetch_bank_detail_button").show();
+      jQuery('#braintree_account_bank_name_and_branch').val('').hide();
       jQuery('button[type="submit"]').hide();
     }
   }
@@ -31,10 +23,11 @@
       alert("Please enter valid IFSC number");
       return false;
     }
-    jQuery('#fetch_bank_detail_button').html('Please wait...');
-    jQuery("#fetch_bank_detail_button").attr('disabled',true);
+
+    jQuery('#fetch_bank_detail_button').html('Please wait...').attr('disabled', true);
     jQuery.ajax({
       url: "/braintree_accounts/check_ifsc_code?ifsc_code=" + encodeURIComponent(ifsc_number),
+
       success: function (response_data) {
         jQuery('#verify-msg').hide();
         if(response_data.status == "success")
@@ -43,7 +36,6 @@
           jQuery('#braintree_account_bank_name_and_branch').val(merge_bank_string);
           displayMore(true);
         } else {
-          reset_ifsc_form();
           displayMore(false);
           alert("Please enter valid IFSC code.");
         }
@@ -51,7 +43,6 @@
 
       error: function(response_data) {
         jQuery('#verify-msg').hide();
-        reset_ifsc_form();
         displayMore(false);
         alert("Server error. Please try again later.");
       },
@@ -61,24 +52,11 @@
       }
     });
   }
-  
-  function check_ifsc_code_after_fetch()
+
+  function before_ifsc_code_edit()
   {
-    reset_ifsc_form();
     displayMore(false);
   }
-  
-    function prevent_special_char()
-  {
-    var account_number = jQuery('#account_number').val();
-    special_char = /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi;
-    var isSplChar = special_char.test(account_number);
-    if(isSplChar)
-    {
-      var no_spl_char = account_number.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
-      jQuery('#account_number').val(no_spl_char);
-    }
-  } 
 
 = render :partial => "layouts/left_hand_navigation", :locals => { :links => settings_links_for(@current_user, @current_community) }
 
@@ -92,20 +70,18 @@
     = form.text_field :first_name, :class => "auto_width", :size => 30
     
     = form.label :account_number, t(".account_number"), :class => "input", :id => "account_number_label"
-    = form.text_field :account_number, :class => "auto_width", :size => 17, :maxlength => 20, :id => "account_number", :onkeyup => "prevent_special_char();"
+    = form.text_field :account_number, :class => "auto_width", :size => 20, :maxlength => 20, :id => "account_number"
 
     = form.label :ifsc_number, t(".ifsc_number"), :class => "input"
-    = form.text_field :ifsc_number, :class => "auto_width", :maxlength => 11, :style => "width: 31%", :onfocus => "check_ifsc_code_after_fetch();"
-    
+    = form.text_field :ifsc_number, :class => "auto_width", :size => 20, :maxlength => 11, :onfocus => "before_ifsc_code_edit();"
+
     %span#verify-msg
 
-    %button{:onclick => "check_ifsc_number()", :type => "button", :id => "fetch_bank_detail_button", :style => "display:none"} Fetch Bank Details
+    %button{:onclick => "check_ifsc_number()", :type => "button", :hidden => true, :id => "fetch_bank_detail_button"} Fetch Bank Details
 
     = form.label :bank_name_and_branch, t(".bank_name_and_branch"), :class => "input", :id => "bank_name_and_branch_label"
     = form.text_area :bank_name_and_branch, :class => "auto_width", :readonly => true, :style => "width: 50%; height: 50%;"
 
-
-
     %br/
 
-    = form.button "Save", :class => "send_button"
+    = form.button t(".save"), :class => "send_button"
