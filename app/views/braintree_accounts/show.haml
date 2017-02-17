@@ -1,80 +1,87 @@
+- content_for :javascript do
+  initialize_braintree_account_form("#{I18n.locale}", "#{t('.invalid_account_number_error')}");
+
+:javascript
+  function displayMore(isShown) {
+    if (isShown) {
+      jQuery("#fetch_bank_detail_button").hide();
+      jQuery('#bank_name_and_branch_label').show();
+      jQuery('#braintree_account_bank_name_and_branch').show();
+      jQuery('button[type="submit"]').show();
+    } else {
+      jQuery('#fetch_bank_detail_button').attr('disabled', false).html('Fetch Bank Details').show();
+      jQuery('#bank_name_and_branch_label').hide();
+      jQuery('#braintree_account_bank_name_and_branch').val('').hide();
+      jQuery('button[type="submit"]').hide();
+    }
+  }
+
+  function check_ifsc_number() {
+    var ifsc_number = jQuery('#braintree_account_ifsc_number').val();
+    if (ifsc_number.length != 11)
+    {
+      alert("Please enter valid IFSC number");
+      return false;
+    }
+
+    jQuery('#fetch_bank_detail_button').html('Please wait...').attr('disabled', true);
+    jQuery.ajax({
+      url: "/braintree_accounts/check_ifsc_code?ifsc_code=" + encodeURIComponent(ifsc_number),
+
+      success: function (response_data) {
+        jQuery('#verify-msg').hide();
+        if(response_data.status == "success")
+        {
+          merge_bank_string = response_data.bank_name + ",\n" + response_data.branch;
+          jQuery('#braintree_account_bank_name_and_branch').val(merge_bank_string);
+          displayMore(true);
+        } else {
+          displayMore(false);
+          alert("Please enter valid IFSC code.");
+        }
+      },
+
+      error: function(response_data) {
+        jQuery('#verify-msg').hide();
+        displayMore(false);
+        alert("Server error. Please try again later.");
+      },
+
+      beforeSend : function() {
+        jQuery('#verify-msg').html("Fetching details...").show();
+      }
+    });
+  }
+
+  function before_ifsc_code_edit()
+  {
+    displayMore(false);
+  }
+
 = render :partial => "layouts/left_hand_navigation", :locals => { :links => settings_links_for(@current_user, @current_community) }
 
 .left-navi-section.settings-section
 
-  %h2= t(".payout_details")
+  %h2= t(".add_payout_details")
 
-  - status = @braintree_account.status
-  - if status
-    %h3= "Account status: #{status}"
+  = form_for @braintree_account, :url => form_action, :html => {:method => "post", :id => "braintree_account_form"} do |form|
 
-    - if status == "pending"
-      %p
-        = "Your account is pending for approval. This shouldn't take more than a couple of minutes. We'll email you when your payment account is ready to be used."
-    - elsif status == "suspended"
-      %p
-        = "Your account was declined during the activation process. Please contact the administrators for more information."
-    - elsif status == "active"
-      %p
-        = "Your payment account is approved and ready to be used."
-    - else
-      %p
-        = "Something went wrong. Please contact administrators."
-      %p
-        = "Error: Unknown account status '#{status}'"
+    = form.label :first_name, t(".first_name"), :class => "input"
+    = form.text_field :first_name, :class => "auto_width", :size => 30
+    
+    = form.label :account_number, t(".account_number"), :class => "input", :id => "account_number_label"
+    = form.text_field :account_number, :class => "auto_width", :size => 20, :maxlength => 20, :id => "account_number"
 
-  %dl.braintree-account-details
-    %dt.braintree-account-key
-      = t(".first_name")
-    %dd.braintree-account-value
-      = @braintree_account.first_name
+    = form.label :ifsc_number, t(".ifsc_number"), :class => "input"
+    = form.text_field :ifsc_number, :class => "auto_width", :size => 20, :maxlength => 11, :onfocus => "before_ifsc_code_edit();"
 
-    %dt.braintree-account-key
-      = t(".last_name")
-    %dd.braintree-account-value
-      = @braintree_account.last_name
+    %span#verify-msg
 
-    %dt.braintree-account-key
-      = t(".email")
-    %dd.braintree-account-value
-      = @braintree_account.email
+    %button{:onclick => "check_ifsc_number()", :type => "button", :hidden => true, :id => "fetch_bank_detail_button"} Fetch Bank Details
 
-    %dt.braintree-account-key
-      = t(".phone")
-    %dd.braintree-account-value
-      = @braintree_account.phone
+    = form.label :bank_name_and_branch, t(".bank_name_and_branch"), :class => "input", :id => "bank_name_and_branch_label"
+    = form.text_area :bank_name_and_branch, :class => "auto_width", :readonly => true, :style => "width: 50%; height: 50%;"
 
-    %dt.braintree-account-key
-      = t(".address_street_address")
-    %dd.braintree-account-value
-      = @braintree_account.address_street_address
+    %br/
 
-    %dt.braintree-account-key
-      = t(".address_postal_code")
-    %dd.braintree-account-value
-      = @braintree_account.address_postal_code
-
-    %dt.braintree-account-key
-      = t(".address_locality")
-    %dd.braintree-account-value
-      = @braintree_account.address_locality
-
-    %dt.braintree-account-key
-      = t(".address_region")
-    %dd.braintree-account-value
-      = @state_name
-
-    %dt.braintree-account-key
-      = t(".date_of_birth")
-    %dd.braintree-account-value
-      = @braintree_account.date_of_birth
-
-    %dt.braintree-account-key
-      = t(".routing_number")
-    %dd.braintree-account-value
-      = @braintree_account.routing_number
-
-    %dt.braintree-account-key
-      = t(".account_number")
-    %dd.braintree-account-value
-      = @braintree_account.hidden_account_number
+    = form.button t(".save"), :class => "send_button"

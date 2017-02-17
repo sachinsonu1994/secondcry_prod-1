@@ -13,6 +13,8 @@ Kassi::Application.routes.draw do
   get "/sitemap.xml.gz" => "sitemap#sitemap", format: :xml
 
   post '/payu_response' => 'transactions#payu_response'
+  get  'braintree_accounts/check_ifsc_code'
+  post 'braintree_accounts/check_ifsc_code'
 
   # A route for DV test file
   # A CA will check if there is a file in this route
@@ -100,9 +102,13 @@ Kassi::Application.routes.draw do
     get "/login" => "sessions#new", :as => :login
     get "/listing_bubble/:id" => "listings#listing_bubble", :as => :listing_bubble
     get "/listing_bubble_multiple/:ids" => "listings#listing_bubble_multiple", :as => :listing_bubble_multiple
-    get '/:person_id/settings/payments/braintree/new' => 'braintree_accounts#new', :as => :new_braintree_settings_payment
-    get '/:person_id/settings/payments/braintree/show' => 'braintree_accounts#show', :as => :show_braintree_settings_payment
-    post '/:person_id/settings/payments/braintree/create' => 'braintree_accounts#create', :as => :create_braintree_settings_payment
+    #get '/:person_id/settings/payments/braintree/new' => 'braintree_accounts#new', :as => :new_braintree_settings_payment
+    #get '/:person_id/settings/payments/braintree/show' => 'braintree_accounts#show', :as => :show_braintree_settings_payment
+    #post '/:person_id/settings/payments/braintree/create' => 'braintree_accounts#create', :as => :create_braintree_settings_payment
+    get '/:person_id/settings/bank_details' => 'braintree_accounts#new', :as => :new_braintree_settings_payment
+    get '/:person_id/settings/bank_details/show' => 'braintree_accounts#show', :as => :show_braintree_settings_payment
+    post '/:person_id/settings/bank_details/create' => 'braintree_accounts#create', :as => :create_braintree_settings_payment
+    post '/:person_id/settings/bank_details/update' => 'braintree_accounts#update', :as => :update_braintree_settings_payment
     get '/:person_id/settings/payments/paypal_account' => 'paypal_accounts#index', :as => :paypal_account_settings_payment
 
     namespace :paypal_service do
@@ -363,6 +369,7 @@ Kassi::Application.routes.draw do
             get :notifications
             get :payments
             get :unsubscribe
+            get :bank_details
           end
         end
         resources :testimonials

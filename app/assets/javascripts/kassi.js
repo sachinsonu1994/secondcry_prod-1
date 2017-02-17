@@ -262,23 +262,17 @@ function initialize_payments_form(locale) {
   });
 }
 
-function initialize_braintree_account_form(locale) {
+function initialize_braintree_account_form(locale, invalid_account_number_error) {
   var form_id = "#braintree_account_form";
   $(form_id).validate({
     rules: {
       "braintree_account[first_name]": {required: true},
-      "braintree_account[last_name]": {required: true},
-      "braintree_account[email]": {required: true, email: true},
-      "braintree_account[phone]": {required: true},
-      "braintree_account[address_street_address]": {required: true},
-      "braintree_account[address_postal_code]": {required: true, minlength: 2, maxlength: 6},
-      "braintree_account[address_locality]": {required: true},
-      "braintree_account[address_region]": {required: true},
-      "braintree_account[date_of_birth]": {required: true},
-      "braintree_account[routing_number]": {required: true, minlength: 9, maxlength: 9},
-      "braintree_account[account_number]": {required: true},
+      "braintree_account[ifsc_number]": {required: true, minlength: 11, maxlength: 11},
+      "braintree_account[account_number]": {required :true, regex: "^([a-zA-Z0-9]+)?$"},
+      "braintree_account[bank_name_and_branch]": {required: true}
     },
     messages: {
+      "braintree_account[account_number]" : {regex : invalid_account_number_error}
     },
     onkeyup: false, //Only do validations when form focus changes
     submitHandler: function(form) {
