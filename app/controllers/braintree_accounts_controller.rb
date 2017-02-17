@@ -37,14 +37,14 @@ class BraintreeAccountsController < ApplicationController
 
   def new
     redirect_to action: :show and return if @current_user.braintree_account
-
+    @selected_left_navi_link = "bank_details"
     @braintree_account = create_new_account_object
     render locals: { form_action: @create_path }
   end
 
   def show
+    @selected_left_navi_link = "bank_details"
     redirect_to action: :new and return unless @current_user.braintree_account
-
     @braintree_account = BraintreeAccount.find_by_person_id(@current_user.id)
     render locals: { form_action: @update_path }
   end

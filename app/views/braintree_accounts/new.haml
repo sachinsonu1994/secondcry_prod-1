@@ -66,7 +66,19 @@
   {
     reset_ifsc_form();
     displayMore(false);
-  }  
+  }
+  
+  function prevent_special_char()
+  {
+    var account_number = jQuery('#account_number').val();
+    special_char = /[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi;
+    var isSplChar = special_char.test(account_number);
+    if(isSplChar)
+    {
+      var no_spl_char = account_number.replace(/[`~!@#$%^&*()_|+\-=?;:'",.<>\{\}\[\]\\\/]/gi, '');
+      jQuery('#account_number').val(no_spl_char);
+    }
+  }
 
 = render :partial => "layouts/left_hand_navigation", :locals => { :links => settings_links_for(@current_user, @current_community) }
 
@@ -80,10 +92,10 @@
     = form.text_field :first_name, :class => "auto_width", :size => 30
     
     = form.label :account_number, t(".account_number"), :class => "input", :id => "account_number_label"
-    = form.text_field :account_number, :class => "auto_width", :size => 17
+    = form.text_field :account_number, :class => "auto_width", :size => 17, :maxlength => 20, :id => "account_number", :onkeyup => "prevent_special_char();"
 
     = form.label :ifsc_number, t(".ifsc_number"), :class => "input"
-    = form.text_field :ifsc_number, :class => "auto_width", :maxlength => 11, :onfocus => "check_ifsc_code_after_fetch();", :maxlength => "11"
+    = form.text_field :ifsc_number, :class => "auto_width", :maxlength => 11, :size => 17, :onfocus => "check_ifsc_code_after_fetch();", :maxlength => "11"
     
     %span#verify-msg
 
