@@ -88,37 +88,36 @@
       .row
         .col-12
           %input{:minlength => "10", :maxlength => "11", :name => "phone_number", :required => "required", :type => "number", :value => @phone_number}/
-          
-    -if @payment_button == 1  
-      %h2{:style => "margin-top:30px"} Address1
+           
+      %h2 Address1
       .row
         .col-12
           %input{:name => "address1", :id => "address1", :required => "required", :type => "text"}
               
-          %input{:name => "address2", :id => "address2", :required => "required", :type => "hidden"}
+          %input{:name => "address2", :id => "address2", :type => "hidden"}
+          
+          %input{:name => ""}
  
-      %h2{:style => "margin-top:30px"} Location
+      %h2 Location
       .row
         .col-12
           %input{:name => "autocomplete", :id => "autocomplete" ,:required => "required", :type => "text", :onFocus => "geolocate()"}/
               
-      %h2{:style => "margin-top:30px"} City
+      %h2 City
       .row
         .col-12
           %input{:name => "locality", :id => "locality" ,:required => "required", :type => "text"}/
               
-      %h2{:style => "margin-top:30px"} State
+      %h2 State
       .row
         .col-12
           %input{:name => "state", :id => "administrative_area_level_1" ,:required => "required", :type => "text"}/
               
-      %h2{:style => "margin-top:30px"} Pincode
+      %h2 Pincode
       .row
         .col-12
           %input{:name => "pin_code", :id => "postal_code" ,:required => "required", :type => "text"}/
 
-              
-              
               
       %h2
         = t("conversations.new.send_message_to_user", person: author_link).html_safe
