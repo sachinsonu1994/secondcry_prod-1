@@ -9,7 +9,7 @@
       var componentForm = {
         locality: 'long_name',
         administrative_area_level_1: 'long_name',
-        postal_code: 'short_name'
+        postal_code: 'short_name',
       };
       
      google.maps.event.addDomListener(window, 'load', initAutocomplete);
@@ -33,7 +33,7 @@
         
         var location = jQuery('#autocomplete').val();
         var locality = jQuery('#locality').val();
-        var address = a.split(locality);
+        var address = location.split(locality);
         var address2 = address[0].slice(0, -1);
         jQuery('#address2').val(address2);
          });
@@ -94,7 +94,8 @@
         .col-12
           %input{:name => "address1", :id => "address1", :required => "required", :type => "text"}
               
-          %input{:name => "address2", :id => "address2", :type => "hidden"}
+          %input{:name => "address2", :id => "address2", :type => "text"}
+
 
  
       %h2 Location

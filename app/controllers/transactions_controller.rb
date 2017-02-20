@@ -111,24 +111,24 @@ class TransactionsController < ApplicationController
       # proceed to payment page only when listing is of type selling and renting
       listing = Listing.where("id = #{params[:listing_id]}").first
       listing_shape = ListingShape.find(listing.listing_shape_id)
+      user = Person.find(@current_user.id)
+              
+      shipping_address = ShippingAddress.new
+      shipping_address.transaction_id = tx[:transaction][:id]
+      shipping_address.name = user.given_name
+      shipping_address.phone = params[:phone_number]     if !params[:phone_number].blank?
+      shipping_address.postal_code = params[:pin_code]   if !params[:pin_code].blank?
+      shipping_address.city = params[:locality]          if !params[:locality].blank?
+      shipping_address.state_or_province = params[:state]  if !params[:state].blank?
+      shipping_address.street1 = params[:address1]       if !params[:address1].blank?
+      shipping_address.street2 = params[:address2]       if !params[:address2].blank?
+      shipping_address.save
 
       if (listing_shape.name != "selling" && listing_shape.name != "renting-out")
         redirect_to after_create_redirect(process: process, starter_id: @current_user.id, transaction: tx[:transaction]) # add more params here when needed
       else
         transaction = Transaction.find(tx[:transaction][:id])
         listing = Listing.where("id = '#{transaction.listing_id}'").first
-        user = Person.find(@current_user.id)
-        
-        shipping_address = ShippingAddress.new
-        shipping_address.transaction_id = transaction.id
-        shipping_address.name = user.given_name
-        shipping_address.phone = params[:phone_number]     if !params[:phone_number].blank?
-        shipping_address.postal_code = params[:pin_code]   if !params[:pin_code].blank?
-        shipping_address.city = params[:locality]          if !params[:locality].blank?
-        shipping_address.state_or_province = params[:state]  if !params[:state].blank?
-        shipping_address.street1 = params[:address1]       if !params[:address1].blank?
-        shipping_address.street2 = params[:address2]       if !params[:address2].blank?
-        shipping_address.save
         
         email = Email.where("person_id = '#{@current_user.id}' and confirmed_at is not null").first
         transaction_amount = transaction.unit_price * transaction.listing_quantity
