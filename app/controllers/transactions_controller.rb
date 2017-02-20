@@ -117,8 +117,19 @@ class TransactionsController < ApplicationController
       else
         transaction = Transaction.find(tx[:transaction][:id])
         listing = Listing.where("id = '#{transaction.listing_id}'").first
-
         user = Person.find(@current_user.id)
+        
+        shipping_address = ShippingAddress.new
+        shipping_address.transaction_id = transaction.id
+        shipping_address.name = user.given_name
+        shipping_address.phone = params[:phone_number]     if !params[:phone_number].blank?
+        shipping_address.postal_code = params[:pin_code]   if !params[:pin_code].blank?
+        shipping_address.city = params[:locality]          if !params[:locality].blank?
+        shipping_address.state_or_province = params[:state]  if !params[:state].blank?
+        shipping_address.street1 = params[:address1]       if !params[:address1].blank?
+        shipping_address.street2 = params[:address2]       if !params[:address2].blank?
+        shipping_address.save
+        
         email = Email.where("person_id = '#{@current_user.id}' and confirmed_at is not null").first
         transaction_amount = transaction.unit_price * transaction.listing_quantity
         date = "#{Date.today}".gsub('-','')
@@ -154,6 +165,11 @@ class TransactionsController < ApplicationController
       buyer.phone_number = params[:phone]
       buyer.save
     end
+    shipping_address = ShippingAddress.find_by_transaction_id(transaction_id)
+    if !shipping_address.blank?
+        shipping_address.status = params[:status]
+        shipping_address.save
+    end
     value = "#{PAYU_SALT}|#{params[:status]}||||||||||#{params[:udf1]}|#{params[:email]}|#{params[:firstname]}|#{params[:productinfo]}|#{params[:amount]}|#{params[:txnid]}|#{PAYU_KEY}"
     reshashvalue = Digest::SHA2.new(512).hexdigest("#{value}")
 
@@ -168,12 +184,6 @@ Thanks."
 
       transaction.listing.open = 0
       transaction.listing.save
-      shipping_address = ShippingAddress.new
-      shipping_address.phone = params[:phone]
-      shipping_address.name = params[:firstname]
-      shipping_address.transaction_id = transaction_id
-      shipping_address.status = "Initial"
-      shipping_address.save
     else
       payment_string = "Dear #{seller.given_name},
 Attempt to make payment of Rs.#{params[:amount]} to SecondCry towards your listing \"#{params[:productinfo]}\" failed due to some reason.
@@ -200,7 +210,7 @@ Thanks."
     payment_status = params[:status]
     transaction_url = "#{request.protocol}#{request.host_with_port}/en/transactions/#{params[:udf1]}"
     listing_url = "#{request.protocol}#{request.host_with_port}/en/listings/#{transaction.listing.id}"
-    MailCarrier.deliver_now(TransactionMailer.order_created(transaction_url, payment_status, listing_url, params))
+   # MailCarrier.deliver_now(TransactionMailer.order_created(transaction_url, payment_status, listing_url, params))
 
     # redirect to transaction's history of conversations
     redirect_to "#{request.protocol}#{request.host_with_port}/en/transactions/#{transaction_id}"
