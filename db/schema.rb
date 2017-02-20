@@ -62,6 +62,9 @@ ActiveRecord::Schema.define(version: 20160415073433) do
     t.string   "hidden_account_number",  limit: 255
     t.string   "status",                 limit: 255
     t.integer  "community_id",           limit: 4
+    t.string   "account_number",         limit: 255
+    t.string   "bank_name_and_branch",   limit: 255
+    t.string   "ifsc_number",            limit: 255
   end
 
   create_table "categories", force: :cascade do |t|

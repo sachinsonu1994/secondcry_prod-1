@@ -770,7 +770,7 @@ en:
   braintree_accounts:
     new:
       add_payout_details: "Add your payout details"
-      first_name: "First name"
+      first_name: "Account Name (As per bank record)"
       last_name: "Last name"
       email: "Email address"
       phone: "Phone number"
@@ -781,11 +781,14 @@ en:
       date_of_birth: "Date of birth"
       ssn: SSN
       routing_number: "Routing number"
-      account_number: "Account number"
+      ifsc_number: "IFSC Code"
+      account_number: "Account Number"
+      bank_name_and_branch: "Bank Name and Branch"
+      invalid_account_number_error: "Invalid account number. Please refer your bank records."
       save: Save
     show:
       payout_details: "Your payout details"
-      first_name: "First name"
+      first_name: "Account Name (As per bank record)"
       last_name: "Last name"
       email: "Email address"
       phone: "Phone number"
@@ -796,7 +799,11 @@ en:
       date_of_birth: "Date of birth"
       ssn: SSN
       routing_number: "Routing number"
-      account_number: "Account number"
+      ifsc_number: "IFSC Code"
+      account_number: "Account Number"
+      bank_name_and_branch: "Bank Name and Branch"
+      invalid_account_number_error: "Invalid account number. Refresh the page to get back your original value."
+      save: Update
   braintree_payments:
     edit:
       new_credit_card_payment: "New credit card payment"
@@ -1111,6 +1118,7 @@ en:
       request_partitive: request
   header:
     about: About
+    how_it_works: How it works
     home: Home
     members: Community
     new_listing: "New listing"
@@ -1248,6 +1256,7 @@ en:
       inbox: Inbox
       settings: Settings
       feedback: "Contact us"
+      bank_details: Bank Details
     application:
       join_this_community: "Join marketplace"
       read_more: "Read more"
@@ -1268,7 +1277,7 @@ en:
       join_without_facebook: "...or alternatively %{join_without_facebook_link}"
       join_without_facebook_link: "sign up without using Facebook"
     conversations:
-      messages: Messages
+      messages: Inbox
       notifications: Notifications
       received: Received
       sent: Sent
@@ -1419,7 +1428,9 @@ en:
       user_does_not_have_email_to_delete: "You don't have the email address you're trying to remove"
       email_deleted: "Email removed"
       payment_details_add_successful: "Successfully added payment details"
+      payment_details_update_successful: "Successfully updated payment details"
       payment_details_add_error: "Could not add payment details"
+      payment_details_update_error: "Could not update payment details"
       listing_author_payment_details_missing: "Please contact the author by pressing the 'Contact' button below. They need to update their payment details to receive payments."
       stylesheet_needs_recompiling: "Stylesheet is recompiling. Please, reload the page after a while."
     settings:
@@ -1428,6 +1439,7 @@ en:
       profile: "Profile info"
       settings: Settings
       payments: Payments
+      bank_details: Bank Details
   listings:
     bubble_listing_not_visible:
       listing_not_visible: "You do not have permission to view this listing."
@@ -1511,6 +1523,7 @@ en:
       location:
         location: Location
       price:
+        commission: "Please note that 10% of this price will be deducted by SecondCry towards payment gateway, handling and shipping across India."
         price: Price
         per: per
         per_day: "per day"
@@ -1835,6 +1848,7 @@ en:
         other: "The access to %{service_name} is restricted. You need an email address that proves that you are entitled to join."
       family_name: "Last name"
       given_name: "First name"
+      phone_number: "Phone Number"
       i_accept_the: "I accept the"
       invalid_invitation_code: "The invitation code is not valid."
       invitation_code: "Invitation code"

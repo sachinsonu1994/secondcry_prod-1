@@ -1,59 +1,5 @@
 class BraintreeAccountsController < ApplicationController
-
-  LIST_OF_STATES = [
-      ['Alabama', 'AL'],
-      ['Alaska', 'AK'],
-      ['Arizona', 'AZ'],
-      ['Arkansas', 'AR'],
-      ['California', 'CA'],
-      ['Colorado', 'CO'],
-      ['Connecticut', 'CT'],
-      ['Delaware', 'DE'],
-      ['District of Columbia', 'DC'],
-      ['Florida', 'FL'],
-      ['Georgia', 'GA'],
-      ['Hawaii', 'HI'],
-      ['Idaho', 'ID'],
-      ['Illinois', 'IL'],
-      ['Indiana', 'IN'],
-      ['Iowa', 'IA'],
-      ['Kansas', 'KS'],
-      ['Kentucky', 'KY'],
-      ['Louisiana', 'LA'],
-      ['Maine', 'ME'],
-      ['Maryland', 'MD'],
-      ['Massachusetts', 'MA'],
-      ['Michigan', 'MI'],
-      ['Minnesota', 'MN'],
-      ['Mississippi', 'MS'],
-      ['Missouri', 'MO'],
-      ['Montana', 'MT'],
-      ['Nebraska', 'NE'],
-      ['Nevada', 'NV'],
-      ['New Hampshire', 'NH'],
-      ['New Jersey', 'NJ'],
-      ['New Mexico', 'NM'],
-      ['New York', 'NY'],
-      ['North Carolina', 'NC'],
-      ['North Dakota', 'ND'],
-      ['Ohio', 'OH'],
-      ['Oklahoma', 'OK'],
-      ['Oregon', 'OR'],
-      ['Pennsylvania', 'PA'],
-      ['Puerto Rico', 'PR'],
-      ['Rhode Island', 'RI'],
-      ['South Carolina', 'SC'],
-      ['South Dakota', 'SD'],
-      ['Tennessee', 'TN'],
-      ['Texas', 'TX'],
-      ['Utah', 'UT'],
-      ['Vermont', 'VT'],
-      ['Virginia', 'VA'],
-      ['Washington', 'WA'],
-      ['West Virginia', 'WV'],
-      ['Wisconsin', 'WI'],
-      ['Wyoming', 'WY']
-    ]
+  require 'net/http'
 
   before_filter do |controller|
     controller.ensure_logged_in t("layouts.notifications.you_must_log_in_to_change_payment_settings")
@@ -64,6 +10,7 @@ class BraintreeAccountsController < ApplicationController
     @create_path = create_braintree_settings_payment_path(@current_user)
     @show_path = show_braintree_settings_payment_path(@current_user)
     @new_path = new_braintree_settings_payment_path(@current_user)
+    @update_path = update_braintree_settings_payment_path(@current_user)
   end
 
   # New/create
@@ -71,87 +18,86 @@ class BraintreeAccountsController < ApplicationController
 
   before_filter :ensure_user_does_not_have_account_for_another_community
 
+  def check_ifsc_code
+    response_hash = Hash.new
+    if !params[:ifsc_code].blank?
+      uri = URI("https://ifsc.razorpay.com/#{params[:ifsc_code]}")
+      response = Net::HTTP.get(uri)
+      if response.include?('Not Found')
+        response_hash[:status] = "failure"
+      else
+        api_response = JSON.parse(response)
+        response_hash[:bank_name] = api_response["BANK"]
+        response_hash[:branch] = api_response["BRANCH"]
+        response_hash[:status] = "success"
+      end
+    end
+    render :json => response_hash.to_json, :callback => params[:callback]
+  end
+
   def new
     redirect_to action: :show and return if @current_user.braintree_account
-
-    @list_of_states = LIST_OF_STATES
+    @selected_left_navi_link = "bank_details"
     @braintree_account = create_new_account_object
     render locals: { form_action: @create_path }
   end
 
   def show
+    @selected_left_navi_link = "bank_details"
     redirect_to action: :new and return unless @current_user.braintree_account
-
-    @list_of_states = LIST_OF_STATES
     @braintree_account = BraintreeAccount.find_by_person_id(@current_user.id)
-    @state_name, _ = LIST_OF_STATES.find do |state|
-      name, code = state
-      code == @braintree_account.address_region
-    end
-
-    render locals: { form_action: @create_path }
+    render locals: { form_action: @update_path }
   end
 
   def create
-    @list_of_states = LIST_OF_STATES
     braintree_params = params.require(:braintree_account).permit(
       :person_id,
       :first_name,
-      :last_name,
-      :email,
-      :phone,
-      :address_street_address,
-      :address_postal_code,
-      :address_locality,
-      :address_region,
-      :"date_of_birth(1i)",
-      :"date_of_birth(2i)",
-      :"date_of_birth(3i)",
-      :routing_number,
-      :account_number
+      :ifsc_number,
+      :account_number,
+      :bank_name_and_branch
     )
 
     model_attributes = braintree_params
       .merge(person: @current_user)
       .merge(community_id: @current_community.id)
-      .merge(hidden_account_number: StringUtils.trim_and_hide(params[:braintree_account][:account_number]))
 
     @braintree_account = BraintreeAccount.new(model_attributes)
     if @braintree_account.valid?
-      # Save Braintree account before calling the Braintree API
-      # Braintree may trigger the webhook very, very fast (at least in sandbox)
-      # and saving account to DB now ensures that the webhook finds the account
-      @braintree_account.save!
-      merchant_account_result = BraintreeApi.create_merchant_account(@braintree_account, @current_community)
+      success = @braintree_account.save
+      if success
+        flash[:notice] = t("layouts.notifications.payment_details_add_successful")
+        redirect_to @show_path
+      else
+        flash[:error] = t("layouts.notifications.payment_details_add_error")
+        @braintree_account.destroy
+        render :new, locals: { form_action: @create_path } and return
+      end
     else
       flash[:error] = @braintree_account.errors.full_messages
       render :new, locals: { form_action: @create_path } and return
     end
+  end
 
-    success = if merchant_account_result.success?
-      BTLog.info("Successfully created Braintree account for person id #{@current_user.id}")
-      update_status!(@braintree_account, merchant_account_result.merchant_account.status)
-    else
-      BTLog.error("Failed to created Braintree account for person id #{@current_user.id}: #{merchant_account_result.message}")
+  def update
+    braintree_account = BraintreeAccount.find_by_person_id(@current_user.id)
+    braintree_account.first_name = params[:braintree_account][:first_name]
+    braintree_account.account_number = params[:braintree_account][:account_number]
+    braintree_account.ifsc_number = params[:braintree_account][:ifsc_number]
+    braintree_account.bank_name_and_branch = params[:braintree_account][:bank_name_and_branch]
 
-      error_string = "Your payout details could not be saved, because of following errors: "
-      merchant_account_result.errors.each do |e|
-        error_string << e.message + " "
+    if braintree_account.valid?
+      success = braintree_account.save
+      if success
+        flash[:notice] = t("layouts.notifications.payment_details_update_successful")
+      else
+        flash[:error] = t("layouts.notifications.payment_details_update_error")
       end
-      flash[:error] = error_string
-
-      @braintree_account.destroy
-
-      false
-    end
-
-    if success
-      flash[:notice] = t("layouts.notifications.payment_details_add_successful")
-      redirect_to @show_path
     else
-      flash[:error] ||= t("layouts.notifications.payment_details_add_error")
-      render :new, locals: { form_action: @create_path }
+      flash[:error] = @braintree_account.errors.full_messages
     end
+
+    redirect_to @show_path
   end
 
   private
@@ -161,7 +107,7 @@ class BraintreeAccountsController < ApplicationController
     braintree_account = BraintreeAccount.find_by_person_id(@current_user.id)
 
     unless braintree_account.blank?
-      flash[:error] = "Cannot create a new Braintree account. You already have one"
+      #flash[:error] = "Cannot create a new Braintree account. You already have one"
       redirect_to @show_path
     end
   end
@@ -201,7 +147,7 @@ class BraintreeAccountsController < ApplicationController
   def create_new_account_object
     person = @current_user
     person_details = {
-      first_name: person.given_name,
+      first_name: "#{person.given_name} #{person.family_name}",
       last_name: person.family_name,
       email: person.confirmed_notification_email_to, # Our best guess for "primary" email
       phone: person.phone_number
