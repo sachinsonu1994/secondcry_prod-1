@@ -112,8 +112,9 @@ class TransactionsController < ApplicationController
       listing = Listing.where("id = #{params[:listing_id]}").first
       listing_shape = ListingShape.find(listing.listing_shape_id)
       user = Person.find(@current_user.id)
-              
+
       shipping_address = ShippingAddress.new
+      shipping_address.person_id = @current_user.id
       shipping_address.transaction_id = tx[:transaction][:id]
       shipping_address.name = user.given_name
       shipping_address.phone = params[:phone_number]     if !params[:phone_number].blank?
@@ -167,8 +168,8 @@ class TransactionsController < ApplicationController
     end
     shipping_address = ShippingAddress.find_by_transaction_id(transaction_id)
     if !shipping_address.blank?
-        shipping_address.status = params[:status]
-        shipping_address.save
+      shipping_address.status = params[:status]
+      shipping_address.save
     end
     value = "#{PAYU_SALT}|#{params[:status]}||||||||||#{params[:udf1]}|#{params[:email]}|#{params[:firstname]}|#{params[:productinfo]}|#{params[:amount]}|#{params[:txnid]}|#{PAYU_KEY}"
     reshashvalue = Digest::SHA2.new(512).hexdigest("#{value}")
@@ -210,7 +211,7 @@ Thanks."
     payment_status = params[:status]
     transaction_url = "#{request.protocol}#{request.host_with_port}/en/transactions/#{params[:udf1]}"
     listing_url = "#{request.protocol}#{request.host_with_port}/en/listings/#{transaction.listing.id}"
-   # MailCarrier.deliver_now(TransactionMailer.order_created(transaction_url, payment_status, listing_url, params))
+    MailCarrier.deliver_now(TransactionMailer.order_created(transaction_url, payment_status, listing_url, params))
 
     # redirect to transaction's history of conversations
     redirect_to "#{request.protocol}#{request.host_with_port}/en/transactions/#{transaction_id}"
