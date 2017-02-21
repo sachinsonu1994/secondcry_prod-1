@@ -67,6 +67,11 @@
         .col-12
           %input{:name => "pincode", :id => "pincode" ,:required => "required", :type => "number", :maxlength => "6", :minlength => "6", :onkeyup => "fetch_city_and_state();", :value => "#{@shipping_address.postal_code if !@shipping_address.blank? && !@shipping_address.postal_code.blank?}"}/
 
+      %h2 Name
+      .row
+        .col-12
+          %input{:name => "name", :id => "name", :required => "required", :type => "text", :value => "#{@shipping_address.name if !@shipping_address.blank? && !@shipping_address.name.blank?}"}/
+
       %h2 Address Line 1
       .row
         .col-12

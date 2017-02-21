@@ -36,6 +36,7 @@ class TransactionMailer < ActionMailer::Base
     @state = params[:state]
     @country = params[:country]
     @pincode = params[:zipcode]
+    @phone = params[:phone]
 
     premailer_mail(
       :to => "#{params[:email]}",

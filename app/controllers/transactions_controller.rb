@@ -31,9 +31,7 @@ class TransactionsController < ApplicationController
       booking = listing_model.unit_type == :day
 
       transaction_params = HashUtils.symbolize_keys({listing_id: listing_model.id}.merge(params.slice(:start_on, :end_on, :quantity, :delivery)))
-      log = Logger.new(STDOUT)
-      log.level = Logger::INFO
-      log.info(@current_user.id)
+      
       @shipping_address = ShippingAddress.where("buyer_id = '#{@current_user.id}'").last
       
       # Only selling and renting listings should get payment button
@@ -142,7 +140,7 @@ class TransactionsController < ApplicationController
       else
         transaction = Transaction.find(tx[:transaction][:id])
         listing = Listing.where("id = '#{transaction.listing_id}'").first
-        user = Person.find(@current_user.id)
+        #user = Person.find(@current_user.id)
 
         email = Email.where("person_id = '#{@current_user.id}' and confirmed_at is not null").first
         transaction_amount = transaction.unit_price * transaction.listing_quantity
@@ -154,7 +152,7 @@ class TransactionsController < ApplicationController
           orderId: "#{date}#{transaction.id}",
           amount:  "#{transaction_amount}",
           product_name: "#{transaction.listing_title}",
-          firstName: "#{user.given_name}",
+          firstName: "#{params[:name]}",
           email:     "#{email.address}",
           phoneNo:   "#{params[:phone_number]}",
           address1:  "#{params[:address1]}",
@@ -166,7 +164,7 @@ class TransactionsController < ApplicationController
           udf1: "#{transaction.conversation_id}",
           surl: "#{request.protocol}#{request.host_with_port}/payu_response",
           furl: "#{request.protocol}#{request.host_with_port}/payu_response",
-          hash: Digest::SHA2.new(512).hexdigest("#{PAYU_KEY}|#{date}#{transaction.id}|#{transaction_amount}|#{transaction.listing_title}|#{user.given_name}|#{email.address}|#{transaction.conversation_id}||||||||||#{PAYU_SALT}")
+          hash: Digest::SHA2.new(512).hexdigest("#{PAYU_KEY}|#{date}#{transaction.id}|#{transaction_amount}|#{transaction.listing_title}|#{params[:name]}|#{email.address}|#{transaction.conversation_id}||||||||||#{PAYU_SALT}")
         }
       end
     }.on_error { |error_msg, data|
