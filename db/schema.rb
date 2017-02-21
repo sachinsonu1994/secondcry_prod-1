@@ -26,19 +26,6 @@ ActiveRecord::Schema.define(version: 20170221090345) do
 
   add_index "auth_tokens", ["token"], name: "index_auth_tokens_on_token", unique: true, using: :btree
 
-  create_table "banks", force: :cascade do |t|
-    t.string   "name",         limit: 255
-    t.string   "branch",       limit: 255
-    t.string   "account_no",   limit: 255
-    t.string   "account_type", limit: 255
-    t.string   "ifsc",         limit: 255
-    t.integer  "person_id",    limit: 4
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
-  end
-
-  add_index "banks", ["person_id"], name: "index_banks_on_person_id", using: :btree
-
   create_table "billing_agreements", force: :cascade do |t|
     t.integer  "paypal_account_id",    limit: 4,   null: false
     t.string   "billing_agreement_id", limit: 255
@@ -587,7 +574,6 @@ ActiveRecord::Schema.define(version: 20170221090345) do
     t.string   "person_id",      limit: 255
     t.string   "location_type",  limit: 255
     t.integer  "community_id",   limit: 4
-    t.string   "phone_number",   limit: 255
   end
 
   add_index "locations", ["community_id"], name: "index_locations_on_community_id", using: :btree
@@ -867,18 +853,6 @@ ActiveRecord::Schema.define(version: 20170221090345) do
   add_index "paypal_tokens", ["community_id"], name: "index_paypal_tokens_on_community_id", using: :btree
   add_index "paypal_tokens", ["token"], name: "index_paypal_tokens_on_token", unique: true, using: :btree
   add_index "paypal_tokens", ["transaction_id"], name: "index_paypal_tokens_on_transaction_id", using: :btree
-
-  create_table "payu_responses", force: :cascade do |t|
-    t.string   "order_id",        limit: 255, null: false
-    t.string   "mode_of_payment", limit: 255
-    t.string   "status",          limit: 255
-    t.string   "email",           limit: 255
-    t.string   "user_name",       limit: 255
-    t.string   "amount",          limit: 255
-    t.string   "product_name",    limit: 255
-    t.datetime "created_at"
-    t.string   "updated_at",      limit: 45
-  end
 
   create_table "people", id: false, force: :cascade do |t|
     t.string   "id",                                 limit: 22,                    null: false

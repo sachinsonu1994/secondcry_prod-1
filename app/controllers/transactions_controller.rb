@@ -31,7 +31,6 @@ class TransactionsController < ApplicationController
       booking = listing_model.unit_type == :day
 
       transaction_params = HashUtils.symbolize_keys({listing_id: listing_model.id}.merge(params.slice(:start_on, :end_on, :quantity, :delivery)))
-      
       @shipping_address = ShippingAddress.where("buyer_id = '#{@current_user.id}'").last
       
       # Only selling and renting listings should get payment button
@@ -81,7 +80,7 @@ class TransactionsController < ApplicationController
         if api_response["PostOffice"][0]["Circle"] == "NA"
           response_hash[:district] = api_response["PostOffice"][0]["District"]
         else
-          response_hash[:district] = api_response["PostOffice"][0]["Circle"]
+          response_hash[:district] = api_response["PostOffice"][0]["Taluk"]
         end
         response_hash[:state] = api_response["PostOffice"][0]["State"]
         response_hash[:status] = "success"
@@ -140,7 +139,6 @@ class TransactionsController < ApplicationController
       else
         transaction = Transaction.find(tx[:transaction][:id])
         listing = Listing.where("id = '#{transaction.listing_id}'").first
-        #user = Person.find(@current_user.id)
 
         email = Email.where("person_id = '#{@current_user.id}' and confirmed_at is not null").first
         transaction_amount = transaction.unit_price * transaction.listing_quantity
