@@ -15,6 +15,7 @@ Kassi::Application.routes.draw do
   post '/payu_response' => 'transactions#payu_response'
   get  'braintree_accounts/check_ifsc_code'
   post 'braintree_accounts/check_ifsc_code'
+
   get 'transactions/fetch_city_state_from_pincode'
   post 'transactions/fetch_city_state_from_pincode'
   

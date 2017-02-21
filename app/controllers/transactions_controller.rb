@@ -31,6 +31,7 @@ class TransactionsController < ApplicationController
       booking = listing_model.unit_type == :day
 
       transaction_params = HashUtils.symbolize_keys({listing_id: listing_model.id}.merge(params.slice(:start_on, :end_on, :quantity, :delivery)))
+
       @shipping_address = ShippingAddress.where("buyer_id = '#{@current_user.id}'").last
       
       # Only selling and renting listings should get payment button
