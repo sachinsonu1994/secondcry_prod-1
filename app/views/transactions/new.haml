@@ -70,7 +70,7 @@
       %h2 Name
       .row
         .col-12
-          %input{:name => "name", :id => "name", :required => "required", :type => "text", :value => "#{@shipping_address.name if !@shipping_address.blank? && !@shipping_address.name.blank?}"}/
+          %input{:name => "name", :id => "name", :required => "required", :type => "text", :maxlength => 40, :value => "#{@shipping_address.name if !@shipping_address.blank? && !@shipping_address.name.blank?}"}/
 
       %h2 Address Line 1
       .row
@@ -105,6 +105,7 @@
         .col-12
         - if @payment_button == 1
           = button_tag t("conversations.new.proceed_to_payment"), :class => "send_button"
+          = render partial: "layouts/info_text", locals: { text: t("conversations.new.message") }
         - else                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
           = button_tag t("conversations.new.send_message"), :class => "send_button"
             

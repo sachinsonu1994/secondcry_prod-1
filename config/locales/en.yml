@@ -688,6 +688,7 @@ en:
       rideshare_request_message_form_title: "Offer a ride to %{person}"
       proceed_to_payment: "Proceed to Payment"
       send_message: "Send Message"
+      message: "This will send an automatic payment status message to the seller on your behalf!"
       send: Send
       this_message_is_private: "This message is private between you and %{person}. %{person} will be notified of this message by email."
       you_will_get_notified_of_acceptance: "You will get an email notification when %{person} accepts or rejects your proposal."
