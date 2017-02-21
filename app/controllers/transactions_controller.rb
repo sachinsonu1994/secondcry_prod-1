@@ -31,7 +31,11 @@ class TransactionsController < ApplicationController
       booking = listing_model.unit_type == :day
 
       transaction_params = HashUtils.symbolize_keys({listing_id: listing_model.id}.merge(params.slice(:start_on, :end_on, :quantity, :delivery)))
-
+      log = Logger.new(STDOUT)
+      log.level = Logger::INFO
+      log.info(@current_user.id)
+      @shipping_address = ShippingAddress.where("buyer_id = '#{@current_user.id}'").last
+      
       # Only selling and renting listings should get payment button
       listing = Listing.where("id = #{params[:listing_id]}").first
       listing_shape = ListingShape.find(listing.listing_shape_id)
@@ -65,6 +69,27 @@ class TransactionsController < ApplicationController
       flash[:error] = Maybe(data)[:error_tr_key].map { |tr_key| t(tr_key) }.or_else("Could not start a transaction, error message: #{error_msg}")
       redirect_to(session[:return_to_content] || root)
     }
+  end
+  
+  def fetch_city_state_from_pincode
+    response_hash = Hash.new
+    if !params[:pincode].blank?
+      uri = URI("http://postalpincode.in/api/pincode/#{params[:pincode]}")
+      response = Net::HTTP.get(uri)
+      api_response = JSON.parse(response)
+      if api_response["Status"] == 'Error'
+        response_hash[:status] == "failure"
+      else
+        if api_response["PostOffice"][0]["Circle"] == "NA"
+          response_hash[:district] = api_response["PostOffice"][0]["District"]
+        else
+          response_hash[:district] = api_response["PostOffice"][0]["Circle"]
+        end
+        response_hash[:state] = api_response["PostOffice"][0]["State"]
+        response_hash[:status] = "success"
+      end
+    end
+    render :json => response_hash.to_json, :callback => params[:callback]
   end
 
   def create
@@ -111,26 +136,14 @@ class TransactionsController < ApplicationController
       # proceed to payment page only when listing is of type selling and renting
       listing = Listing.where("id = #{params[:listing_id]}").first
       listing_shape = ListingShape.find(listing.listing_shape_id)
-      user = Person.find(@current_user.id)
-
-      shipping_address = ShippingAddress.new
-      shipping_address.person_id = @current_user.id
-      shipping_address.transaction_id = tx[:transaction][:id]
-      shipping_address.name = user.given_name
-      shipping_address.phone = params[:phone_number]     if !params[:phone_number].blank?
-      shipping_address.postal_code = params[:pin_code]   if !params[:pin_code].blank?
-      shipping_address.city = params[:locality]          if !params[:locality].blank?
-      shipping_address.state_or_province = params[:state]  if !params[:state].blank?
-      shipping_address.street1 = params[:address1]       if !params[:address1].blank?
-      shipping_address.street2 = params[:address2]       if !params[:address2].blank?
-      shipping_address.save
 
       if (listing_shape.name != "selling" && listing_shape.name != "renting-out")
         redirect_to after_create_redirect(process: process, starter_id: @current_user.id, transaction: tx[:transaction]) # add more params here when needed
       else
         transaction = Transaction.find(tx[:transaction][:id])
         listing = Listing.where("id = '#{transaction.listing_id}'").first
-        
+        user = Person.find(@current_user.id)
+
         email = Email.where("person_id = '#{@current_user.id}' and confirmed_at is not null").first
         transaction_amount = transaction.unit_price * transaction.listing_quantity
         date = "#{Date.today}".gsub('-','')
@@ -144,6 +157,12 @@ class TransactionsController < ApplicationController
           firstName: "#{user.given_name}",
           email:     "#{email.address}",
           phoneNo:   "#{params[:phone_number]}",
+          address1:  "#{params[:address1]}",
+          address2:  "#{params[:address2]}",
+          city:      "#{params[:city]}",
+          state:     "#{params[:state]}",
+          zipcode:   "#{params[:pincode]}",
+          country:   "India",
           udf1: "#{transaction.conversation_id}",
           surl: "#{request.protocol}#{request.host_with_port}/payu_response",
           furl: "#{request.protocol}#{request.host_with_port}/payu_response",
@@ -166,11 +185,10 @@ class TransactionsController < ApplicationController
       buyer.phone_number = params[:phone]
       buyer.save
     end
-    shipping_address = ShippingAddress.find_by_transaction_id(transaction_id)
-    if !shipping_address.blank?
-      shipping_address.status = params[:status]
-      shipping_address.save
-    end
+    
+    shipping_address = ShippingAddress.create(:transaction_id => transaction_id, :status => params[:status], :name => params[:firstname], :phone => params[:phone], :street1 => params[:address1], :street2 => params[:address2],
+    :city => params[:city], :state_or_province => params[:state], :country => params[:country], :buyer_id => @current_user.id, :postal_code => params[:zipcode])
+    
     value = "#{PAYU_SALT}|#{params[:status]}||||||||||#{params[:udf1]}|#{params[:email]}|#{params[:firstname]}|#{params[:productinfo]}|#{params[:amount]}|#{params[:txnid]}|#{PAYU_KEY}"
     reshashvalue = Digest::SHA2.new(512).hexdigest("#{value}")
 
