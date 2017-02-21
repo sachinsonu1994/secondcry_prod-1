@@ -32,7 +32,7 @@ class ShippingAddress < ActiveRecord::Base
     :street1,
     :street2,
     :buyer_id
-      )
+  )
 
   belongs_to :tx, class_name: "Transaction", foreign_key: "transaction_id"
 end
