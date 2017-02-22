@@ -30,6 +30,13 @@ class TransactionMailer < ActionMailer::Base
     @payment_failure_reason = (payment_status == "success") ? "" : params[:error_Message]
     @listing_url = listing_url
     @listing_title = params[:productinfo]
+    @address1 = params[:address1]
+    @address2 = params[:address2]
+    @city = params[:city]
+    @state = params[:state]
+    @country = params[:country]
+    @pincode = params[:zipcode]
+    @phone = params[:phone]
 
     premailer_mail(
       :to => "#{params[:email]}",

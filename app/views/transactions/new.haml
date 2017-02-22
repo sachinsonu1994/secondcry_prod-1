@@ -2,6 +2,31 @@
   :javascript
     ST.transaction.initializeFreeTransactionForm('#{I18n.locale}');
 
+  :javascript
+    function fetch_city_and_state()
+    {
+      var pincode = jQuery('#pincode').val();
+      if (pincode.length == 6)
+      {
+        jQuery.ajax({
+          url: "/transactions/fetch_city_state_from_pincode?pincode=" + pincode,
+          
+          success: function (response_data) {
+          if(response_data.status == "success")
+          {
+            jQuery('#city').val(response_data.district);
+            jQuery('#state').val(response_data.state);
+          } else {
+            alert("Please enter valid pincode");
+          }
+          },
+          error: function(response_data) {
+            alert("Server error. Please try again later.");
+          },
+        });
+      }
+    }
+   
 - content_for :title_header do
   %h1
     = action_button_label
@@ -30,12 +55,45 @@
     = hidden_field_tag(:end_on, booking_end)
 
     .preauthorize-section
+      -if @payment_button == 1
+        %h2 Name
+        .row
+          .col-12
+            %input{:name => "name", :id => "name", :required => "required", :type => "text", :maxlength => 40, :value => "#{@shipping_address.name if !@shipping_address.blank? && !@shipping_address.name.blank?}"}/
 
       %h2 Contact Number (for delivery)
       .row
         .col-12
           %input{:minlength => "10", :maxlength => "11", :name => "phone_number", :required => "required", :type => "number", :value => @phone_number}/
+          
+      - if @payment_button == 1
+            
+        %h2 Pincode
+        .row
+          .col-12
+            %input{:name => "pincode", :id => "pincode" ,:required => "required", :type => "number", :maxlength => "6", :minlength => "6", :onkeyup => "fetch_city_and_state();", :value => "#{@shipping_address.postal_code if !@shipping_address.blank? && !@shipping_address.postal_code.blank?}"}/
 
+        %h2 Address Line 1
+        .row
+          .col-12
+            %input{:name => "address1", :id => "address1", :required => "required", :type => "text", :placeholder => "Flat No, Floor, Building Name", :value => "#{@shipping_address.street1 if !@shipping_address.blank? && !@shipping_address.street1.blank?}"}/
+
+        %h2 Address Line 2
+        .row
+          .col-12
+            %input{:name => "address2", :id => "address2" ,:required => "required", :type => "text", :placeholder => "Colony, Street, Locality", :value => "#{@shipping_address.street2 if !@shipping_address.blank? && !@shipping_address.street2.blank?}"}/
+              
+        %h2 City
+        .row
+          .col-12
+            %input{:name => "city", :id => "city" ,:required => "required", :type => "text", :value => "#{@shipping_address.city if !@shipping_address.blank? && !@shipping_address.city.blank?}"}/
+              
+        %h2 State
+        .row
+          .col-12
+            %input{:name => "state", :id => "state" ,:required => "required", :type => "text", :value => "#{@shipping_address.state_or_province if !@shipping_address.blank? && !@shipping_address.state_or_province.blank?}"}/
+
+              
       %h2
         = t("conversations.new.send_message_to_user", person: author_link).html_safe
       .row
@@ -48,5 +106,6 @@
           .col-12
           - if @payment_button == 1
             = button_tag t("conversations.new.proceed_to_payment"), :class => "send_button"
-          - else
+            = render partial: "layouts/info_text", locals: { text: t("conversations.new.message_to_seller") }
+          - else                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
             = button_tag t("conversations.new.send_message"), :class => "send_button"
