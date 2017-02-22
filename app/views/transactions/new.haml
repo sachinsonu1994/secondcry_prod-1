@@ -106,6 +106,6 @@
           .col-12
           - if @payment_button == 1
             = button_tag t("conversations.new.proceed_to_payment"), :class => "send_button"
-            = render partial: "layouts/info_text", locals: { text: t("conversations.new.message") }
+            = render partial: "layouts/info_text", locals: { text: t("conversations.new.message_to_seller") }
           - else                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     
             = button_tag t("conversations.new.send_message"), :class => "send_button"
