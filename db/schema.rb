@@ -935,6 +935,7 @@ ActiveRecord::Schema.define(version: 20160415073433) do
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
     t.string   "country_code",      limit: 8
+    t.string   "buyer_id",          limit: 255
   end
 
   create_table "testimonials", force: :cascade do |t|
