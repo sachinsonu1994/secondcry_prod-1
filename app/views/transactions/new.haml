@@ -18,6 +18,7 @@
             jQuery('#state').val(response_data.state);
           } else {
             alert("Please enter valid pincode");
+            jQuery('#pincode').val('');
           }
           },
           error: function(response_data) {
@@ -76,22 +77,22 @@
         %h2 Address Line 1
         .row
           .col-12
-            %input{:name => "address1", :id => "address1", :required => "required", :type => "text", :placeholder => "Flat No, Floor, Building Name", :value => "#{@shipping_address.street1 if !@shipping_address.blank? && !@shipping_address.street1.blank?}"}/
+            %input{:name => "address1", :id => "address1", :required => "required", :type => "text", :maxlength => 40, :placeholder => "Flat No, Floor, Building Name", :value => "#{@shipping_address.street1 if !@shipping_address.blank? && !@shipping_address.street1.blank?}"}/
 
         %h2 Address Line 2
         .row
           .col-12
-            %input{:name => "address2", :id => "address2" ,:required => "required", :type => "text", :placeholder => "Colony, Street, Locality", :value => "#{@shipping_address.street2 if !@shipping_address.blank? && !@shipping_address.street2.blank?}"}/
+            %input{:name => "address2", :id => "address2" ,:required => "required", :type => "text", :maxlength => 40, :placeholder => "Colony, Street, Locality", :value => "#{@shipping_address.street2 if !@shipping_address.blank? && !@shipping_address.street2.blank?}"}/
               
         %h2 City
         .row
           .col-12
-            %input{:name => "city", :id => "city" ,:required => "required", :type => "text", :value => "#{@shipping_address.city if !@shipping_address.blank? && !@shipping_address.city.blank?}"}/
+            %input{:name => "city", :id => "city" ,:required => "required", :type => "text", :maxlength => 30, :value => "#{@shipping_address.city if !@shipping_address.blank? && !@shipping_address.city.blank?}"}/
               
         %h2 State
         .row
           .col-12
-            %input{:name => "state", :id => "state" ,:required => "required", :type => "text", :value => "#{@shipping_address.state_or_province if !@shipping_address.blank? && !@shipping_address.state_or_province.blank?}"}/
+            %input{:name => "state", :id => "state" ,:required => "required", :type => "text", :maxlength => 30, :value => "#{@shipping_address.state_or_province if !@shipping_address.blank? && !@shipping_address.state_or_province.blank?}"}/
 
               
       %h2
