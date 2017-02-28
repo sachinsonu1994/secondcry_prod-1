@@ -60,6 +60,9 @@
 - if @current_community.facebook_connect_id
   %meta{ :property => "fb:app_id", :content => "#{@current_community.facebook_connect_id}" }
 
+- if params[:controller] == "people" && params[:action] == "show"
+  %meta{ :name => "robots", :content => "noindex"}
+
 / CSS
 
 - if APP_CONFIG.icon_pack == "font-awesome"

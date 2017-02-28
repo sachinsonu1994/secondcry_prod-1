@@ -28,7 +28,7 @@ function add_validator_methods() {
   $.validator.
     addMethod( "valid_username",
       function(value, element, param) {
-        return value.match(new RegExp("(^[A-Za-z0-9_]*$)"));
+        return value.match(new RegExp("(^[A-Za-z0-9]*$)"));
       }
     );
 
@@ -475,7 +475,7 @@ function initialize_give_feedback_form(locale, grade_error_message, text_error_m
   });
 }
 
-function initialize_signup_form(locale, username_in_use_message, invalid_username_message, email_in_use_message, invalid_invitation_code_message, name_required, invitation_required) {
+function initialize_signup_form(locale, invalid_phone_number_error, username_in_use_message, invalid_username_message, email_in_use_message, invalid_invitation_code_message, name_required, invitation_required) {
   $('#help_invitation_code_link').click(function(link) {
     //link.preventDefault();
     $('#help_invitation_code').lightbox_me({centered: true, zIndex: 1000000 });
@@ -502,12 +502,14 @@ function initialize_signup_form(locale, username_in_use_message, invalid_usernam
       "person[terms]": "required",
       "person[password]": { required: true, minlength: 4 },
       "person[password2]": { required: true, minlength: 4, equalTo: "#person_password1" },
-      "invitation_code": {required: invitation_required, remote: "/people/check_invitation_code"}
+      "invitation_code": {required: invitation_required, remote: "/people/check_invitation_code"},
+      "person[phone_number]": {regex: "^([0-9]+)?$"}
     },
     messages: {
       "person[username]": { valid_username: invalid_username_message, remote: username_in_use_message },
       "person[email]": { remote: email_in_use_message },
-      "invitation_code": { remote: invalid_invitation_code_message }
+      "invitation_code": { remote: invalid_invitation_code_message },
+      "person[phone_number]": { regex: invalid_phone_number_error }
     },
     onkeyup: false, //Only do validations when form focus changes to avoid exessive ASI calls
     submitHandler: function(form) {
