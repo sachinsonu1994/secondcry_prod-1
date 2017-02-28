@@ -5,6 +5,8 @@
   %h1
     %span.profile-title= @person.name(@current_community) + (@community_customization && @community_customization.storefront_label ? @community_customization.storefront_label : "")
 
+- content_for :title, @person.name(@current_community)
+
 .row
   .col-8
 

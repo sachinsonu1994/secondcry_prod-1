@@ -15,6 +15,17 @@
 - content_for :meta_image_height, dimensions[:height].to_s if !@listing.listing_images.empty?
 - content_for :keywords, StringUtils.keywords(@listing.title)
 
+%div{:itemscope => "", :itemtype => "http://schema.org/Product"}
+  %span{:itemprop => "sku", :content => "#{@listing.id}"}
+  %span{:itemprop => "name", :content => "#{@listing.title}"}
+  %span{:itemprop => "image", :content => "#{@listing.listing_images.first.image.url if !@listing.listing_images.blank? && !@listing.listing_images.first.image.url.blank?}"}
+  %span{:content => "/en/listings/#{@listing.id}-#{@listing.title.to_url}", :itemprop => "url"}
+  %span{:itemprop => "itemCondition", :content => "UsedCondition"}
+  %div{:itemscope => "", :itemprop => "offers", :itemtype => "http://schema.org/Offer"}
+    %span{:content => "#{@listing.price if !@listing.price.blank?}", :itemprop => "price"}
+    %span{:content => "#{@listing.currency if !@listing.currency.blank?}", :itemprop => "priceCurrency"}
+    %span{:itemprop => "availability", :content => "http://schema.org/InStock", :itemtype => "http://schema.org/ItemAvailability"}
+
 - content_for :title_header do
   %h1
     %span#listing-title.listing-title= @listing.title
@@ -69,8 +80,9 @@
     .row
       .col-12
         - if @listing.description && !@listing.description.blank?
-          - text_with_line_breaks do
-            = @listing.description
+          %span{:itemprop => "description"}
+            - text_with_line_breaks do
+              = @listing.description
 
     - @listing.custom_field_values.each do |custom_field_value|
       .row
@@ -92,7 +104,7 @@
       .row
         .col-12
           .related-listings-title
-            %h1{:class => "listing-related-menu"}
+            %h2{:class => "listing-related-menu"}
               Recently Viewed
           .row{style: "overflow: auto; overflow-y: hidden;"}
             .listings-thumb-list
@@ -102,7 +114,7 @@
       .row
         .col-12
           .related-listings-title
-            %h1{:class => "listing-related-menu"}
+            %h2{:class => "listing-related-menu"}
               You May Also Like
           .row{:style => "overflow: auto; overflow-y: hidden;"}
             .listings-thumb-list

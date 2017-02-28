@@ -1861,12 +1861,13 @@ en:
       sign_up: "Create a new %{service_name} account"
       terms: "terms of use"
       username_is_in_use: "This username is already in use."
-      username_is_invalid: "Username is invalid. Allowed characters are letters, numbers and underscore."
+      username_is_invalid: "Username is invalid. Allowed characters are letters and numbers."
       visible_only_to_you: "visible only to you and the marketplace admin"
       visible_to_everybody: "visible to everybody"
       create_account_with_facebook: "Sign up with Facebook"
       OR: OR
       signup_with_email: "Sign up with email"
+      invalid_phone_number_error: "Please enter valid phone number"
     not_member:
       explanation_text: "You are currently browsing %{community}. You tried to view the profile of a user that is a member of another marketplace created with the Sharetribe platform. You cannot access this user's profile in %{community}."
       read_more_about_kassi_communities: "Read more about Sharetribe marketplaces"
