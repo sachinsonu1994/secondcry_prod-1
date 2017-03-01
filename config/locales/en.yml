@@ -688,6 +688,7 @@ en:
       rideshare_request_message_form_title: "Offer a ride to %{person}"
       proceed_to_payment: "Proceed to Payment"
       send_message: "Send Message"
+      message_to_seller: "This will send an automatic payment status message to the seller on your behalf!"
       send: Send
       this_message_is_private: "This message is private between you and %{person}. %{person} will be notified of this message by email."
       you_will_get_notified_of_acceptance: "You will get an email notification when %{person} accepts or rejects your proposal."
@@ -1860,12 +1861,13 @@ en:
       sign_up: "Create a new %{service_name} account"
       terms: "terms of use"
       username_is_in_use: "This username is already in use."
-      username_is_invalid: "Username is invalid. Allowed characters are letters, numbers and underscore."
+      username_is_invalid: "Username is invalid. Allowed characters are letters and numbers."
       visible_only_to_you: "visible only to you and the marketplace admin"
       visible_to_everybody: "visible to everybody"
       create_account_with_facebook: "Sign up with Facebook"
       OR: OR
       signup_with_email: "Sign up with email"
+      invalid_phone_number_error: "Please enter valid phone number"
     not_member:
       explanation_text: "You are currently browsing %{community}. You tried to view the profile of a user that is a member of another marketplace created with the Sharetribe platform. You cannot access this user's profile in %{community}."
       read_more_about_kassi_communities: "Read more about Sharetribe marketplaces"
