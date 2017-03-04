@@ -316,6 +316,14 @@ class ListingsController < ApplicationController
       @listing.author = @current_user
 
       if @listing.save
+        person = Person.where("id = '#{@current_user.id}'").first
+        person.total_bucks = person.total_bucks.to_i + 50
+        person.save
+        point_reason = "new_listing"
+        receiver = @current_user.id
+        sender = "aY6ORc2V8r5Oaa7i61d4MZ"
+        save_point_detail_information = save_points_per_activity_by_user(point_reason, sender, receiver)
+      
         upsert_field_values!(@listing, params[:custom_fields])
 
         listing_image_ids =
@@ -940,4 +948,47 @@ class ListingsController < ApplicationController
         default: true
       }
   end
+  
+  def save_points_per_activity_by_user(point, sender, receiver)
+      if point == "new_listing"
+        messag = "you got 100 points, beacuse you have created a new listing." 
+      end
+    message = Message.where("sender_id = '#{@current_user.id}' and content like 'welcome to secondcry%'").first
+    if !message.blank?
+      mess = Message.new
+      mess.sender_id = sender
+      mess.content = "#{messag}"
+      mess.conversation_id = Conversation.last.id
+      mess.save
+    else
+    conversation = Conversation.new
+    conversation.community_id = @current_community.id
+    conversation.save
+    participation = Participation.new
+    participation.person_id = receiver
+    participation.conversation_id = Conversation.last.id
+    participation.is_read = 0
+    participation.is_starter = 0
+    participation.last_sent_at = DateTime.now
+    participation.last_received_at = DateTime.now
+    participation.feedback_skipped = 0
+    participation.save
+        
+    receiver = Participation.new
+    receiver.person_id = sender
+    receiver.conversation_id = Conversation.last.id
+    receiver.is_read = 1
+    receiver.is_starter = 1
+    receiver.last_sent_at = DateTime.now
+    receiver.feedback_skipped = 0
+    receiver.save
+        
+    mess = Message.new
+    mess.sender_id = sender
+    mess.content = "welcome to secondcry #{message}"
+    mess.conversation_id = Conversation.last.id
+    mess.save
+  end
+  return
+ end
 end

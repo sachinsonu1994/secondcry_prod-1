@@ -108,6 +108,11 @@ class TransactionsController < ApplicationController
         booking_fields = Maybe(form).slice(:start_on, :end_on).select { |booking| booking.values.all? }.or_else({})
 
         quantity = Maybe(booking_fields).map { |b| DateUtils.duration_days(b[:start_on], b[:end_on]) }.or_else(form[:quantity])
+        
+        log = Logger.new(STDOUT)
+        log.level = Logger::INFO
+        log.info(listing_model.price)
+        log.info(listing_model.shipping_price)
 
         TransactionService::Transaction.create(
           {
@@ -119,6 +124,7 @@ class TransactionsController < ApplicationController
               listing_author_id: author_model.id,
               unit_type: listing_model.unit_type,
               unit_price: listing_model.price,
+              shipping_price: listing_model.shipping_price,
               unit_tr_key: listing_model.unit_tr_key,
               listing_quantity: quantity,
               content: form[:message],
@@ -142,7 +148,7 @@ class TransactionsController < ApplicationController
         listing = Listing.where("id = '#{transaction.listing_id}'").first
 
         email = Email.where("person_id = '#{@current_user.id}' and confirmed_at is not null").first
-        transaction_amount = transaction.unit_price * transaction.listing_quantity
+        transaction_amount = transaction.unit_price * transaction.listing_quantity + transaction.shipping_price
         date = "#{Date.today}".gsub('-','')
 
         render "transactions/payu", locals: {
@@ -474,7 +480,7 @@ Thanks."
           quantity: quantity,
           subtotal: quantity != 1 ? l_model.price * quantity : nil,
           total: l_model.price * quantity,
-          shipping_price: nil,
+          shipping_price: l_model.shipping_price,
           total_label: total_label
         })
     }
