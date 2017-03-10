@@ -18,6 +18,8 @@ Kassi::Application.routes.draw do
 
   get 'transactions/fetch_city_state_from_pincode'
   post 'transactions/fetch_city_state_from_pincode'
+  get "/en/infos/about", :to => redirect("/info/")
+  get "/en/infos/how_to_use", :to => redirect("/info/")
   
   # A route for DV test file
   # A CA will check if there is a file in this route
@@ -261,8 +263,8 @@ Kassi::Application.routes.draw do
 
     resources :infos do
       collection do
-        get :about
-        get :how_to_use
+        get :rewards
+        get :returns
         get :terms
         get :privacy
         get :news

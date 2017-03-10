@@ -1,11 +1,11 @@
 #footer
   = image_tag 'footer.png', style: "bottom:0; width: 100%; position: absolute; z-index: -1"
   .row
-    .col-3
-    .col-4
+    .col-2
+    .col-2
       .about-us 
         .title
-          About us
+          Know more
         .content
           = link_to "/" do
             = icon_tag("home", ["icon-with-text"])
@@ -13,20 +13,37 @@
           %br
           = link_to "/info/" do
             = icon_tag("information", ["icon-with-text"])
-            = t("header.how_it_works")
+            = t("header.about_us")
+          %br
+          = link_to new_user_feedback_path do
+            = icon_tag("feedback", ["icon-with-text"])
+            = t("header.contact_us")
+          %br
+          = link_to "/info/category/blog/" do
+            = icon_tag("terms", ["icon-with-text"])
+            Blog
+    .col-2
+      .about-us 
+        .title
+          Policies
+        .content
+          = link_to "/en/infos/rewards" do
+            = icon_tag("feedback", ["icon-with-text"])
+            = t("layouts.infos.reward_policy")
+          %br
+          = link_to "/en/infos/returns" do
+            = icon_tag("information", ["icon-with-text"])
+            = t("layouts.infos.return_policy")
           %br
           = link_to privacy_infos_path do
             = icon_tag("lock", ["icon-with-text"])
-            Privacy Policy
+            = t("layouts.infos.privacy")
           %br
           = link_to terms_infos_path do
             = icon_tag("terms", ["icon-with-text"])
             = t("layouts.infos.terms")
           %br
-          = link_to new_user_feedback_path do
-            = icon_tag("feedback", ["icon-with-text"])
-            = t("header.contact_us")
-    .col-4
+    .col-2
       .about-us
         .title
           My Account
@@ -38,7 +55,7 @@
             %br
             = link_to person_path(@current_user, :show_closed => true) do
               = icon_tag("list", ["icon-with-text"])
-              = t("footer.manage_listings")
+              = t("header.manage_listings")
             %br
             = link_to person_settings_path(@current_user) do
               = icon_tag("settings", ["icon-with-text"])
@@ -48,7 +65,19 @@
             = icon_tag("invite", ["icon-with-text"])
             = t("header.invite")
           %br
+    .col-3
+      .about-us
+        .title
+        .content
+          %img{:src => "/assets/payment.png", :style => "width:90%", :class => "payment_icon"}/
           %br
           %br
           %br
     .col-1
+    
+:css
+  @media (max-width:768px) and (min-width:300px){
+    .payment_icon {
+       width: 50% !important;
+      }
+  }
