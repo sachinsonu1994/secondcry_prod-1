@@ -1,0 +1,40 @@
+<% content_for :javascript do %>
+  initialize_user_feedback_form("#{I18n.locale}");
+<% end %>
+<% content_for :title_header do %>
+<h1>
+  <%= t("layouts.no_tribe.feedback") %>
+</h1>
+<% end %>
+<div class="row">
+<div class="col-6">
+<iframe
+  width="100%"
+  height="400px"
+  class = "address_map"
+  frameborder="0" style="border:0;"
+  src="https://www.google.com/maps/embed/v1/place?key=AIzaSyAzuuwrqx-rLYcl9pQiY7s64Ay7D1XWqdw&q=secondcry" allowfullscreen>
+</iframe>
+</div>
+<div class="col-6">
+<div class="new-feedback-form centered-section">
+  Mail us: <b>info@secondcry.com</b><br/>
+  Call us: <b>8095117799</b>
+  <h2 style = "margin:0%; margin-top:0.75em">Working Hours</h2>
+    Monday - Friday<br/>
+    9:00AM - 7:00PM<br/>
+  <%= form_for feedback_form, :url => user_feedbacks_path do |form| %>
+    <% unless email_present %>
+      <%= form.label :email, t("layouts.application.your_email_address") %>
+      <%= form.text_field :email %>
+    <% end %>
+    <%= form.label :title, "You should not see this field, if CSS is working.", :class => "unwanted_text_field" %>
+    <%= form.text_field :title, :class => "unwanted_text_field", :id => "error_feedback_unwanted_title" %>
+    <%= form.label :content, t("layouts.application.feedback") %>
+    <%= form.text_area :content, :placeholder => t("layouts.application.default_feedback") %>
+    <%= form.hidden_field :url, :value => request.headers["HTTP_REFERER"] || request.original_url %>
+    <%= form.button t("layouts.application.send_feedback_to_admin") %>
+  <% end %>
+</div>
+</div>
+</div>

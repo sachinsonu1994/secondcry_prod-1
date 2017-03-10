@@ -213,7 +213,7 @@ function initialize_user_feedback_form() {
   form_id = "#new_feedback";
   $(form_id).validate({
     rules: {
-      "feedback[email]": {required: false, email: true},
+      "feedback[email]": {required: true, email: true},
       "feedback[content]": {required: true, minlength: 1}
     }
   });
