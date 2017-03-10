@@ -1118,6 +1118,7 @@ en:
       offer_partitive: offer
       request_partitive: request
   header:
+    about_us: About us
     about: About
     how_it_works: How it works
     home: Home
@@ -1285,12 +1286,14 @@ en:
     global-header:
       select_language: "Select language"
     infos:
-      about: About
       how_to_use: "How it works"
       info_about_kassi: "Information about %{service_name}"
       news: News
       register_details: Privacy
       terms: "Terms of use"
+      reward_policy: "Reward Policy"
+      return_policy: "Return Policy"
+      privacy: "Privacy Policy"
     logged_in:
       admin: Admin
       go_to_your_profile_page: Profile

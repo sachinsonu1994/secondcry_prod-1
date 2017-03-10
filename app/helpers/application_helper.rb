@@ -556,17 +556,17 @@ module ApplicationHelper
   def about_links
     links = [
       {
-        :text => t('layouts.infos.about'),
-        :icon_class => icon_class("information"),
-        :path => about_infos_path,
-        :name => "about"
+        :text => t('layouts.infos.reward_policy'),
+        :icon_class => icon_class("feedback"),
+        :path => rewards_infos_path,
+        :name => "rewards"
       }
     ]
     links << {
-      :text => t('layouts.infos.how_to_use'),
-      :icon_class => icon_class("how_to_use"),
-      :path => how_to_use_infos_path,
-      :name => "how_to_use"
+      :text => t('layouts.infos.return_policy'),
+      :icon_class => icon_class("information"),
+      :path => returns_infos_path,
+      :name => "returns"
     }
     links << {
       :text => t('layouts.infos.register_details'),

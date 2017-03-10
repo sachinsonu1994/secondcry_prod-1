@@ -6,6 +6,10 @@ class TransactionsController < ApplicationController
     controller.ensure_logged_in t("layouts.notifications.you_must_log_in_to_view_your_inbox")
   end
   before_filter do |controller|
+    return_url = "#{request.protocol}#{request.host_with_port}/en/transactions/new?utf8=#{params[:utf8]}&listing_id=#{params[:listing_id]}"
+    encoded_url = URI.encode(return_url)
+    return_with_fb_login = URI.parse(encoded_url)
+    session[:return_to_content] = "#{return_with_fb_login}"
     controller.ensure_logged_in t("layouts.notifications.you_must_log_in_to_do_a_transaction")
   end
 

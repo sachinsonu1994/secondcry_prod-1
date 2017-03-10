@@ -2,14 +2,14 @@ class InfosController < ApplicationController
 
   skip_filter :check_email_confirmation
 
-  def about
+  def rewards
     @selected_tribe_navi_tab = "about"
-    @selected_left_navi_link = "about"
+    @selected_left_navi_link = "rewards"
   end
 
-  def how_to_use
+  def returns
     @selected_tribe_navi_tab = "about"
-    @selected_left_navi_link = "how_to_use"
+    @selected_left_navi_link = "returns"
     content = if @community_customization && !@community_customization.how_to_use_page_content.nil?
       @community_customization.how_to_use_page_content.html_safe
     else
