@@ -1263,7 +1263,7 @@ en:
       join_this_community: "Join marketplace"
       read_more: "Read more"
       feedback: "What would you like to tell us?"
-      default_feedback: "Did you encounter a problem with %{service_name}? Have a suggestion for improving the service? Noticed some suspicious content? Or just have something you want to discuss with us? Let us know!"
+      default_feedback: "Did you encounter a problem with %{service_name}? Have a suggestion for improving the service? Or any other feedback? Let us know!"
       feedback_forum: "feedback forum"
       feedback_handle: Feedback
       give_feedback: "Contact us"
