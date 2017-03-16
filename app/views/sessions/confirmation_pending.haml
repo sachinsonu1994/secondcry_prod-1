@@ -4,5 +4,7 @@
 #new-message-form.centered-section
   = render :partial => "sessions/confirmation_form"
 
+= render :partial => "layouts/google_conversion_code"
+
 :javascript
   fbq('track', 'CompleteRegistration');

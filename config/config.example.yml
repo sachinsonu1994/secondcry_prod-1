@@ -19,3 +19,21 @@ staging:
 
 production:
   # Add local `production` environment configuration overrides here
+  max_sitemap_links: 1000
+  log_level: DEBUG
+  secret_key_base: # add here the generated key from rake secret
+  domain: "secondcry.com"
+  always_use_ssl: true
+  mail_delivery_method: smtp
+  smtp_email_address: "smtpout.asia.secureserver.net"
+  smtp_email_port: 3535
+  smtp_email_user_name: "testing@secondcry.com"
+  smtp_email_password: "testingsc123"
+  smtp_email_domain: "secondcry.com"
+  # This will be the from field in the mails sent from Sharetribe
+  sharetribe_mail_from_address: "testing@secondcry.com"
+  # The address where the notifications of feedbacks from Sharetribe UI are sent
+  feedback_mailer_recipients:  'testing@secondcry.com'
+  payu_key: "gtKFFx"
+  payu_salt: "eCwWELxi"
+  payu_url: "https://test.payu.in/_payment"
