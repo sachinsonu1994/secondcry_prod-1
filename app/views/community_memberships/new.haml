@@ -57,5 +57,7 @@
 
 = render :partial => "people/help_texts", :collection => ["terms", "help_invitation_code"], :as => :field
 
+= render :partial => "layouts/google_conversion_code"
+
 :javascript
   fbq('track', 'CompleteRegistration');
