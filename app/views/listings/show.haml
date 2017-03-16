@@ -20,7 +20,7 @@
   %span{:itemprop => "name", :content => "#{@listing.title}"}
   %span{:itemprop => "identifier_​exists", :content => "no"}
   - if !@listing.listing_images.blank? && !@listing.listing_images.first.image.url.blank? 
-    %span{:itemprop => "image", :content => "#{request.protocol}#{request.host_with_port}#{@listing.listing_images.first.image.url if !@listing.listing_images.blank? && !@listing.listing_images.first.image.url.blank?}"}
+    %span{:itemprop => "image", :content => "#{request.protocol}#{request.host_with_port}#{@listing.listing_images.first.image.url}"}
   %span{:content => "#{request.protocol}#{request.host_with_port}/en/listings/#{@listing.id}-#{@listing.title.to_url}", :itemprop => "url"}
   %span{:itemprop => "itemCondition", :content => "UsedCondition"}
   %div{:itemscope => "", :itemprop => "offers", :itemtype => "http://schema.org/Offer"}
