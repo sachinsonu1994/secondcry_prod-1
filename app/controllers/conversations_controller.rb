@@ -9,7 +9,7 @@ class ConversationsController < ApplicationController
 
   def show
     conversation_id = params[:id]
-
+    @address_button = 0
     conversation = MarketplaceService::Conversation::Query.conversation_for_person(
       conversation_id,
       @current_user.id,
@@ -41,6 +41,7 @@ class ConversationsController < ApplicationController
       messages: messages.reverse,
       conversation_data: conversation,
       message_form: message_form,
+      address_button: @address_button,
       message_form_action: person_message_messages_path(@current_user, :message_id => conversation[:id])
     }
   end
