@@ -31,7 +31,8 @@ class ShippingAddress < ActiveRecord::Base
     :state_or_province,
     :street1,
     :street2,
-    :buyer_id
+    :person_id,
+    :address_type
   )
 
   belongs_to :tx, class_name: "Transaction", foreign_key: "transaction_id"

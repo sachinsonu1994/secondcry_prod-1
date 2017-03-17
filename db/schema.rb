@@ -936,7 +936,8 @@ ActiveRecord::Schema.define(version: 20160627063918) do
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
     t.string   "country_code",      limit: 8
-    t.string   "buyer_id",          limit: 255
+    t.string   "person_id",         limit: 255
+    t.string   "address_type",      limit: 255
   end
 
   create_table "testimonials", force: :cascade do |t|
@@ -1004,6 +1005,7 @@ ActiveRecord::Schema.define(version: 20160627063918) do
     t.string   "delivery_method",                   limit: 31,  default: "none"
     t.integer  "shipping_price_cents",              limit: 4
     t.boolean  "deleted",                                       default: false
+    t.string   "order_status",                      limit: 255
   end
 
   add_index "transactions", ["community_id", "deleted"], name: "transactions_on_cid_and_deleted", using: :btree
