@@ -1,0 +1,40 @@
+<script>
+  function warning_for_decline_message()
+  {
+  	confirm_value = confirm("This will cancel the transaction and the listing will be closed. Are you sure you want to decline?");
+  	if(confirm_value == true){
+      window.location.href = "/transactions/save_decline_message?txn_id=<%= transaction_model.id %>"
+  	}
+  }
+</script>
+<div class = "address_button">
+  <% if (transaction_model.order_status == 'payment successfull') && (transaction_model.listing_author_id == @current_user.id)%>
+    <div class = "row">
+  	  <div class = "col-9">
+        <%= button_tag t("conversations.show.i_accept"), :class => "send_button", :onclick => "window.location.href = '/transactions/pickup?txn_id=#{transaction_model.id}'" %>
+      </div>
+      <div class = "col-3">
+        <%= button_tag t("conversations.show.decline"), :class => "send_button", :onclick => "warning_for_decline_message();"%>
+      </div>
+    </div>
+  
+  <% elsif (transaction_model.order_status == 'order accepted') && (transaction_model.listing_author_id == @current_user.id)%>
+    <div class = "row">
+      <div class = "col-7">
+        <%= button_tag t("conversations.show.update_address"), :class => "send_button", :onclick => "window.location.href = '/transactions/pickup?txn_id=#{transaction_model.id}'" %>
+      </div>
+      <div class = "col-5">
+        <%= button_tag t("conversations.show.update_bank_detail"), :class => "send_button", :onclick => "window.location.href = '/en/#{@current_user.username}/settings/bank_details'" %>
+      </div>
+    </div>        	
+    <%= render partial: "layouts/info_text", locals: { text: t("conversations.show.bank_detail_message") } %>
+  <% end %>
+</div>
+<style>
+  @media (min-width: 30em){
+    .address_button {
+      margin-left: 3.75em;
+      margin-right: 3.75em;
+    }
+  }
+</style>
