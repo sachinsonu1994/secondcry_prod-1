@@ -1,0 +1,77 @@
+- content_for :extra_javascript do
+  :javascript
+    ST.transaction.initializeFreeTransactionForm('#{I18n.locale}');
+
+  :javascript
+    function fetch_city_and_state()
+    {
+      var pincode = jQuery('#pincode').val();
+      if (pincode.length == 6)
+      {
+        jQuery.ajax({
+          url: "/transactions/fetch_city_state_from_pincode?pincode=" + pincode,
+          
+          success: function (response_data) {
+          if(response_data.status == "success")
+          {
+            jQuery('#city').val(response_data.district);
+            jQuery('#state').val(response_data.state);
+          } else {
+            alert("Please enter valid pincode");
+            jQuery('#pincode').val('');
+          }
+          },
+          error: function(response_data) {
+            alert("Server error. Please try again later.");
+          },
+        });
+      }
+    }
+   
+#new_message_form.centered-section
+
+  = form_tag('/transactions/save_seller_address', method: :post, id: "transaction-form") do
+    = hidden_field_tag(:tx_id, @transactions.id)
+    = hidden_field_tag(:author_id, @transactions.listing_author_id)
+
+    %h2 Pickup Address Details
+
+    %h2 Name
+    .row
+      .col-12
+        %input{:name => "name", :id => "name", :required => "required", :type => "text", :maxlength => 40, :value => "#{@pickup_address.name if !@pickup_address.blank? && !@pickup_address.name.blank?}"}/
+
+    %h2 Contact Number
+    .row
+      .col-12
+        %input{:minlength => "10", :maxlength => "11", :name => "phone_number", :required => "required", :type => "number", :value => @phone_number}/
+            
+    %h2 Pincode
+    .row
+      .col-12
+        %input{:name => "pincode", :id => "pincode" ,:required => "required", :type => "text", :maxlength => "6", :minlength => "6", :onkeyup => "fetch_city_and_state();", :value => "#{@pickup_address.postal_code if !@pickup_address.blank? && !@pickup_address.postal_code.blank?}"}/
+
+    %h2 Address Line 1
+    .row
+      .col-12
+        %input{:name => "address1", :id => "address1", :required => "required", :type => "text", :maxlength => 40, :placeholder => "Flat No, Floor, Building Name", :value => "#{@pickup_address.street1 if !@pickup_address.blank? && !@pickup_address.street1.blank?}"}/
+
+    %h2 Address Line 2
+    .row
+      .col-12
+        %input{:name => "address2", :id => "address2" ,:required => "required", :type => "text", :maxlength => 40, :placeholder => "Colony, Street, Locality", :value => "#{@pickup_address.street2 if !@pickup_address.blank? && !@pickup_address.street2.blank?}"}/
+
+    %h2 City
+    .row
+      .col-12
+        %input{:name => "city", :id => "city" ,:required => "required", :type => "text", :maxlength => 30, :value => "#{@pickup_address.city if !@pickup_address.blank? && !@pickup_address.city.blank?}"}/
+ 
+    %h2 State
+    .row
+      .col-12
+        %input{:name => "state", :id => "state" ,:required => "required", :type => "text", :maxlength => 30, :value => "#{@pickup_address.state_or_province if !@pickup_address.blank? && !@pickup_address.state_or_province.blank?}"}/
+
+    .row
+      .col-12
+        = button_tag t("conversations.new.save"), :class => "send_button"
+        %a.send_button{:href => "/en/transactions/#{@transactions.id}"} <--  Click here to go back

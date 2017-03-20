@@ -16,6 +16,11 @@ Kassi::Application.routes.draw do
   get  'braintree_accounts/check_ifsc_code'
   post 'braintree_accounts/check_ifsc_code'
 
+  get  '/transactions/pickup'
+  post '/transactions/save_seller_address'
+  post '/transactions/save_decline_message'
+  get '/transactions/save_decline_message'
+  
   get 'transactions/fetch_city_state_from_pincode'
   post 'transactions/fetch_city_state_from_pincode'
   get "/en/infos/about", :to => redirect("/info/")

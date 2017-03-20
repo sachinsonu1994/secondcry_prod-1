@@ -658,6 +658,7 @@ en:
       paid: "paid %{sum}"
       payment_preauthorized: "Payment authorized: %{sum}"
     new:
+      save: Save
       offer_message_form_title: "Offer %{listing} to %{person}"
       request_message_form_title: "Request %{listing} from %{person}"
       favor_offer_message_form_title: "Ask help from %{person}"
@@ -698,6 +699,11 @@ en:
       about_listing: "About listing %{listing_title}"
       author_has_to_accept_request: "%{author_name} needs to accept the request before you can pay"
     show:
+      i_accept: "I accept"
+      decline: "Decline"
+      update_address: "Update Address"
+      update_bank_detail: "Update Bank Detail"
+      bank_detail_message: "Please ensure your bank details are up to date to receive payment for this listing."
       in_response_to_listing: "about listing"
       message_sent_by: "Message sent by"
       message_sent_to: "Message sent to"

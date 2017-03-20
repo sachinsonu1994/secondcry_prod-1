@@ -149,7 +149,7 @@ function googlemapMarkerInit(canvas,n_prefix,n_textfield,draggable,community_loc
 
 function update_map(field) {
   if (geocoder) {
-    geocoder.geocode({'address':field.value},
+    geocoder.geocode({'address':field.value.replace("&", "")},
       function(response,info) {
         if (info == google.maps.GeocoderStatus.OK){
           marker.setVisible(true);
@@ -548,6 +548,7 @@ function addListingMarkers(listings, viewport) {
                   label.set('text', "");
                   label.set('color', "#FFF");
         marker.set("label", label);
+
         markers.push(marker);
         markerContents.push(entry["id"]);
         markersArr.push(marker);
@@ -596,7 +597,7 @@ function addListingMarkers(listings, viewport) {
     map.setCenter(cen);
   } else {
     var listingsBounds = (latitudes.length && longitudes.length) ?
-      {sw: [_.min(latitudes), _.min(longitudes)], ne: [_.max(latitudes), _.max(longitudes)]} : nil;
+      {sw: [_.min(latitudes), _.min(longitudes)], ne: [_.max(latitudes), _.max(longitudes)]} : null;
     setBounds(listingsBounds);
   }
 

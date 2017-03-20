@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160415073433) do
+ActiveRecord::Schema.define(version: 20160627063918) do
 
   create_table "auth_tokens", force: :cascade do |t|
     t.string   "token",            limit: 255
@@ -185,6 +185,7 @@ ActiveRecord::Schema.define(version: 20160415073433) do
     t.string   "facebook_connect_id",                        limit: 255
     t.string   "facebook_connect_secret",                    limit: 255
     t.string   "google_analytics_key",                       limit: 255
+    t.string   "google_maps_key",                            limit: 64
     t.string   "name_display_type",                          limit: 255,   default: "first_name_with_initial"
     t.string   "twitter_handle",                             limit: 255
     t.boolean  "use_community_location_as_default",                        default: false
@@ -935,7 +936,8 @@ ActiveRecord::Schema.define(version: 20160415073433) do
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
     t.string   "country_code",      limit: 8
-    t.string   "buyer_id",          limit: 255
+    t.string   "person_id",         limit: 255
+    t.string   "address_type",      limit: 255
   end
 
   create_table "testimonials", force: :cascade do |t|
@@ -1003,6 +1005,7 @@ ActiveRecord::Schema.define(version: 20160415073433) do
     t.string   "delivery_method",                   limit: 31,  default: "none"
     t.integer  "shipping_price_cents",              limit: 4
     t.boolean  "deleted",                                       default: false
+    t.string   "order_status",                      limit: 255
   end
 
   add_index "transactions", ["community_id", "deleted"], name: "transactions_on_cid_and_deleted", using: :btree

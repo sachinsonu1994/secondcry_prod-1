@@ -36,7 +36,10 @@ class TransactionsController < ApplicationController
 
       transaction_params = HashUtils.symbolize_keys({listing_id: listing_model.id}.merge(params.slice(:start_on, :end_on, :quantity, :delivery)))
 
-      @shipping_address = ShippingAddress.where("buyer_id = '#{@current_user.id}'").last
+      @shipping_address = ShippingAddress.where("person_id = '#{@current_user.id}' and address_type = 'buyer'").last
+      if @shipping_address.blank?
+        @shipping_address = ShippingAddress.where("person_id = '#{@current_user.id}' and address_type = 'seller'").last
+      end  
       
       # Only selling and renting listings should get payment button
       listing = Listing.where("id = #{params[:listing_id]}").first
@@ -188,7 +191,7 @@ class TransactionsController < ApplicationController
     end
     
     shipping_address = ShippingAddress.create(:transaction_id => transaction_id, :status => params[:status], :name => params[:firstname], :phone => params[:phone], :street1 => params[:address1], :street2 => params[:address2],
-    :city => params[:city], :state_or_province => params[:state], :country => params[:country], :buyer_id => @current_user.id, :postal_code => params[:zipcode])
+    :city => params[:city], :state_or_province => params[:state], :country => params[:country], :person_id => @current_user.id, :postal_code => params[:zipcode], :address_type => "buyer")
     
     value = "#{PAYU_SALT}|#{params[:status]}||||||||||#{params[:udf1]}|#{params[:email]}|#{params[:firstname]}|#{params[:productinfo]}|#{params[:amount]}|#{params[:txnid]}|#{PAYU_KEY}"
     reshashvalue = Digest::SHA2.new(512).hexdigest("#{value}")
@@ -204,11 +207,15 @@ Thanks."
 
       transaction.listing.open = 0
       transaction.listing.save
+      transaction.order_status = 'payment successfull'
+      transaction.save
     else
       payment_string = "Dear #{seller.given_name},
 Attempt to make payment of Rs.#{params[:amount]} to SecondCry towards your listing \"#{params[:productinfo]}\" failed due to some reason.
 If I am still interested, I will retry. This transaction stands closed.
 Thanks."
+      transaction.order_status = 'payment failure'
+      transaction.save
     end
 
     # add payment status message to the transaction message log
@@ -234,6 +241,67 @@ Thanks."
 
     # redirect to transaction's history of conversations
     redirect_to "#{request.protocol}#{request.host_with_port}/en/transactions/#{transaction_id}"
+  end
+  
+  def pickup
+    if params[:txn_id].blank?
+      flash[:error] = t("layouts.notifications.you_are_not_authorized_to_view_this_content")
+      redirect_to root
+    else
+      @transactions = Transaction.where("listing_author_id = '#{@current_user.id}' and id = '#{params[:txn_id]}'").first
+      if !@transactions.blank?
+        @pickup_address = ShippingAddress.where("person_id = '#{@transactions.listing_author_id}' and address_type = 'seller'").last
+        if @pickup_address.blank?
+          @pickup_address = ShippingAddress.where("person_id = '#{@transactions.listing_author_id}' and address_type = 'buyer'").last
+        end
+        person = Person.find_by_id(@current_user.id)
+          if !person.blank?
+            @phone_number = person.phone_number
+          end
+      else
+        flash[:error] = t("layouts.notifications.you_are_not_authorized_to_view_this_content")
+        redirect_to root          
+      end
+    end
+  end
+  
+  def save_seller_address
+    transaction = Transaction.where("id = '#{params[:tx_id]}'").first
+    pickup_address = ShippingAddress.where("transaction_id = '#{params[:tx_id]}' and person_id = '#{params[:author_id]}' and address_type = 'seller'").last
+    if pickup_address.blank?
+      pickup_address = ShippingAddress.create(:transaction_id => params[:tx_id], :status => "success", :name => params[:name], :phone => params[:phone_number], :street1 => params[:address1], :street2 => params[:address2],
+      :city => params[:city], :state_or_province => params[:state], :country => "India", :person_id => params[:author_id], :postal_code => params[:pincode], :address_type => "seller")
+      seller = Person.find_by_id(@current_user.id)
+      if !seller.blank? && seller.phone_number.blank?
+        seller.phone_number = params[:phone]
+        seller.save
+      end
+      message = Message.new
+      message.conversation_id = transaction.conversation_id
+      message.sender_id = params[:author_id]
+      message.content = "I have accepted the transaction and shared my pickup details with Secondcry. We will hear from Secondcry in next 24 hours about the next steps."
+      message.save
+      transaction.order_status = 'order accepted'
+      transaction.save
+    else
+      pickup_address = pickup_address.update_attributes(:status => "success", :name => params[:name], :phone => params[:phone_number], :street1 => params[:address1], :street2 => params[:address2],
+      :city => params[:city], :state_or_province => params[:state], :country => "India", :person_id => params[:author_id], :postal_code => params[:pincode], :address_type => "seller")
+    end
+    flash[:notice] = "Your address updated successfully"
+    redirect_to "#{request.protocol}#{request.host_with_port}/en/transactions/#{params[:tx_id]}"    
+  end
+  
+  def save_decline_message
+    transaction = Transaction.where("id = '#{params[:txn_id]}'").first
+    transaction.order_status = 'cancelled by seller'
+    transaction.save
+    message = Message.new
+    message.conversation_id = transaction.conversation_id
+    message.sender_id = @current_user.id
+    message.content = "The product is not available for sale anymore. You will receive a refund from Secondcry within 7 working days. Apologies for the inconvenience caused. The listing is now closed."
+    message.save
+    flash[:notice] = "Buyer has been informed of your refusal. Your listing is now closed."
+    redirect_to "#{request.protocol}#{request.host_with_port}/en/transactions/#{params[:txn_id]}"
   end
 
   def show
@@ -270,6 +338,11 @@ Thanks."
     conversation = transaction_conversation[:conversation]
     listing = Listing.where(id: tx[:listing_id]).first
 
+    @address_button = 0
+    if (tx_model.listing_author_id == @current_user.id) && (tx_model.order_status == 'payment successfull') 
+      @address_button = 1
+    end
+
     messages_and_actions = TransactionViewUtils.merge_messages_and_transitions(
       TransactionViewUtils.conversation_messages(conversation[:messages], @current_community.name_display_type),
       TransactionViewUtils.transition_messages(transaction_conversation, conversation, @current_community.name_display_type))
@@ -291,6 +364,7 @@ Thanks."
       conversation_other_party: person_entity_with_url(conversation[:other_person]),
       is_author: is_author,
       role: role,
+      address_button: @address_button,
       message_form: MessageForm.new({sender_id: @current_user.id, conversation_id: conversation[:id]}),
       message_form_action: person_message_messages_path(@current_user, :message_id => conversation[:id]),
       price_break_down_locals: price_break_down_locals(tx)
