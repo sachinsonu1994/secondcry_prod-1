@@ -35,7 +35,7 @@ atom_feed :language => 'en-US', 'xmlns:georss' => 'http://www.georss.org/georss'
         end
         category_id = listing[:category_id]
         if google_product_category[category_id].blank?
-          google_category_id = 5
+          google_category_id = 537
         else
           google_category_id = google_product_category[category_id]
         end
