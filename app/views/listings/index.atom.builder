@@ -39,11 +39,13 @@ atom_feed :language => 'en-US', 'xmlns:georss' => 'http://www.georss.org/georss'
         else
           google_category_id = google_product_category[category_id]
         end
-
-        listing_id = listing[:id]
-        brand = brand_hash["#{listing_id}"]
-        if brand.blank?
-          brand = "secondcry"
+        
+        if !brand_hash.blank?
+          listing_id = listing[:id]
+          brand = brand_hash["#{listing_id}"]
+          if brand.blank?
+            brand = "secondcry"
+          end
         end
 
         entry.summary listing[:description]

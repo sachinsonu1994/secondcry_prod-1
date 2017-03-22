@@ -115,10 +115,14 @@ class ListingsController < ApplicationController
 
         brand_hash = Hash.new
         custom_field = CustomFieldName.where("value = 'Brand'").first
-        brand_value = CustomFieldValue.where("custom_field_id = #{custom_field.custom_field_id}")
-        brand_value.each{|bv|
-        brand_hash["#{bv.listing_id}"] = "#{bv.text_value}"
-        }
+        if !custom_field.blank?
+          brand_value = CustomFieldValue.where("custom_field_id = #{custom_field.custom_field_id}")
+          if !brand_value.blank?
+            brand_value.each{|bv|
+            brand_hash["#{bv.listing_id}"] = "#{bv.text_value}"
+            }
+          end
+        end
 
         title = build_title(params)
         updated = listings.first.present? ? listings.first[:updated_at] : Time.now
