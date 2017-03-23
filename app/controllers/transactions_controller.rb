@@ -45,7 +45,7 @@ class TransactionsController < ApplicationController
       listing = Listing.where("id = #{params[:listing_id]}").first
       listing_shape = ListingShape.find(listing.listing_shape_id)
       @payment_button = 0
-      if (listing_shape.name == "selling" || listing_shape.name == "renting-out")
+      if (listing_shape.name == "selling" && !params[:delivery].blank? && params[:delivery] == "shipping") || (listing_shape.name == "renting-out")
         @payment_button = 1
       end
 
