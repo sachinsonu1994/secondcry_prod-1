@@ -12,6 +12,10 @@ Kassi::Application.routes.draw do
   get "/robots.txt" => RobotsGenerator
   get "/sitemap.xml.gz" => "sitemap#sitemap", format: :xml
 
+  resources :google_merchant
+    get 'google_merchant.atom' =>  "google_merchant#index"
+ 
+
   post '/payu_response' => 'transactions#payu_response'
   get  'braintree_accounts/check_ifsc_code'
   post 'braintree_accounts/check_ifsc_code'
