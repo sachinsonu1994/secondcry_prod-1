@@ -1,4 +1,4 @@
-atom_feed :language => 'en-US', 'xmlns:georss' => 'http://www.georss.org/georss', 'xmlns:st'  => 'http://www.sharetribe.com/SharetribeFeed' do |feed|
+atom_feed :language => 'en-US', 'xmlns' => 'http://www.w3.org/2005/Atom', 'xmlns:g'  => 'http://base.google.com/ns/1.0' do |feed|
   feed.title title
   feed.updated updated
   google_product_category = Hash.new
