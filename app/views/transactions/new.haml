@@ -110,3 +110,5 @@
             %img{:src => "/assets/payment2.png", :width => "100%"}
           - else
             = button_tag t("conversations.new.send_message"), :class => "send_button"
+
+= render :partial => "layouts/google_remarketing_tag", :locals => { :pagetype => 'cart', :id => listing[:id], :total_value => listing[:price].to_i}

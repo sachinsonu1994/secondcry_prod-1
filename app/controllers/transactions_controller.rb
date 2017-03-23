@@ -524,6 +524,7 @@ Thanks."
       id: listing_model.id,
       title: listing_model.title,
       action_button_label: t(listing_model.action_button_tr_key),
+      price: listing_model.price
     }
     author = {
       display_name: PersonViewUtils.person_display_name(author_model, community),
