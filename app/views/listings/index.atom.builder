@@ -1,8 +1,8 @@
 atom_feed :language => 'en-US', 'xmlns:g'=> "http://base.google.com/ns/1.0" do |feed|
   feed.title title
   feed.updated updated
-  feed.icon "https://s3.amazonaws.com/sharetribe/assets/sharetribe_icon.png"
-  feed.logo "https://s3.amazonaws.com/sharetribe/assets/dashboard/sharetribe_logo.png"
+  #feed.icon "https://s3.amazonaws.com/sharetribe/assets/sharetribe_icon.png"
+  #feed.logo "https://s3.amazonaws.com/sharetribe/assets/dashboard/sharetribe_logo.png"
 
   listings.each do |listing|
     if listing[:price].to_i != 0 && listing[:listing_shape_id] == 1 && !listing[:listing_images].blank? && listing[:category_id] != 10 && !listing[:description].blank?
@@ -39,7 +39,6 @@ atom_feed :language => 'en-US', 'xmlns:g'=> "http://base.google.com/ns/1.0" do |
         entry.g :link, listing_url(listing[:url])
         entry.g :availability, "in stock"
         entry.g :identifier_exists, "no"
-        entry.g :availability, "in stock"
         entry.g :description, listing[:description]
         entry.g :image_link, "#{request.protocol}#{request.host_with_port}#{img_url}"
         entry.g :price, "#{listing[:price]}" " " "INR"
