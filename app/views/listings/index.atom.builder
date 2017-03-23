@@ -1,4 +1,4 @@
-atom_feed :language => 'en-US', 'xmlns:georss' => 'http://www.georss.org/georss', 'xmlns:st'  => 'http://www.sharetribe.com/SharetribeFeed' do |feed|
+atom_feed :language => 'en-US', xmlns:g="http://base.google.com/ns/1.0" do |feed|
   feed.title title
   feed.updated updated
   feed.icon "https://s3.amazonaws.com/sharetribe/assets/sharetribe_icon.png"
@@ -29,7 +29,7 @@ atom_feed :language => 'en-US', 'xmlns:georss' => 'http://www.georss.org/georss'
 
   listings.each do |listing|
     if listing[:price].to_i != 0 && listing[:listing_shape_id] == 1 && !listing[:listing_images].blank? && listing[:category_id] != 10 && !listing[:description].blank?
-      feed.entry(nil, id: listing[:id], published: listing[:created_at], updated_at: listing[:updated_at], url: listing_url(listing[:url], host: @current_community.full_domain(port: ''))) do |entry|
+      feed.entry(nil, id: "#{request.protocol}#{request.host_with_port}/listings/#{listing[:id]}", published: listing[:created_at], updated_at: listing[:updated_at], url: listing_url(listing[:url], host: @current_community.full_domain(port: ''))) do |entry|
         entry.title listing[:title]
         entry_content = add_links_and_br_tags(html_escape(listing[:description]))
         unless listing[:listing_images].empty?
