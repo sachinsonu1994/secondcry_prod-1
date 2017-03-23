@@ -1,4 +1,4 @@
-atom_feed :language => 'en-US', xmlns:g="http://base.google.com/ns/1.0" do |feed|
+atom_feed :language => 'en-US', 'xmlns:g'=> "http://base.google.com/ns/1.0" do |feed|
   feed.title title
   feed.updated updated
   feed.icon "https://s3.amazonaws.com/sharetribe/assets/sharetribe_icon.png"
