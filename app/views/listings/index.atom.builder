@@ -33,8 +33,17 @@ atom_feed :language => 'en-US', 'xmlns:g'=> "http://base.google.com/ns/1.0" do |
 
         entry.summary listing[:description]
 
+        entry.updated listing[:updated_at]
+
+        entry.g :id, listing[:id]
+        entry.g :title, listing[:title]
+        entry.g :link, listing_url(listing[:url])
+        entry.g :availability, "in stock"
+        entry.g :identifier_exists, "no"
+        entry.g :availability, "in stock"
+        entry.g :description, listing[:description]
         entry.g :image_link, "#{request.protocol}#{request.host_with_port}#{img_url}"
-        entry.g :price, listing[:price].to_i
+        entry.g :price, "#{listing[:price]}" " " "INR"
         entry.g :condition, "used"
       end
     end
