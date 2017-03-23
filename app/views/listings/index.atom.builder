@@ -82,10 +82,6 @@ atom_feed :language => 'en-US', 'xmlns:g'=> "http://base.google.com/ns/1.0" do |
         entry.g :image_link, "#{request.protocol}#{request.host_with_port}#{img_url}"
         entry.g :price, listing[:price].to_i
         entry.g :condition, "used"
-        entry.availability "In Stock"
-        entry.identifier_exists "false"
-        entry.google_product_category google_category_id
-        entry.brand brand
       end
     end
   end
