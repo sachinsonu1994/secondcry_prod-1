@@ -33,9 +33,8 @@ atom_feed :language => 'en-US', 'xmlns:g'=> "http://base.google.com/ns/1.0" do |
 
         entry.summary listing[:description]
 
-        entry.updated listing[:updated_at]
+        entry.updated Time.parse("#{listing[:updated_at]}").iso8601
 
-        entry.g :id, listing[:id]
         entry.g :title, listing[:title]
         entry.g :link, listing_url(listing[:url])
         entry.g :availability, "in stock"
