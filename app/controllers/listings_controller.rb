@@ -85,6 +85,11 @@ class ListingsController < ApplicationController
         all_processes = get_processes()
         direction_map = ListingShapeHelper.shape_direction_map(all_shapes, all_processes)
 
+        params[:listing_shapes] =
+          all_shapes.select { |shape|
+            shape[:name] == "selling" or shape[:name] == "renting-out"
+          }.map { |shape| shape[:id] }
+
         if params[:share_type].present?
           direction = params[:share_type]
           params[:listing_shapes] =
