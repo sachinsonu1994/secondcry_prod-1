@@ -2,10 +2,11 @@
   require 'open-uri'
   require 'csv'
 
+CSV.open("/home/sachin/workspace/secondcryrepo/public/ncr.csv","wb",:write_headers=>true,:headers => ["name","description","contact","phone","email","link","address","images"]) do |csv|
 filename = "/home/sachin/workspace/secondcryrepo/public/urls.csv"
 CSV.foreach(File.path("#{filename}"),:headers => true, :encoding => "windows-1251:utf-8") do |row|
   puts row["url"]
-
+begin
  doc =Nokogiri::HTML(open("https://www.mycity4kids.com/#{row["url"]}"))
 
   name = doc.xpath('//h1[@class="heading_large"]/text()')
@@ -42,4 +43,9 @@ CSV.foreach(File.path("#{filename}"),:headers => true, :encoding => "windows-125
               array << m
          }
          puts array
+  csv << ["#{name}", "#{description}", "#{contact}", "#{phone}", "#{email}", "#{link}", "#{address}", "#{array}"]
+rescue expection => e
+  puts e.to_s
+end
+end
 end
