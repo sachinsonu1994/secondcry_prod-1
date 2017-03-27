@@ -1,0 +1,21 @@
+  require 'nokogiri'
+  require 'open-uri'
+  require 'csv'
+  
+CSV.open("/home/sachin/workspace/secondcryrepo/public/urls4.csv","wb",:write_headers=>true,:headers => ["url"]) do |csv|
+
+i = 1
+while i < 200
+  urls = "https://www.mycity4kids.com/Mumbai/Play-School?page=#{i}"
+  puts urls
+doc = Nokogiri::HTML(open(urls))
+url = doc.xpath('//div[@class = "mdl-card mdl-shadow--2dp width_full"]/a')
+map = url.map { |element| element["href"]}.compact
+             map.each{|m|
+               puts m
+               csv << ["#{m}"]
+             }
+    i = i+1
+    puts i
+    end
+end

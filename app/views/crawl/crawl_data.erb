@@ -1,0 +1,45 @@
+  require 'nokogiri'
+  require 'open-uri'
+  require 'csv'
+
+filename = "/home/sachin/workspace/secondcryrepo/public/urls.csv"
+CSV.foreach(File.path("#{filename}"),:headers => true, :encoding => "windows-1251:utf-8") do |row|
+  puts row["url"]
+
+ doc =Nokogiri::HTML(open("https://www.mycity4kids.com/#{row["url"]}"))
+
+  name = doc.xpath('//h1[@class="heading_large"]/text()')
+  name = name.to_s
+  
+  
+  description = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][2]/p/text()') # => title
+  description = description.to_s
+  
+  puts description
+  
+  contact = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][3]/div[@class = "mdl-grid padding_none"]/div[@class = "mdl-cell mdl-cell--9-col"][1]/text()') # => title
+  contact = contact.to_s
+  puts contact
+  
+  phone = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][3]/div[@class = "mdl-grid padding_none"]/div[@class = "mdl-cell mdl-cell--9-col"][2]/text()') # => title
+  puts phone
+  email = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][3]/div[@class = "mdl-grid padding_none"]/div[@class = "mdl-cell mdl-cell--9-col"][3]/a/text()') # => title
+  email = email.to_s
+  puts email
+  link = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][3]/div[@class = "mdl-grid padding_none"]/div[@class = "mdl-cell mdl-cell--9-col"][4]/a/text()') # => title
+  link = link.to_s
+  puts link
+ 
+  address = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][3]/div[@class = "mdl-grid padding_none"]/div[@class = "mdl-cell mdl-cell--9-col"][6]/text()') # => title
+  address = address.to_s
+  puts address
+ 
+ 
+  array = []
+  cc  = doc.xpath('//li[@class = "box"]/a/img')
+  map = cc.map { |element| element["data-src"]}.compact
+              map.each{|m|
+              array << m
+         }
+         puts array
+end
