@@ -2,54 +2,58 @@
   require 'open-uri'
   require 'csv'
 
-CSV.open("/home/sachin/workspace/secondcryrepo/public/banglore1_schools.csv","wb",:write_headers=>true,:headers => ["url","location","postalcode","name","description","contact","phone","email","link","address","images"]) do |csv|
+CSV.open("/home/sachin/workspace/secondcryrepo/public/banglore1_schools.csv","wb",:write_headers=>true,:headers => ["url","location","postalcode","name","description","contact","phone","email","link","address","images","fb_link"]) do |csv|
+i = 0
 filename = "/home/sachin/workspace/secondcryrepo/public/urls1.csv"
 CSV.foreach(File.path("#{filename}"),:headers => true, :encoding => "windows-1251:utf-8") do |row|
-  puts row["url"]
-  sleep(30)
+  sleep(20)
 begin
  doc =Nokogiri::HTML(open("#{row["url"]}"))
 
   name = doc.xpath('//h1[@class="heading_large"]/text()')
   name = name.to_s
-  
+
   location = doc.xpath('//div[@class = "view_more_label"]/text()')
   location = location.to_s
-  puts location
-  
+
   description = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][2]/p/text()')
   description = description.to_s
-  
-  puts description
-  
-  contact = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][3]/div[@class = "mdl-grid padding_none"]/div[@class = "mdl-cell mdl-cell--9-col"][1]/text()') 
-  puts contact
-  
-  phone = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][3]/div[@class = "mdl-grid padding_none"]/div[@class = "mdl-cell mdl-cell--9-col"][2]/text()') 
-  puts phone
+
+
+  contact = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][3]/div[@class = "mdl-grid padding_none"]/div[@class = "mdl-cell mdl-cell--9-col"][1]/text()')
+
+  phone = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][3]/div[@class = "mdl-grid padding_none"]/div[@class = "mdl-cell mdl-cell--9-col"][2]/text()')
   email = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][3]/div[@class = "mdl-grid padding_none"]/div[@class = "mdl-cell mdl-cell--9-col"][3]/a/text()') # => title
   email = email.to_s
-  puts email
   link = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][3]/div[@class = "mdl-grid padding_none"]/div[@class = "mdl-cell mdl-cell--9-col"][4]/a/text()') # => title
   link = link.to_s
-  puts link
- 
+
   address = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][3]/div[@class = "mdl-grid padding_none"]/div[@class = "mdl-cell mdl-cell--9-col"][6]/text()') # => title
   address = address.to_s
   puts address
-  
+
   postalCode = doc.xpath('//span[@itemprop = "postalCode"]/text()')
-  puts postalCode
- 
- 
+  
+  fb = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][3]/div[@class = "mdl-grid padding_none"]/div[@class = "mdl-cell mdl-cell--9-col"][5]/a/img') # => title
+  
+   puts fb
+   
+    fb_link = fb.map { |element| element["onclick"]}.compact
+      a = fb_link
+      puts a
+  
+
   array = []
   cc  = doc.xpath('//li[@class = "box"]/a/img')
   map = cc.map { |element| element["data-src"]}.compact
               map.each{|m|
               array << m
          }
-         puts array
-  csv << ["#{row["url"]},#{location},#{postalCode},#{location},#{}#{name}", "#{description}", "#{contact}", "#{phone}", "#{email}", "#{link}", "#{address}", "#{array}"]
+
+  csv << ["#{row["url"]}","#{location}","#{postalCode}","#{location}","#{name}", "#{description}", "#{contact}", "#{phone}", "#{email}", "#{link}", "#{address}", "#{array}","#{a}"]
+
+i = i + 1
+puts i
 rescue Exception => e
   puts  e.to_s
 end
