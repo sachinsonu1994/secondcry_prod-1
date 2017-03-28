@@ -2,7 +2,7 @@
   require 'open-uri'
   require 'csv'
 
-CSV.open("/home/sachin/workspace/secondcryrepo/public/banglore1.csv","wb",:write_headers=>true,:headers => ["name","description","contact","phone","email","link","address","images"]) do |csv|
+CSV.open("/home/sachin/workspace/secondcryrepo/public/banglore1_schools.csv","wb",:write_headers=>true,:headers => ["url","location","postalcode","name","description","contact","phone","email","link","address","images"]) do |csv|
 filename = "/home/sachin/workspace/secondcryrepo/public/urls1.csv"
 CSV.foreach(File.path("#{filename}"),:headers => true, :encoding => "windows-1251:utf-8") do |row|
   puts row["url"]
@@ -13,6 +13,9 @@ begin
   name = doc.xpath('//h1[@class="heading_large"]/text()')
   name = name.to_s
   
+  location = doc.xpath('//div[@class = "view_more_label"]/text()')
+  location = location.to_s
+  puts location
   
   description = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][2]/p/text()')
   description = description.to_s
@@ -34,6 +37,9 @@ begin
   address = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][3]/div[@class = "mdl-grid padding_none"]/div[@class = "mdl-cell mdl-cell--9-col"][6]/text()') # => title
   address = address.to_s
   puts address
+  
+  postalCode = doc.xpath('//span[@itemprop = "postalCode"]/text()')
+  puts postalCode
  
  
   array = []
@@ -43,7 +49,7 @@ begin
               array << m
          }
          puts array
-  csv << ["#{name}", "#{description}", "#{contact}", "#{phone}", "#{email}", "#{link}", "#{address}", "#{array}"]
+  csv << ["#{row["url"]},#{location},#{postalCode},#{location},#{}#{name}", "#{description}", "#{contact}", "#{phone}", "#{email}", "#{link}", "#{address}", "#{array}"]
 rescue Exception => e
   puts  e.to_s
 end
