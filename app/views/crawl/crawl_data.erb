@@ -2,27 +2,27 @@
   require 'open-uri'
   require 'csv'
 
-CSV.open("/home/sachin/workspace/secondcryrepo/public/ncr.csv","wb",:write_headers=>true,:headers => ["name","description","contact","phone","email","link","address","images"]) do |csv|
-filename = "/home/sachin/workspace/secondcryrepo/public/urls.csv"
+CSV.open("/home/sachin/workspace/secondcryrepo/public/banglore1.csv","wb",:write_headers=>true,:headers => ["name","description","contact","phone","email","link","address","images"]) do |csv|
+filename = "/home/sachin/workspace/secondcryrepo/public/urls1.csv"
 CSV.foreach(File.path("#{filename}"),:headers => true, :encoding => "windows-1251:utf-8") do |row|
   puts row["url"]
+  sleep(30)
 begin
- doc =Nokogiri::HTML(open("https://www.mycity4kids.com/#{row["url"]}"))
+ doc =Nokogiri::HTML(open("#{row["url"]}"))
 
   name = doc.xpath('//h1[@class="heading_large"]/text()')
   name = name.to_s
   
   
-  description = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][2]/p/text()') # => title
+  description = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][2]/p/text()')
   description = description.to_s
   
   puts description
   
-  contact = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][3]/div[@class = "mdl-grid padding_none"]/div[@class = "mdl-cell mdl-cell--9-col"][1]/text()') # => title
-  contact = contact.to_s
+  contact = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][3]/div[@class = "mdl-grid padding_none"]/div[@class = "mdl-cell mdl-cell--9-col"][1]/text()') 
   puts contact
   
-  phone = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][3]/div[@class = "mdl-grid padding_none"]/div[@class = "mdl-cell mdl-cell--9-col"][2]/text()') # => title
+  phone = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][3]/div[@class = "mdl-grid padding_none"]/div[@class = "mdl-cell mdl-cell--9-col"][2]/text()') 
   puts phone
   email = doc.xpath('//div[@class = "mdl-shadow--2dp mdl-cell mdl-cell--12-col detail_bgwhite"][3]/div[@class = "mdl-grid padding_none"]/div[@class = "mdl-cell mdl-cell--9-col"][3]/a/text()') # => title
   email = email.to_s
@@ -44,7 +44,7 @@ begin
          }
          puts array
   csv << ["#{name}", "#{description}", "#{contact}", "#{phone}", "#{email}", "#{link}", "#{address}", "#{array}"]
-rescue expection => e
+rescue Exception => e
   puts e.to_s
 end
 end
