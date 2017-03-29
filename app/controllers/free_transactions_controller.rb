@@ -1,6 +1,7 @@
 class FreeTransactionsController < ApplicationController
 
   before_filter do |controller|
+   session[:return_to_content] = "#{request.protocol}#{request.host_with_port}/en/listings/#{params[:listing_id]}/contact"
    controller.ensure_logged_in t("layouts.notifications.you_must_log_in_to_send_a_message")
   end
 
