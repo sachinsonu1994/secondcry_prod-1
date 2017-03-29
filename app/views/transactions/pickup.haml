@@ -50,16 +50,21 @@
     .row
       .col-12
         %input{:name => "pincode", :id => "pincode" ,:required => "required", :type => "text", :maxlength => "6", :minlength => "6", :onkeyup => "fetch_city_and_state();", :value => "#{@pickup_address.postal_code if !@pickup_address.blank? && !@pickup_address.postal_code.blank?}"}/
-
+        
     %h2 Address Line 1
     .row
       .col-12
-        %input{:name => "address1", :id => "address1", :required => "required", :type => "text", :maxlength => 40, :placeholder => "Flat No, Floor, Building Name", :value => "#{@pickup_address.street1 if !@pickup_address.blank? && !@pickup_address.street1.blank?}"}/
+        %input{:name => "address1", :id => "address1", :required => "required", :type => "text", :maxlength => 35, :placeholder => "Flat No, Floor, Building Name", :value => "#{@pickup_address.street1 if !@pickup_address.blank? && !@pickup_address.street1.blank?}"}/
 
     %h2 Address Line 2
     .row
       .col-12
-        %input{:name => "address2", :id => "address2" ,:required => "required", :type => "text", :maxlength => 40, :placeholder => "Colony, Street, Locality", :value => "#{@pickup_address.street2 if !@pickup_address.blank? && !@pickup_address.street2.blank?}"}/
+        %input{:name => "address2", :id => "address2" ,:required => "required", :type => "text", :maxlength => 35, :placeholder => "Colony, Street, Locality", :value => "#{@pickup_address.street2 if !@pickup_address.blank? && !@pickup_address.street2.blank?}"}/
+
+    %h2 Landmark
+    .row
+      .col-12
+        %input{:name => "landmark", :id => "landmark" ,:required => "required", :type => "text", :maxlength => 35, :placeholder => "E.g. Near AIIMS Flyover, Behind Regal Cinema, etc.", :value => "#{@pickup_address.landmark if !@pickup_address.blank? && !@pickup_address.landmark.blank?}"}/
 
     %h2 City
     .row
