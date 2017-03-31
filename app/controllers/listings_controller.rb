@@ -125,6 +125,7 @@ class ListingsController < ApplicationController
                locals: { listings: listings,
                          title: title,
                          updated: updated,
+
                          # deprecated
                          direction_map: direction_map
                        }
