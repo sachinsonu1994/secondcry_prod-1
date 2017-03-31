@@ -85,6 +85,11 @@ class ListingsController < ApplicationController
         all_processes = get_processes()
         direction_map = ListingShapeHelper.shape_direction_map(all_shapes, all_processes)
 
+        params[:listing_shapes] =
+          all_shapes.select { |shape|
+            shape[:name] == "selling" or shape[:name] == "renting-out"
+          }.map { |shape| shape[:id] }
+
         if params[:share_type].present?
           direction = params[:share_type]
           params[:listing_shapes] =
@@ -285,6 +290,12 @@ class ListingsController < ApplicationController
   end
 
   def create
+    if !params[:listing][:phone_number].blank?
+      person = Person.find_by_id(@current_user.id)
+      person.phone_number = params[:listing][:phone_number]
+      person.save
+    end
+    params[:listing].delete("phone_number")
     params[:listing].delete("origin_loc_attributes") if params[:listing][:origin_loc_attributes][:address].blank?
 
     shape = get_shape(Maybe(params)[:listing][:listing_shape_id].to_i.or_else(nil))
@@ -391,6 +402,13 @@ class ListingsController < ApplicationController
   end
 
   def update
+    if !params[:listing][:phone_number].blank?
+      person = Person.find_by_id(@current_user.id)
+      person.phone_number = params[:listing][:phone_number]
+      person.save
+    end
+    params[:listing].delete("phone_number")
+
     if (params[:listing][:origin] && (params[:listing][:origin_loc_attributes][:address].empty? || params[:listing][:origin].blank?))
       params[:listing].delete("origin_loc_attributes")
       if @listing.origin_loc
@@ -532,6 +550,7 @@ class ListingsController < ApplicationController
         shipping_enabled: @listing.require_shipping_address?,
         pickup_enabled: @listing.pickup_enabled?,
         shipping_price_additional: shipping_price_additional,
+        user: @current_user,
         always_show_additional_shipping_price: shape[:units].length == 1 && shape[:units].first[:kind] == :quantity,
         paypal_fees_url: PaypalCountryHelper.fee_link(community_country_code)
       })
@@ -560,7 +579,8 @@ class ListingsController < ApplicationController
 
     if allow_posting
       render :partial => "listings/form/form_content", locals: form_locals(shape).merge(
-               run_js_immediately: true
+               run_js_immediately: true,
+               user: @current_user
              )
     else
       render :partial => "listings/payout_registration_before_posting", locals: { error_msg: error_msg }

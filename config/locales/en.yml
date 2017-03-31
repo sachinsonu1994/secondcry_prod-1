@@ -2188,10 +2188,10 @@ en:
       subtotal: "Subtotal:"
       shipping-price: "Shipping:"
     price_per_quantity: "Price per %{unit_type}:"
-    price: "Price:"
+    price: "Grand Total:"
     quantity: "Quantity: %{quantity}"
     unit_price: "Unit price: %{unit_price}"
-    total: "Total:"
+    total: "Item Price:"
   unit:
     day: day
     days: days
