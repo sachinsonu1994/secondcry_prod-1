@@ -12,4 +12,5 @@ bundle exec rake RAILS_ENV=production ts:start
 
 nohup bundle exec rake RAILS_ENV=production jobs:work > log/delayed-job-worker.log 2>&1 &
 sleep 5
+sudo service php5-fpm restart
 sudo service nginx restart
