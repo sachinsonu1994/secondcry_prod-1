@@ -1,4 +1,4 @@
-atom_feed :language => 'en-US', 'xmlns:g'=> "http://base.google.com/ns/1.0" do |feed|
+atom_feed :language => 'en-US', 'xmlns:georss' => 'http://www.georss.org/georss', 'xmlns:g'=> "http://base.google.com/ns/1.0" do |feed|
   feed.title title
   feed.updated updated
   #feed.icon "https://s3.amazonaws.com/sharetribe/assets/sharetribe_icon.png"
@@ -27,7 +27,7 @@ atom_feed :language => 'en-US', 'xmlns:g'=> "http://base.google.com/ns/1.0" do |
           author.name PersonViewUtils.person_entity_display_name(listing[:author], @current_community.name_display_type)
         end
 
-        if listing[:latitude] || listing[:longitude] || listing[:address]
+        if listing[:latitude] || listing[:longitude]
           entry.georss :point, "#{listing[:latitude]} #{listing[:longitude]}"
         end
 
