@@ -6,7 +6,7 @@
   %h2
     = t("conversations.new.send_message_to_user", :person => link_to(@listing.author.given_name_or_username, @listing.author)).html_safe
 
-  = form_for contact_form, :url => create_contact do |form|
+  = form_for contact_form, :url => create_contact , :html => { :onsubmit => "ga('send', 'event', 'form', 'submit', 'send_message')"} do |form|
 
     = form.label :content, t("conversations.new.message")
     = form.text_area :content, :class => "text_area"
@@ -15,3 +15,4 @@
     = form.hidden_field :listing_id, :value => @listing.id
     = form.hidden_field :community_id, :value => @current_community.id
     = form.button t("conversations.new.send_message"), :class => "send_button"
+

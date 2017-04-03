@@ -200,3 +200,6 @@
           #googlemap
             = render :partial => "googlemap", :locals => { :listing => @listing}
             = render :partial => "origin", :locals => { :origin_loc => @listing.origin_loc }
+            
+    = render :partial => "layouts/google_remarketing_tag", :locals => { :pagetype => 'product', :id => @listing.id, :total_value => @listing.price.to_i}
+
