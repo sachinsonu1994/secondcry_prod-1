@@ -49,8 +49,6 @@
   - else
     = content_for(:page_content)
 
-  = render :partial => "layouts/google_analytics_script"
-
   -# Most of the JavaScript should be for performance reasons at the end of the body
 
   -# load Facebook SDK for the whole page
@@ -86,3 +84,18 @@
   = render :partial => "layouts/noscript"
 
   = render :partial => "layouts/footer.haml"
+
+  - if params[:controller] == 'homepage' && params[:category].blank?
+    - pagetype = 'home'
+  - elsif params[:controller] == 'homepage' && !params[:category].blank?
+    - pagetype = 'category'
+  - else
+    - pagetype = 'others'
+  
+  - if (params[:controller] == 'listings' && params[:action] == 'show') || (params[:controller] == 'transactions' && params[:action] == 'new')
+    - remarketing_tag = 1
+  - else
+    - remarketing_tag = 0
+
+  - if remarketing_tag == 0
+    = render :partial => "layouts/google_remarketing_tag", :locals => {pagetype: pagetype, id: 0, total_value: 0} 

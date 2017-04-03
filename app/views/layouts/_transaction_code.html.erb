@@ -1,0 +1,24 @@
+<script>
+ga(‘require’, ‘ecommerce’, ‘ecommerce.js’);
+
+ga(‘ecommerce:addTransaction’, {
+‘id’: ‘<%= transaction_model.id %>’, // Transaction ID. Required.
+‘affiliation’: ‘secondcry’, // store name.
+‘revenue’: ‘<%= transaction_model.unit_price %>’, // total revenue.
+‘shipping’: ‘’,
+‘tax’: ‘’
+});
+
+ga(‘ecommerce:addItem’, {
+‘id’: ‘<%= transaction_model.id %>’,
+‘name’: ‘<%=listing.title%>’,
+‘sku’: ‘<%=listing.id%>’, // Product SKU.
+‘category’: ‘<%=listing.category.url%>’, // Product Category or variation.
+‘price’: ‘<%=listing.price%>’, // Product price.
+‘quantity’: ‘<%=transaction_model.listing_quantity%>’ // Product Quantity.
+});
+
+ga(‘ecommerce:send’);
+
+ga(‘send’, ‘pageview’);
+</script>

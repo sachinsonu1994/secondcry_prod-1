@@ -100,7 +100,7 @@
 
       = hidden_field_tag(:listing_id, @listing.id)
 
-      %button.book-button
+      %button.book-button{:onclick=>"ga('send', 'event', 'button', 'click', 'buy')"}
         .content
           = action_button_label(@listing)
 

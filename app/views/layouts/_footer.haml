@@ -15,7 +15,7 @@
             = icon_tag("information", ["icon-with-text"])
             = t("header.about_us")
           %br
-          = link_to new_user_feedback_path do
+          = link_to new_user_feedback_path, :onclick=>"ga('send', 'event', 'button', 'click', 'contact_us')" do
             = icon_tag("feedback", ["icon-with-text"])
             = t("header.contact_us")
           %br
