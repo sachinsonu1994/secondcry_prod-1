@@ -10,6 +10,8 @@ gem 'sitemap_generator', "~> 5.1.0"
 gem 'coffee-rails', "~> 4.0.1"
 gem 'uglifier', "~> 2.7.2"
 
+gem "whenever", :require => false
+
 gem 'sass-rails', '~> 4.0.0'
 gem 'compass-rails', '~> 2.0'
 
