@@ -5,6 +5,7 @@
 <!--[if (gt IE 8)|!(IE)]><!--> <html lang="#{I18n.locale}" class="no-js"> <!--<![endif]-->
 
 %head
+  %meta{:"http-equiv" => "Content-Security-Policy", content: "upgrade-insecure-requests"}
   %meta{charset: "utf-8"}
 
   = render :partial => "layouts/kissmetrics"

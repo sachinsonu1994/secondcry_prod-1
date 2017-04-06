@@ -102,26 +102,6 @@
                 = t(".listing_created_at")
                 = l @listing.created_at, :format => :short_date
 
-    - if @recent_listings.count > 0
-      .row
-        .col-12
-          .related-listings-title
-            %h2{:class => "listing-related-menu"}
-              Recently Viewed
-          .row{style: "overflow: auto; overflow-y: hidden;"}
-            .listings-thumb-list
-              = render :partial => "listing_thumb", :collection => @recent_listings, :as => :listing
-
-    - if @related_listings.count > 0
-      .row
-        .col-12
-          .related-listings-title
-            %h2{:class => "listing-related-menu"}
-              You May Also Like
-          .row{:style => "overflow: auto; overflow-y: hidden;"}
-            .listings-thumb-list
-              = render :partial => "listing_thumb", :collection => @related_listings, :as => :listing
-
     - if !@current_community.private?
       .row
         .col-12
@@ -135,7 +115,7 @@
                   !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="https://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
 
     - unless (@listing.closed? && !current_user?(@listing.author)) || !@current_community.listing_comments_in_use
-      .view-item
+      .view-item.visible-tablet
         #comments.discussion.overflow-allowed
           %h2
             = icon_tag("chat_bubble", ["icon-with_text"])
@@ -149,6 +129,29 @@
           #comment-form
             = render :partial => "comment_form"
 
+    - if @recent_listings.count > 0
+      .row.visible-tablet
+        .col-12
+          .related-listings-title
+            %h2{:class => "listing-related-menu"}
+              Recently Viewed
+          .row{style: "overflow: auto; overflow-y: hidden;"}
+            .listings-thumb-list
+              = render :partial => "listing_thumb", :collection => @recent_listings, :as => :listing
+
+    - if @related_listings.count > 0
+      .row.visible-tablet
+        .col-12
+          .related-listings-title
+            %h2{:class => "listing-related-menu"}
+              You May Also Like
+          .row{:style => "overflow: auto; overflow-y: hidden;"}
+            .listings-thumb-list
+              = render :partial => "listing_thumb", :collection => @related_listings, :as => :listing
+
+
+
+     
   %aside.col-4
     - if @listing.price
       .row
@@ -195,11 +198,51 @@
               = t(".feedback")
 
     - if @listing.origin_loc && @listing.origin_loc.address != ""
-      .row
+      .row-with-divider
         .col-12
           #googlemap
             = render :partial => "googlemap", :locals => { :listing => @listing}
             = render :partial => "origin", :locals => { :origin_loc => @listing.origin_loc }
-            
+
+    - unless (@listing.closed? && !current_user?(@listing.author)) || !@current_community.listing_comments_in_use
+      .view-item.hidden-tablet
+        #comments.discussion.overflow-allowed
+          %h2
+            = icon_tag("chat_bubble", ["icon-with_text"])
+            .text-with-icon
+              = t(".comments")
+              %span#comment_count= "(#{@listing.comments_count})"
+          #follow-links.follow-links
+            = render :partial => "follow_links"
+          #comment-list
+            = render :partial => "comment", :collection => @listing.comments
+          #comment-form
+            = render :partial => "comment_form"
+
+    - if @listing.listing_shape.name == 'selling'
+      .row
+        .col-12
+        = render :partial => "amazon_products", :locals => { :listing => @listing}
+
+    - if @recent_listings.count > 0
+      .row.hidden-tablet
+        .col-12
+          .related-listings-title
+            %h2{:class => "listing-related-menu"}
+              Recently Viewed
+          .row{style: "overflow: auto; overflow-y: hidden;"}
+            .listings-thumb-list
+              = render :partial => "listing_thumb", :collection => @recent_listings, :as => :listing
+              
+    - if @related_listings.count > 0
+      .row.hidden-tablet
+        .col-12
+          .related-listings-title
+            %h2{:class => "listing-related-menu"}
+              You May Also Like
+          .row{:style => "overflow: auto; overflow-y: hidden;"}
+            .listings-thumb-list
+              = render :partial => "listing_thumb", :collection => @related_listings, :as => :listing
+
     = render :partial => "layouts/google_remarketing_tag", :locals => { :pagetype => 'product', :id => @listing.id, :total_value => @listing.price.to_i}
 

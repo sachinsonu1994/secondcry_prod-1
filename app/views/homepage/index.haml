@@ -131,17 +131,23 @@
         - if @view_type.eql?("map")
           .home-map
             = render :partial => "map", locals: { viewport: viewport }
+          %div{:"style" => "margin-top:10px;padding:0"}
+            = render partial: "layouts/amazon_products"
         - else
           - if @view_type.eql?("grid")
             %div{class: @category_menu_enabled ? "home-fluid-thumbnail-grid-narrow" : "home-fluid-thumbnail-grid-wide"}
               .home-fluid-thumbnail-grid
                 = render partial: "grid_item", collection: @listings, as: :listing, locals: { show_distance: location_search_in_use }
+            %div{:"style" => "margin:0;padding:0"}
+              = render partial: "layouts/amazon_products"
           - else
             .home-listings
               - if (location_search_in_use)
                 = render partial: "list_item_with_distance", collection: @listings, as: :listing, locals: { shape_name_map: shape_name_map, testimonials_in_use: testimonials_in_use, show_distance: location_search_in_use }
               - else
                 = render partial: "list_item", collection: @listings, as: :listing, locals: { shape_name_map: shape_name_map, testimonials_in_use: testimonials_in_use }
+            %div{:"style" => "margin-top:10px;padding:0"}
+              = render partial: "layouts/amazon_products"
           .home-loading-more
             = will_paginate(@listings)
             / - item_container = if @view_type.eql?("grid") then '.home-fluid-thumbnail-grid' else '.home-listings' end
@@ -154,3 +160,5 @@
             = t(".no_listings_notification",
                   add_listing_link: link_to(t(".add_listing_link_text"),
                   new_listing_path(ref: "add_listing_link"))).html_safe
+        %div{:"style" => "margin-top:10px;padding:0"}
+          = render partial: "layouts/amazon_products"
