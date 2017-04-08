@@ -126,6 +126,7 @@ class TransactionsController < ApplicationController
               listing_author_id: author_model.id,
               unit_type: listing_model.unit_type,
               unit_price: listing_model.price,
+              shipping_price: listing_model.shipping_price,
               unit_tr_key: listing_model.unit_tr_key,
               listing_quantity: quantity,
               content: form[:message],
@@ -147,9 +148,10 @@ class TransactionsController < ApplicationController
       else
         transaction = Transaction.find(tx[:transaction][:id])
         listing = Listing.where("id = '#{transaction.listing_id}'").first
+        shipping_price = listing.shipping_price.blank? ? 0:listing.shipping_price
 
         email = Email.where("person_id = '#{@current_user.id}' and confirmed_at is not null").first
-        transaction_amount = transaction.unit_price * transaction.listing_quantity
+        transaction_amount = transaction.unit_price * transaction.listing_quantity + shipping_price
         date = "#{Date.today}".gsub('-','')
 
         render "transactions/payu", locals: {
@@ -500,7 +502,8 @@ Thanks."
       quantity = tx[:listing_quantity]
       show_subtotal = !!tx[:booking] || quantity.present? && quantity > 1 || tx[:shipping_price].present?
       total_label = (tx[:payment_process] != :preauthorize) ? t("transactions.price") : t("transactions.total")
-
+      shipping_price = !tx[:shipping_price].blank? ? tx[:shipping_price] : 0
+      
       TransactionViewUtils.price_break_down_locals({
         listing_price: tx[:listing_price],
         localized_unit_type: unit_type,
@@ -511,7 +514,7 @@ Thanks."
         duration: booking ? tx[:booking][:duration] : nil,
         quantity: quantity,
         subtotal: show_subtotal ? tx[:listing_price] * quantity : nil,
-        total: Maybe(tx[:payment_total]).or_else(tx[:checkout_total]),
+        total: Maybe(tx[:payment_total]).or_else(tx[:checkout_total]) + shipping_price,
         shipping_price: tx[:shipping_price],
         total_label: total_label
       })
@@ -524,6 +527,7 @@ Thanks."
       id: listing_model.id,
       title: listing_model.title,
       action_button_label: t(listing_model.action_button_tr_key),
+      price: listing_model.price
     }
     author = {
       display_name: PersonViewUtils.person_display_name(author_model, community),
@@ -538,7 +542,8 @@ Thanks."
     duration = booking ? DateUtils.duration_days(booking_start, booking_end) : nil
     quantity = Maybe(booking ? DateUtils.duration_days(booking_start, booking_end) : TransactionViewUtils.parse_quantity(params[:quantity])).or_else(1)
     total_label = t("transactions.price")
-
+    shipping_price = listing_model.shipping_price.blank? ? 0:listing_model.shipping_price
+    
     m_price_break_down = Maybe(listing_model).select { |l_model| l_model.price.present? }.map { |l_model|
       TransactionViewUtils.price_break_down_locals(
         {
@@ -551,8 +556,8 @@ Thanks."
           duration: duration,
           quantity: quantity,
           subtotal: quantity != 1 ? l_model.price * quantity : nil,
-          total: l_model.price * quantity,
-          shipping_price: nil,
+          total: l_model.price * quantity + shipping_price,
+          shipping_price: l_model.shipping_price,
           total_label: total_label
         })
     }

@@ -13,7 +13,7 @@
   %p= t("homepage.invitation_form.add_email_addresses_description")
   - if has_admin_rights
     %p= t("homepage.invitation_form.add_lots_of_email_addresses", this_article_link: support_link).html_safe
-  = form_for Invitation.new, :url => invitations_path do |f|
+  = form_for Invitation.new, :url => invitations_path, :html => { :onsubmit => "ga('send', 'event', 'form', 'submit', 'send_invitation')"} do |f|
     = f.label :email, t("homepage.invitation_form.email")
     = f.text_area :email, :class => "text_field", :placeholder => t("homepage.invitation_form.invitation_emails_field_placeholder")
     = f.label :message, t("homepage.invitation_form.message")

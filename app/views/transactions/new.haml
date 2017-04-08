@@ -50,7 +50,7 @@
         %li
           = render partial: "transactions/price_break_down", locals: price_break_down
 
-  = form_tag(form_action, method: :post, id: "transaction-form") do
+  = form_tag(form_action, method: :post, id: "transaction-form", :onsubmit => "ga('send', 'event', 'form', 'submit', 'payment')") do
 
     = hidden_field_tag(:start_on, booking_start)
     = hidden_field_tag(:end_on, booking_end)
@@ -110,3 +110,5 @@
             %img{:src => "/assets/payment2.png", :width => "100%"}
           - else
             = button_tag t("conversations.new.send_message"), :class => "send_button"
+
+= render :partial => "layouts/google_remarketing_tag", :locals => { :pagetype => 'cart', :id => listing[:id], :total_value => listing[:price].to_i}

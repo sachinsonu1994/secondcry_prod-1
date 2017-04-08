@@ -1,0 +1,21 @@
+<script type="text/javascript">
+window.addEventListener('load',function(){
+ga('require', 'ecommerce');
+ga('ecommerce:addTransaction', {
+  'id': '<%= transaction_model.id %>',                     // Transaction ID. Required.
+  'affiliation': 'secondcry.com',   // Affiliation or store name.
+  'revenue': <%= transaction_model.unit_price %>,               // Grand Total.
+  'shipping': 0,                  // Shipping.
+  'tax': 0                     // Tax.
+ });
+ga('ecommerce:addItem', {
+  'id': '<%= transaction_model.id%>',                     // Transaction ID. Required.
+  'name': '<%=listing.title%>',    // Product name. Required.
+  'sku': '<%=listing.id%>',                 // SKU/code.
+  'category': '<%= listing.category.url%>',         // Category or variation.
+  'price': <%= listing.price %>,                 // Unit price.
+  'quantity': <%= transaction_model.listing_quantity %>                   // Quantity.
+});
+ga('ecommerce:send');
+});
+</script>

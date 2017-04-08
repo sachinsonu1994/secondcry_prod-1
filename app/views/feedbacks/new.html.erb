@@ -23,7 +23,7 @@
   <h2 style = "margin:0%; margin-top:0.75em">Working Hours</h2>
     Monday - Friday<br/>
     9:00AM - 7:00PM<br/>
-  <%= form_for feedback_form, :url => user_feedbacks_path do |form| %>
+  <%= form_for feedback_form, :url => user_feedbacks_path, :html => { :onsubmit => "ga('send', 'event', 'form', 'submit', 'feedback')"} do |form| %>
     <% unless email_present %>
       <%= form.label :email, t("layouts.application.your_email_address") %>
       <%= form.text_field :email %>
