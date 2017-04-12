@@ -8,6 +8,7 @@
             = field.name(I18n.locale)
           - make_scrollable = field.options.size > 10
           .custom-filter-options{:class => make_scrollable ? "scrollable" : ""}
+            - params.delete :page
             - field.options.sort.each do |option|
               .custom-filter-checkbox-container
                 %label.custom-filter-checkbox-label
