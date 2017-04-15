@@ -57,44 +57,45 @@
 
     .preauthorize-section
       -if @payment_button == 1
-        %h2 Name
+        %h2 Delivery Details
+        %label Name
         .row
           .col-12
             %input{:name => "name", :id => "name", :required => "required", :type => "text", :maxlength => 40, :value => "#{@shipping_address.name if !@shipping_address.blank? && !@shipping_address.name.blank?}"}/
 
-      %h2 Contact Number (for delivery)
+      %label Contact Number
       .row
         .col-12
           %input{:minlength => "10", :maxlength => "11", :name => "phone_number", :required => "required", :type => "number", :value => @phone_number}/
           
       - if @payment_button == 1
             
-        %h2 Pincode
+        %label Pincode
         .row
           .col-12
             %input{:name => "pincode", :id => "pincode" , :required => "required", :type => "text", :maxlength => 6, :minlength => 6, :onkeyup => "fetch_city_and_state();", :value => "#{@shipping_address.postal_code if !@shipping_address.blank? && !@shipping_address.postal_code.blank?}"}/
 
-        %h2 Address Line 1
+        %label Address Line 1
         .row
           .col-12
             %input{:name => "address1", :id => "address1", :required => "required", :type => "text", :maxlength => 40, :placeholder => "Flat No, Floor, Building Name", :value => "#{@shipping_address.street1 if !@shipping_address.blank? && !@shipping_address.street1.blank?}"}/
 
-        %h2 Address Line 2
+        %label Address Line 2
         .row
           .col-12
             %input{:name => "address2", :id => "address2" ,:required => "required", :type => "text", :maxlength => 40, :placeholder => "Colony, Street, Locality", :value => "#{@shipping_address.street2 if !@shipping_address.blank? && !@shipping_address.street2.blank?}"}/
 
-        %h2 City
+        %label City
         .row
           .col-12
             %input{:name => "city", :id => "city" ,:required => "required", :type => "text", :maxlength => 30, :value => "#{@shipping_address.city if !@shipping_address.blank? && !@shipping_address.city.blank?}"}/
  
-        %h2 State
+        %label State
         .row
           .col-12
             %input{:name => "state", :id => "state" ,:required => "required", :type => "text", :maxlength => 30, :value => "#{@shipping_address.state_or_province if !@shipping_address.blank? && !@shipping_address.state_or_province.blank?}"}/
 
-      %h2
+      %label
         = t("conversations.new.send_message_to_user", person: author_link).html_safe
       .row
         .col-12
