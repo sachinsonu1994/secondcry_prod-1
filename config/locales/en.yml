@@ -1533,7 +1533,7 @@ en:
       location:
         location: Location
       price:
-        commission: "Please note that 10% of this price will be deducted by SecondCry towards payment gateway, handling and shipping across India."
+        commission: "Please note that 10% of this price will be deducted by SecondCry towards commission and pickup from your doorstep."
         price: Price
         per: per
         per_day: "per day"

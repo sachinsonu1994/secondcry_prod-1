@@ -1,6 +1,7 @@
-= render partial: "layouts/info_text", locals: { text: t("listings.form.price.commission") }
+- if shape[:name] == 'selling' || shape[:name] == 'renting-out'
+  = render partial: "layouts/info_text", locals: { text: t("listings.form.price.commission") }
 
-- if shape[:shipping_enabled]
+- if shape[:shipping_enabled] && @current_user.has_admin_rights_in?(@current_community) && (params[:action] == 'edit' || params[:action] == 'edit_form_content')
   .delivery-options-container
     = field_set_tag t("listings.form.price.delivery"), class: "delivery-title" do
       .delivery-row-low

@@ -31,6 +31,14 @@
 - content_for :title_header do
   %h1
     %span#listing-title.listing-title= @listing.title
+    
+.row
+  .col-12
+    %a{:href => "#{request.protocol}#{request.host_with_port}", :style => "margin-right:2pt;"} Home
+    %span >
+    %a{:href => "#{request.protocol}#{request.host_with_port}/en?category=#{@listing.category.url}", :style => "margin-right:2pt;"} #{@listing.category.url.gsub("-", " ")} 
+    %span >
+    %span #{@listing.title}
 
 %script{type: "text/template", class: "template", id: "image-frame-template"}
   .listing-image-frame

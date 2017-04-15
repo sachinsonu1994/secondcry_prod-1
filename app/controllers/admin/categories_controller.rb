@@ -19,6 +19,11 @@ class Admin::CategoriesController < ApplicationController
     @selected_left_navi_link = "listing_categories"
     @category = Category.new(params[:category].except(:listing_shapes))
     @category.community = @current_community
+    @category.shipping_charge = params[:category][:shipping_charge]
+    @category.weight = params[:category][:weight]
+    @category.height = params[:category][:height]
+    @category.length = params[:category][:length]
+    @category.width = params[:category][:width]
     @category.parent_id = nil if params[:category][:parent_id].blank?
     @category.sort_priority = Admin::SortingService.next_sort_priority(@current_community.categories)
     shapes = get_shapes
@@ -46,6 +51,12 @@ class Admin::CategoriesController < ApplicationController
     @category = @current_community.categories.find_by_url_or_id(params[:id])
     shapes = get_shapes
     selected_shape_ids = shape_ids_from_params(params)
+    @category.shipping_charge = params[:category][:shipping_charge]
+    @category.weight = params[:category][:weight]
+    @category.height = params[:category][:height]
+    @category.length = params[:category][:length]
+    @category.width = params[:category][:width]
+    @category.save
 
     if @category.update_attributes(params[:category].except(:listing_shapes))
       update_category_listing_shapes(selected_shape_ids, @category)

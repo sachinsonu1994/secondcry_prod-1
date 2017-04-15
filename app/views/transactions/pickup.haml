@@ -36,37 +36,37 @@
 
     %h2 Pickup Address Details
 
-    %h2 Name
+    %label Name
     .row
       .col-12
         %input{:name => "name", :id => "name", :required => "required", :type => "text", :maxlength => 40, :value => "#{@pickup_address.name if !@pickup_address.blank? && !@pickup_address.name.blank?}"}/
 
-    %h2 Contact Number
+    %label Contact Number
     .row
       .col-12
         %input{:minlength => "10", :maxlength => "11", :name => "phone_number", :required => "required", :type => "number", :value => @phone_number}/
             
-    %h2 Pincode
+    %label Pincode
     .row
       .col-12
         %input{:name => "pincode", :id => "pincode" ,:required => "required", :type => "text", :maxlength => "6", :minlength => "6", :onkeyup => "fetch_city_and_state();", :value => "#{@pickup_address.postal_code if !@pickup_address.blank? && !@pickup_address.postal_code.blank?}"}/
 
-    %h2 Address Line 1
+    %label Address Line 1
     .row
       .col-12
         %input{:name => "address1", :id => "address1", :required => "required", :type => "text", :maxlength => 40, :placeholder => "Flat No, Floor, Building Name", :value => "#{@pickup_address.street1 if !@pickup_address.blank? && !@pickup_address.street1.blank?}"}/
 
-    %h2 Address Line 2
+    %label Address Line 2
     .row
       .col-12
         %input{:name => "address2", :id => "address2" ,:required => "required", :type => "text", :maxlength => 40, :placeholder => "Colony, Street, Locality", :value => "#{@pickup_address.street2 if !@pickup_address.blank? && !@pickup_address.street2.blank?}"}/
 
-    %h2 City
+    %label City
     .row
       .col-12
         %input{:name => "city", :id => "city" ,:required => "required", :type => "text", :maxlength => 30, :value => "#{@pickup_address.city if !@pickup_address.blank? && !@pickup_address.city.blank?}"}/
  
-    %h2 State
+    %label State
     .row
       .col-12
         %input{:name => "state", :id => "state" ,:required => "required", :type => "text", :maxlength => 30, :value => "#{@pickup_address.state_or_province if !@pickup_address.blank? && !@pickup_address.state_or_province.blank?}"}/
