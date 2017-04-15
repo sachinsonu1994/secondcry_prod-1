@@ -21,8 +21,13 @@ class HomepageController < ApplicationController
     listing_shape_menu_enabled = all_shapes.size > 1
     @show_categories = @categories.size > 1
     show_price_filter = @current_community.show_price_filter && all_shapes.any? { |s| s[:price_enabled] }
-
-    filters = @current_community.custom_fields.where(search_filter: true).sort
+    
+    if !params[:category].blank? && params[:category] != 'all'
+      category = Category.where("url = '#{params[:category]}'").first
+      filters = category.custom_fields.where(search_filter: true).sort
+    else
+      filters = @current_community.custom_fields.where(search_filter: true).sort
+    end
     @show_custom_fields = filters.present? || show_price_filter
     @category_menu_enabled = @show_categories || @show_custom_fields
 
