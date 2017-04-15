@@ -1,0 +1,16 @@
+.row
+  .col-3
+    = form.label :shipping_charge, "Shipping Charge"
+    = form.text_field :shipping_charge
+  .col-2
+    = form.label :weight, "Weight"
+    = form.text_field :weight, :placeholder => "kg."
+  .col-2
+    = form.label :length, "Length"
+    = form.text_field :length, :placeholder => "cm."
+  .col-2
+    = form.label :width, "Width"
+    = form.text_field :width, :placeholder => "cm."
+  .col-2
+    = form.label :height, "Height"
+    = form.text_field :height, :placeholder => "cm."

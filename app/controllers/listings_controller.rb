@@ -305,6 +305,10 @@ class ListingsController < ApplicationController
     listing_unit = Maybe(params)[:listing][:unit].map { |u| ListingViewUtils::Unit.deserialize(u) }.or_else(nil)
     listing_params = ListingFormViewUtils.filter_additional_shipping(listing_params, listing_unit)
     validation_result = ListingFormViewUtils.validate(listing_params, shape, listing_unit)
+    
+    category = Category.where("id = #{params[:listing][:category_id]}").first
+    shipping_charge = (shape[:name] == 'selling' || shape[:name] == 'renting-out') ? category.shipping_charge : nil
+    require_shipping_address = (!shipping_charge.blank?) ? 1 : 0
 
     unless validation_result.success
       flash[:error] = t("listings.error.something_went_wrong", error_code: validation_result.data.join(', '))
@@ -319,7 +323,9 @@ class ListingsController < ApplicationController
         listing_shape_id: shape[:id],
         transaction_process_id: shape[:transaction_process_id],
         shape_name_tr_key: shape[:name_tr_key],
-        action_button_tr_key: shape[:action_button_tr_key]
+        action_button_tr_key: shape[:action_button_tr_key],
+        shipping_price: shipping_charge,
+        require_shipping_address: require_shipping_address
     ).merge(unit_to_listing_opts(m_unit)).except(:unit)
 
     @listing = Listing.new(listing_params)
@@ -423,6 +429,13 @@ class ListingsController < ApplicationController
     listing_unit = Maybe(params)[:listing][:unit].map { |u| ListingViewUtils::Unit.deserialize(u) }.or_else(nil)
     listing_params = ListingFormViewUtils.filter_additional_shipping(listing_params, listing_unit)
     validation_result = ListingFormViewUtils.validate(listing_params, shape, listing_unit)
+    category = Category.where("id = #{params[:listing][:category_id]}").first
+    if @current_user.has_admin_rights_in?(@current_community)
+      shipping_charge = params[:listing][:shipping_price]
+    else
+      shipping_charge = (shape[:name] == 'selling' || shape[:name] == 'renting-out') ? category.shipping_charge : nil
+    end 
+    require_shipping_address = (!shipping_charge.blank?) ? 1 : 0
 
     unless validation_result.success
       flash[:error] = t("listings.error.something_went_wrong", error_code: validation_result.data.join(', '))
@@ -438,7 +451,9 @@ class ListingsController < ApplicationController
       transaction_process_id: shape[:transaction_process_id],
       shape_name_tr_key: shape[:name_tr_key],
       action_button_tr_key: shape[:action_button_tr_key],
-      last_modified: DateTime.now
+      last_modified: DateTime.now,
+      shipping_price: shipping_charge,
+      require_shipping_address: require_shipping_address
     ).merge(open_params).merge(unit_to_listing_opts(m_unit)).except(:unit)
 
     update_successful = @listing.update_fields(listing_params)
