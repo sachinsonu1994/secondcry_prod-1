@@ -1,3 +1,10 @@
+%script
+  function apply_filters()
+  {
+  alert("true");
+  jQuery('#homepage-filters').submit();
+  }
+
 - filters.each do |field|
 
   - field.with_type do |type|
@@ -12,7 +19,7 @@
               .custom-filter-checkbox-container
                 %label.custom-filter-checkbox-label
                   - param_name = type == :dropdown ? "filter_option_#{option.id}" : "checkbox_filter_option_#{option.id}"
-                  = check_box_tag param_name, "#{option.id}", params[param_name]
+                  = check_box_tag param_name, "#{option.id}", params[param_name], :onchange => "apply_filters();"
                   %span.custom-filter-checkbox-label-text
                     = option.title(I18n.locale)
 
