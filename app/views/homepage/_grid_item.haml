@@ -20,6 +20,11 @@
         - if(!show_distance || distance.blank?)
           = link_to(person_path(id: listing.author.username), :class => "home-fluid-thumbnail-grid-author-name", title: name) do
             = name
+            - if !listing.times_viewed.blank? && listing.times_viewed != 0
+              - times_viewed_string = "#{listing.times_viewed} views"
+              %span{:style => "float:right"}
+                = times_viewed_string
+              
         - else
           .home-fluid-thumbnail-grid-details
             = link_to(person_path(id: listing.author.username), class: "home-fluid-thumbnail-grid-details-author-name", title: name) do

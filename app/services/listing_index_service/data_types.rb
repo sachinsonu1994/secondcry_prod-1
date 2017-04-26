@@ -25,7 +25,8 @@ module ListingIndexService::DataTypes
     [:fields, :array, default: []],
     [:author_id, :string],
     [:include_closed, :to_bool, default: false],
-    [:locale, :symbol, :optional]
+    [:locale, :symbol, :optional],
+    [:sort, :string]
   )
 
   AvatarImage = EntityUtils.define_builder(
@@ -75,7 +76,8 @@ module ListingIndexService::DataTypes
     [:unit_type], # TODO Symbol or string?
     [:quantity, :string], # This is outdated
     [:shape_name_tr_key, :string], # TODO is this mandatory?
-    [:listing_shape_id, :fixnum, :optional], # This can be nil, if the listing shape was deleted
+    [:listing_shape_id, :fixnum, :optional],
+    [:times_viewed, :fixnum] # This can be nil, if the listing shape was deleted
   )
 
   ListingIndexResult = EntityUtils.define_builder(
