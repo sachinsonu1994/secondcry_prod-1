@@ -76,6 +76,19 @@ class CommunityMailer < ActionMailer::Base
     end
   end
 
+  def google_analytics_api_update(api_url, status, code_or_total, message_or_count)
+    @api_url = api_url
+    @status = status
+    @code_or_total = code_or_total
+    @message_or_count = message_or_count
+
+    premailer_mail(
+      :to => "ops@secondcry.com",
+      :from => "admin@secondcry.com",
+      :subject => "Google Analytics job for fetching listing views status - #{@status}"
+    )
+  end
+
   private
 
   def time_difference_in_days(from_time, to_time = Time.now)

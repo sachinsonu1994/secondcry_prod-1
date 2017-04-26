@@ -89,6 +89,12 @@
 
     .row
       .col-12
+        %b Number of views:
+        - if @listing.times_viewed != 0 && !@listing.times_viewed.blank?
+          = @listing.times_viewed
+
+    .row
+      .col-12
         - if @listing.description && !@listing.description.blank?
           %span{:itemprop => "description"}
             - text_with_line_breaks do

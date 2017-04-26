@@ -1,0 +1,20 @@
+- content_for :title_header do
+  %h1
+    = t("layouts.admin.admin")
+    = "-"
+    = t("admin.communities.analytics.analytics")
+
+= render :partial => "admin/left_hand_navigation", :locals => { :links => admin_links_for(@current_community) }
+
+.left-navi-section
+  %h2= t(".analytics", :community_name => @community.name(I18n.locale))
+  = form_for @community, :url => google_analytics_api_admin_community_path(@community), :method => :put do |form|
+    .row
+      %h3= t(".google_analytics_access_token")
+    .row
+      .col-6
+        = render :partial => "layouts/info_text", :locals => { :text => t(".google_analytics_access_token_info_text") }
+      .col-6
+        =form.text_field :google_analytics_access_token, :class => "text_field", :placeholder => "ya29.Gls0BNe-5nZsl9Zz8zFNz6VjFvBtOBOMOZCfy3C-DPEBx4JpAbdHpTjgwOYuP9XR_whp2ecm5xIkF6TNcbO4SxN_UGZ0Drm4B-3CAyigH6Cb0zBq_NZujoCNJwLI"
+    .row
+      = form.button t("admin.communities.analytics.save")
