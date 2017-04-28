@@ -11,23 +11,38 @@
   <% if (transaction_model.order_status == 'payment successfull') && (transaction_model.listing_author_id == @current_user.id)%>
     <div class = "row">
   	  <div class = "col-9">
-        <%= button_tag t("conversations.show.i_accept"), :class => "send_button", :onclick => "window.location.href = '/transactions/pickup?txn_id=#{transaction_model.id}'" %>
+        <%= button_tag t("conversations.show.i_accept"), :class => "send_button", :onclick => "window.location.href = '/transactions/instructions?txn_id=#{transaction_model.id}'" %>
       </div>
       <div class = "col-3">
         <%= button_tag t("conversations.show.decline"), :class => "send_button", :onclick => "warning_for_decline_message();"%>
       </div>
     </div>
   
-  <% elsif (transaction_model.order_status == 'order accepted') && (transaction_model.listing_author_id == @current_user.id)%>
+  <% elsif (transaction_model.order_status == 'shipment created') && (transaction_model.listing_author_id == @current_user.id)%>
     <div class = "row">
       <div class = "col-7">
-        <%= button_tag t("conversations.show.update_address"), :class => "send_button", :onclick => "window.location.href = '/transactions/pickup?txn_id=#{transaction_model.id}'" %>
+        <%= button_tag t("conversations.show.download_label"), :class => "send_button", :onclick => "window.location.href = '#{transaction_model.shipment_label_url}'" %>
       </div>
       <div class = "col-5">
         <%= button_tag t("conversations.show.update_bank_detail"), :class => "send_button", :onclick => "window.location.href = '/en/#{@current_user.username}/settings/bank_details'" %>
       </div>
-    </div>        	
+    </div>
     <%= render partial: "layouts/info_text", locals: { text: t("conversations.show.bank_detail_message") } %>
+  <% elsif (transaction_model.order_status == 'order accepted') && (transaction_model.listing_author_id == @current_user.id)%>
+    <div class = "row">
+      <div class = "col-7">
+        <%= button_tag t("conversations.show.create_pickup"), :class => "send_button", :onclick => "window.location.href = '/transactions/pickup?txn_id=#{transaction_model.id}'" %>
+        </div>
+      <div class = "col-5">
+        <%= button_tag t("conversations.show.update_bank_detail"), :class => "send_button", :onclick => "window.location.href = '/en/#{@current_user.username}/settings/bank_details'" %>
+      </div>
+    </div>
+  <% elsif (transaction_model.order_status == 'shipment created') && (transaction_model.starter_id == @current_user.id)%>
+    <div class = "row">
+      <div class = "col-7">
+        <%= button_tag t("conversations.show.track_order"), :class => "send_button", :onclick => "window.location.href = '#{transaction_model.shipment_label_url}'" %>
+          </div>
+    </div>
   <% end %>
 </div>
 <style>

@@ -11,6 +11,8 @@ Kassi::Application.routes.draw do
 
   get "/robots.txt" => RobotsGenerator
   get "/sitemap.xml.gz" => "sitemap#sitemap", format: :xml
+  get "/transactions/generate_label"
+  post "/transactions/generate_label"
 
   post '/payu_response' => 'transactions#payu_response'
   get  'braintree_accounts/check_ifsc_code'
@@ -20,6 +22,7 @@ Kassi::Application.routes.draw do
   post '/transactions/save_seller_address'
   post '/transactions/save_decline_message'
   get '/transactions/save_decline_message'
+  get '/transactions/instructions'
   
   get 'transactions/fetch_city_state_from_pincode'
   post 'transactions/fetch_city_state_from_pincode'

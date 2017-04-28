@@ -27,7 +27,7 @@
         });
       }
     }
-   
+  
 #new_message_form.centered-section
 
   = form_tag('/transactions/save_seller_address', method: :post, id: "transaction-form") do
@@ -54,12 +54,17 @@
     %label Address Line 1
     .row
       .col-12
-        %input{:name => "address1", :id => "address1", :required => "required", :type => "text", :maxlength => 40, :placeholder => "Flat No, Floor, Building Name", :value => "#{@pickup_address.street1 if !@pickup_address.blank? && !@pickup_address.street1.blank?}"}/
+        %input{:name => "address1", :id => "address1", :required => "required", :type => "text", :maxlength => 35, :placeholder => "Flat No, Floor, Building Name", :value => "#{@pickup_address.street1 if !@pickup_address.blank? && !@pickup_address.street1.blank?}"}/
 
     %label Address Line 2
     .row
       .col-12
-        %input{:name => "address2", :id => "address2" ,:required => "required", :type => "text", :maxlength => 40, :placeholder => "Colony, Street, Locality", :value => "#{@pickup_address.street2 if !@pickup_address.blank? && !@pickup_address.street2.blank?}"}/
+        %input{:name => "address2", :id => "address2" ,:required => "required", :type => "text", :maxlength => 35, :placeholder => "Colony, Street, Locality", :value => "#{@pickup_address.street2 if !@pickup_address.blank? && !@pickup_address.street2.blank?}"}/
+
+    %label Landmark
+    .row
+      .col-12
+      %input{:name => "landmark", :id => "landmark" ,:required => "required", :type => "text", :maxlength => 35, :placeholder => "E.g. Near AIIMS Flyover, Behind Regal Cinema, etc.", :value => "#{@pickup_address.landmark if !@pickup_address.blank? && !@pickup_address.landmark.blank?}"}
 
     %label City
     .row
@@ -70,6 +75,14 @@
     .row
       .col-12
         %input{:name => "state", :id => "state" ,:required => "required", :type => "text", :maxlength => 30, :value => "#{@pickup_address.state_or_province if !@pickup_address.blank? && !@pickup_address.state_or_province.blank?}"}/
+
+    %label Schedule Pickup for
+    .row
+      .col-12
+      %select{:name => "schedule_pickup_date", :required => "true"}
+        %option{:value => ""} Select date
+        %option{:value => "today"} Today
+        %option{:value => "tomorrow"} Tomorrow
 
     .row
       .col-12

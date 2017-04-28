@@ -63,7 +63,9 @@ class Transaction < ActiveRecord::Base
     :unit_selector_tr_key,
     :shipping_price,
     :delivery_method,
-    :order_status
+    :order_status,
+    :shipment_label_url,
+    :tracking_number
   )
 
   attr_accessor :contract_agreed

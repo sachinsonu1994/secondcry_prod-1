@@ -701,7 +701,9 @@ en:
     show:
       i_accept: "I accept"
       decline: "Decline"
-      update_address: "Update Address"
+      create_pickup: "Generate Pickup"
+      download_label: "Download Label"
+      track_order: "Track Your Order"
       update_bank_detail: "Update Bank Detail"
       bank_detail_message: "Please ensure your bank details are up to date to receive payment for this listing."
       in_response_to_listing: "about listing"

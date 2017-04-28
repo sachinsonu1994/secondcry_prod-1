@@ -170,9 +170,10 @@ class TransactionsController < ApplicationController
           zipcode:   "#{params[:pincode]}",
           country:   "India",
           udf1: "#{transaction.conversation_id}",
+          udf2: "#{params[:landmark]}",
           surl: "#{request.protocol}#{request.host_with_port}/payu_response",
           furl: "#{request.protocol}#{request.host_with_port}/payu_response",
-          hash: Digest::SHA2.new(512).hexdigest("#{PAYU_KEY}|#{date}#{transaction.id}|#{transaction_amount}|#{transaction.listing_title}|#{params[:name]}|#{email.address}|#{transaction.conversation_id}||||||||||#{PAYU_SALT}")
+          hash: Digest::SHA2.new(512).hexdigest("#{PAYU_KEY}|#{date}#{transaction.id}|#{transaction_amount}|#{transaction.listing_title}|#{params[:name]}|#{email.address}|#{transaction.conversation_id}|#{params[:landmark]}|||||||||#{PAYU_SALT}")
         }
       end
     }.on_error { |error_msg, data|
@@ -193,9 +194,9 @@ class TransactionsController < ApplicationController
     end
     
     shipping_address = ShippingAddress.create(:transaction_id => transaction_id, :status => params[:status], :name => params[:firstname], :phone => params[:phone], :street1 => params[:address1], :street2 => params[:address2],
-    :city => params[:city], :state_or_province => params[:state], :country => params[:country], :person_id => @current_user.id, :postal_code => params[:zipcode], :address_type => "buyer")
+    :landmark => params[:udf2], :city => params[:city], :state_or_province => params[:state], :country => params[:country], :person_id => @current_user.id, :postal_code => params[:zipcode], :address_type => "buyer")
     
-    value = "#{PAYU_SALT}|#{params[:status]}||||||||||#{params[:udf1]}|#{params[:email]}|#{params[:firstname]}|#{params[:productinfo]}|#{params[:amount]}|#{params[:txnid]}|#{PAYU_KEY}"
+    value = "#{PAYU_SALT}|#{params[:status]}|||||||||#{params[:udf2]}|#{params[:udf1]}|#{params[:email]}|#{params[:firstname]}|#{params[:productinfo]}|#{params[:amount]}|#{params[:txnid]}|#{PAYU_KEY}"
     reshashvalue = Digest::SHA2.new(512).hexdigest("#{value}")
 
     is_payment_success = !hash_value.blank? && params[:status] == "success" && (hash_value == reshashvalue)
@@ -246,6 +247,10 @@ Thanks."
   end
   
   def pickup
+    log = Logger.new(STDOUT)
+    log.level = Logger::INFO
+    log.info("sachin")
+    
     if params[:txn_id].blank?
       flash[:error] = t("layouts.notifications.you_are_not_authorized_to_view_this_content")
       redirect_to root
@@ -272,27 +277,32 @@ Thanks."
     pickup_address = ShippingAddress.where("transaction_id = '#{params[:tx_id]}' and person_id = '#{params[:author_id]}' and address_type = 'seller'").last
     if pickup_address.blank?
       pickup_address = ShippingAddress.create(:transaction_id => params[:tx_id], :status => "success", :name => params[:name], :phone => params[:phone_number], :street1 => params[:address1], :street2 => params[:address2],
-      :city => params[:city], :state_or_province => params[:state], :country => "India", :person_id => params[:author_id], :postal_code => params[:pincode], :address_type => "seller")
+      :landmark => params[:landmark], :city => params[:city], :state_or_province => params[:state], :country => "India", :person_id => params[:author_id], :postal_code => params[:pincode], :address_type => "seller")
       seller = Person.find_by_id(@current_user.id)
       if !seller.blank? && seller.phone_number.blank?
         seller.phone_number = params[:phone]
         seller.save
       end
-      message = Message.new
-      message.conversation_id = transaction.conversation_id
-      message.sender_id = params[:author_id]
-      message.content = "I have accepted the transaction and shared my pickup details with Secondcry. We will hear from Secondcry in next 24 hours about the next steps."
-      message.save
-      transaction.order_status = 'order accepted'
-      transaction.save
     else
       pickup_address = pickup_address.update_attributes(:status => "success", :name => params[:name], :phone => params[:phone_number], :street1 => params[:address1], :street2 => params[:address2],
       :city => params[:city], :state_or_province => params[:state], :country => "India", :person_id => params[:author_id], :postal_code => params[:pincode], :address_type => "seller")
     end
+    
+    if !params[:schedule_pickup_date].blank? && params[:schedule_pickup_date] == 'today'
+      schedule_pickup_date = Date.today.strftime("20%y-%m-%d")
+    else
+      schedule_pickup_date = Date.tomorrow.strftime("20%y-%m-%d")
+    end
+
+    generate_label = ShipyarriShipmentHelper.get_label_from_shipyarri(params[:tx_id], schedule_pickup_date)
+
     flash[:notice] = "Your address updated successfully"
     redirect_to "#{request.protocol}#{request.host_with_port}/en/transactions/#{params[:tx_id]}"    
   end
-  
+
+  def instructions
+  end
+
   def save_decline_message
     transaction = Transaction.where("id = '#{params[:txn_id]}'").first
     transaction.order_status = 'cancelled by seller'
@@ -340,10 +350,10 @@ Thanks."
     conversation = transaction_conversation[:conversation]
     listing = Listing.where(id: tx[:listing_id]).first
 
-    @address_button = 0
-    if (tx_model.listing_author_id == @current_user.id) && (tx_model.order_status == 'payment successfull') 
-      @address_button = 1
-    end
+    #@address_button = 0
+    #if (tx_model.listing_author_id == @current_user.id) && (tx_model.order_status == 'payment successfull') 
+    #  @address_button = 1
+    #end
 
     messages_and_actions = TransactionViewUtils.merge_messages_and_transitions(
       TransactionViewUtils.conversation_messages(conversation[:messages], @current_community.name_display_type),
@@ -366,7 +376,7 @@ Thanks."
       conversation_other_party: person_entity_with_url(conversation[:other_person]),
       is_author: is_author,
       role: role,
-      address_button: @address_button,
+      #address_button: @address_button,
       message_form: MessageForm.new({sender_id: @current_user.id, conversation_id: conversation[:id]}),
       message_form_action: person_message_messages_path(@current_user, :message_id => conversation[:id]),
       price_break_down_locals: price_break_down_locals(tx)

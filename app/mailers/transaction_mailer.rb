@@ -46,6 +46,12 @@ class TransactionMailer < ActionMailer::Base
     )
   end
 
+  def shipment_email_for_seller(label_url, email, name, order_id)
+  end
+
+  def shipment_email_for_buyer(label_url, email, name, order_id)
+  end
+
   def transaction_created(transaction)
     community = transaction.community
 

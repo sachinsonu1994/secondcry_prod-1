@@ -32,7 +32,8 @@ class ShippingAddress < ActiveRecord::Base
     :street1,
     :street2,
     :person_id,
-    :address_type
+    :address_type,
+    :landmark
   )
 
   belongs_to :tx, class_name: "Transaction", foreign_key: "transaction_id"
