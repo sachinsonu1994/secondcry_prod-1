@@ -188,6 +188,8 @@ class TransactionsController < ApplicationController
     transaction = Transaction.where("id = #{transaction_id}").first
     buyer = Person.find_by_id(@current_user.id)
     seller = Person.find_by_id(transaction.listing.author_id)
+    seller_email = Email.where("person_id = '#{transaction.listing_author_id}' and confirmed_at is not null").first
+
     if !buyer.blank? && buyer.phone_number.blank?
       buyer.phone_number = params[:phone]
       buyer.save
@@ -242,6 +244,10 @@ Thanks."
     listing_url = "#{request.protocol}#{request.host_with_port}/en/listings/#{transaction.listing.id}"
     MailCarrier.deliver_now(TransactionMailer.order_created(transaction_url, payment_status, listing_url, params))
 
+    if is_payment_success
+      MailCarrier.deliver_now(TransactionMailer.order_created_email_for_seller(seller_email, seller_name, transaction_url, payment_status, listing_url, params))
+    end
+    
     # redirect to transaction's history of conversations
     redirect_to "#{request.protocol}#{request.host_with_port}/en/transactions/#{transaction_id}"
   end
@@ -303,11 +309,16 @@ Thanks."
     transaction = Transaction.where("id = '#{params[:txn_id]}'").first
     transaction.order_status = 'cancelled by seller'
     transaction.save
+    buyer_address = ShippingAddress.where("transaction_id = #{tx_id} and address_type = 'buyer'").first
+    buyer_email = Email.where("person_id = '#{transaction.starter_id}' and confirmed_at is not null").first
+
+    order_id = "#{transaction.created_at.strftime('%y-%m-%d').gsub('-','')}{transaction.id}"
     message = Message.new
     message.conversation_id = transaction.conversation_id
     message.sender_id = @current_user.id
     message.content = "The product is not available for sale anymore. You will receive a refund from Secondcry within 7 working days. Apologies for the inconvenience caused. The listing is now closed."
     message.save
+    MailCarrier.deliver_now(TransactionMailer.decline_order_email_for_buyer(order_id, buyer_address.name, buyer_email))    
     flash[:notice] = "Buyer has been informed of your refusal. Your listing is now closed."
     redirect_to "#{request.protocol}#{request.host_with_port}/en/transactions/#{params[:txn_id]}"
   end

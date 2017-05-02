@@ -46,13 +46,42 @@ class TransactionMailer < ActionMailer::Base
     )
   end
 
+  def order_created_email_for_seller(seller_email, seller_name, transaction_url, payment_status, listing_url, params)
+    @seller_name = seller_name
+    @transaction_url = transaction_url
+    @payment_status = payment_status
+    @buyer_name = params[:firstname]
+    @payment_status_string = (payment_status == "success") ? "was successful" : "has failed"
+    @transaction_id = params[:txnid]
+    @payment_amount = params[:amount]
+    @payment_datetime = "#{Time.now}"
+    @payment_failure_reason = (payment_status == "success") ? "" : params[:error_Message]
+    @listing_url = listing_url
+    @listing_title = params[:productinfo]
+    @address1 = params[:address1]
+    @address2 = params[:address2]
+    @city = params[:city]
+    @state = params[:state]
+    @country = params[:country]
+    @pincode = params[:zipcode]
+    @phone = params[:phone]
+
+    premailer_mail(
+      :to => "#{seller_email}",
+      :from => "payments@secondcry.com",
+      :bcc => "ops@secondcry.com",
+      :subject => "Your listing at SecondCry has been sold"
+    )    
+  end
+
   def shipment_success_email_for_seller(label_url, seller_name, seller_email, order_id)
     @label_url = label_url
     @seller_name = seller_name
 
     premailer_mail(
       :to => "#{seller_email}",
-      :from => "ops@secondcry.com",
+      :from => "payments@secondcry.com",
+      :bcc => "ops@secondcry.com",
       :subject => "Pickup label for Order ##{order_id} at SecondCry"
     )
   end
@@ -63,7 +92,8 @@ class TransactionMailer < ActionMailer::Base
 
     premailer_mail(
       :to => "#{buyer_email}",
-      :from => "ops@secondcry.com",
+      :from => "payments@secondcry.com",
+      :bcc => "ops@secondcry.com",
       :subject => "Pickup label for Order ##{order_id} at SecondCry"
     )
   end
@@ -73,8 +103,21 @@ class TransactionMailer < ActionMailer::Base
 
     premailer_mail(
       :to => "#{seller_email}",
-      :from => "ops@secondcry.com",
+      :from => "payments@secondcry.com",
+      :bcc => "ops@secondcry.com"
       :subject => "Pickup label for Order ##{order_id} at SecondCry"
+    )
+  end
+   
+  def decline_order_email_for_buyer(order_id, buyer_name, buyer_email)
+    @buyer_name = buyer_name
+    @buyer_email = buyer_email
+
+    premailer_mail(
+      :to => "#{buyer_email}",
+      :from => "payments@secondcry.com",
+      :bcc => "ops@secondcry.com",
+      :subject => "Shipment information for Order ##{order_id} at SecondCry"
     )
   end
 

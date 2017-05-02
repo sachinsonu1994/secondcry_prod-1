@@ -1,7 +1,4 @@
 module ShipyarriShipmentHelper
-  PASSWORD = "1444644467"
-  USERNAME = "demoAVNBIZ"
-  AVNKEY = "1413@333"
 
   def self.get_label_from_shipyarri(tx_id, schedule_pickup_date)
     buyer_address = ShippingAddress.where("transaction_id = #{tx_id} and address_type = 'buyer'").first
@@ -22,7 +19,7 @@ module ShipyarriShipmentHelper
     order_date = transaction.created_at.strftime('%y-%m-%d').gsub('-','')
 
     params = {
-      "username" => Base64.encode64("demoAVNBIZ"),
+      "username" => Base64.encode64("#{SHIPYARRI_USERNAME}"),
       "insurance" => Base64.encode64("yes"), 
       "order_id" => Base64.encode64("#{order_date}""#{transaction.id}"),
       "from_contact_number"=> Base64.encode64("#{seller_address.phone}"),
@@ -44,8 +41,8 @@ module ShipyarriShipmentHelper
       "package_content"=> Base64.encode64("products"), 
       "package_content_desc"=> Base64.encode64("Plastic goods"), 
       "total_invoice_value"=> Base64.encode64("#{transaction.unit_price}"), 
-      "created_by"=> Base64.encode64("1413"), 
-      "avnkey"=> Base64.encode64("1413@333"), 
+      "created_by"=> Base64.encode64("#{SHIPYARRI_CLIENTID}"),
+      "avnkey"=> Base64.encode64("#{SHIPYARRI_CLIENTID}@#{SHIPYARRI_PARENTID}"), 
       "payment_mode"=> Base64.encode64("online"), 
       "package_name"=> Base64.encode64("#{service_name}"),
       "package_weight1"=>"1", 

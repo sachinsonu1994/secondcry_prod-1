@@ -37,5 +37,7 @@ Kassi::Application.configure do
   PAYU_KEY = APP_CONFIG.payu_key
   PAYU_SALT = APP_CONFIG.payu_salt
   PAYU_URL = APP_CONFIG.payu_url
-
+  SHIPYARRI_USERNAME = APP_CONFIG.shipyarri_username
+  SHIPYARRI_CLIENTID = APP_CONFIG.shipyarri_clientid
+  SHIPYARRI_PARENTID = APP_CONFIG.shipyarri_parentid
 end
