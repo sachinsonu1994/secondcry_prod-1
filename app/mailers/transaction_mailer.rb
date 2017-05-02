@@ -59,7 +59,7 @@ class TransactionMailer < ActionMailer::Base
 
   def shipment_success_email_for_buyer(label_url, buyer_name, buyer_email, order_id)
     @label_url = label_url
-    @buyer_name = seller_name
+    @buyer_name = buyer_name
 
     premailer_mail(
       :to => "#{buyer_email}",
