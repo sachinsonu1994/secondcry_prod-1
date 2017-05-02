@@ -238,7 +238,7 @@ Thanks."
 
     # email admins
     payment_status = params[:status]
-    transaction_url = "#{request.protocol}#{request.host_with_port}/en/transactions/transaction_id"
+    transaction_url = "#{request.protocol}#{request.host_with_port}/en/transactions/#{transaction_id}"
     listing_url = "#{request.protocol}#{request.host_with_port}/en/listings/#{transaction.listing.id}"
     MailCarrier.deliver_now(TransactionMailer.order_created(transaction_url, payment_status, listing_url, params))
 
