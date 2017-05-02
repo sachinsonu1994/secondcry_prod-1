@@ -19,7 +19,7 @@ module ShipyarriShipmentHelper
       service_name = "Economy"
     end
 
-    order_date = transaction.created_at.gsub('-','')
+    order_date = transaction.created_at.strftime('%y-%m-%d').gsub('-','')
 
     params = {
       "username" => Base64.encode64("demoAVNBIZ"),

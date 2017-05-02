@@ -247,10 +247,6 @@ Thanks."
   end
   
   def pickup
-    log = Logger.new(STDOUT)
-    log.level = Logger::INFO
-    log.info("sachin")
-    
     if params[:txn_id].blank?
       flash[:error] = t("layouts.notifications.you_are_not_authorized_to_view_this_content")
       redirect_to root

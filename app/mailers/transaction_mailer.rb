@@ -59,6 +59,26 @@ class TransactionMailer < ActionMailer::Base
   end
 
   def shipment_success_email_for_buyer(label_url, buyer_name, buyer_email, order_id)
+    @label_url = label_url
+    @buyer_name = seller_name
+    @buyer_email = seller_email
+
+    premailer_mail(
+      :to => "#{@buyer_email}",
+      :from => "ops@secondcry.com",
+      :subject => "Pickup label for Order ##{order_id} at SecondCry"
+    )
+  end
+
+  def shipment_failure_email_seller(seller_name, seller_email)
+    @seller_email = seller_email
+    @seller_name =  seller_name
+
+    premailer_mail(
+      :to => "#{@seller_email}",
+      :from => "ops@secondcry.com",
+      :subject => "Pickup label for Order ##{order_id} at SecondCry"
+    )
   end
 
   def transaction_created(transaction)
