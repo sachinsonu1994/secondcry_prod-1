@@ -57,8 +57,8 @@ class TransactionMailer < ActionMailer::Base
     )
   end
 
-  def shipment_success_email_for_buyer(label_url, buyer_name, buyer_email, order_id)
-    @label_url = label_url
+  def shipment_success_email_for_buyer(tracking_number, buyer_name, buyer_email, order_id)
+    @tracking_number = tracking_number
     @buyer_name = buyer_name
 
     premailer_mail(

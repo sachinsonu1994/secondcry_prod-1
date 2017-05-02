@@ -71,7 +71,7 @@ module ShipyarriShipmentHelper
       message.content = "I have accepted the transaction and scheduled the pickup through Fedex, tracking No. #{response["tracking_number"]}. You can track the status of our shipment by clicking the button above."
       message.save
       MailCarrier.deliver_now(TransactionMailer.shipment_success_email_for_seller(transaction.shipment_label_url, seller_address.name, seller_email.address, "#{order_date}""#{transaction.id}"))
-      MailCarrier.deliver_now(TransactionMailer.shipment_success_email_for_buyer(transaction.shipment_label_url, buyer_address.name, buyer_email.address, "#{order_date}""#{transaction.id}"))
+      MailCarrier.deliver_now(TransactionMailer.shipment_success_email_for_buyer(transaction.tracking_number, buyer_address.name, buyer_email.address, "#{order_date}""#{transaction.id}"))
     else
       transaction.order_status = 'order accepted'
       transaction.save
