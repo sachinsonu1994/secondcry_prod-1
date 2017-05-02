@@ -80,7 +80,7 @@ module ShipyarriShipmentHelper
       message.sender_id = transaction.listing_author_id
       message.content = "I would like to proceed with this transaction; however, there was an error in scheduling the pickup. I will contact Secondcry for further assistance."
       message.save
-      MailCarrier.deliver_now(TransactionMailer.shipment_failure_email_for_seller(buyer_name, buyer_email))
+      MailCarrier.deliver_now(TransactionMailer.shipment_failure_email_for_seller(buyer_address.name, buyer_email))
     end
   end
 end
