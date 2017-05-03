@@ -67,7 +67,7 @@ class TransactionMailer < ActionMailer::Base
     @phone = params[:phone]
 
     premailer_mail(
-      :to => "#{seller_email}",
+      :to => "#{seller_email.address}",
       :from => "payments@secondcry.com",
       :bcc => "ops@secondcry.com",
       :subject => "Your listing at SecondCry has been sold"
@@ -104,7 +104,7 @@ class TransactionMailer < ActionMailer::Base
     premailer_mail(
       :to => "#{seller_email}",
       :from => "payments@secondcry.com",
-      :bcc => "ops@secondcry.com"
+      :bcc => "ops@secondcry.com",
       :subject => "Pickup label for Order ##{order_id} at SecondCry"
     )
   end
@@ -114,7 +114,7 @@ class TransactionMailer < ActionMailer::Base
     @buyer_email = buyer_email
 
     premailer_mail(
-      :to => "#{buyer_email}",
+      :to => "#{buyer_email.address}",
       :from => "payments@secondcry.com",
       :bcc => "ops@secondcry.com",
       :subject => "Shipment information for Order ##{order_id} at SecondCry"

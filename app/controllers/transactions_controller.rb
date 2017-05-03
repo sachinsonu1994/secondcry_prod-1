@@ -245,7 +245,7 @@ Thanks."
     MailCarrier.deliver_now(TransactionMailer.order_created(transaction_url, payment_status, listing_url, params))
 
     if is_payment_success
-      MailCarrier.deliver_now(TransactionMailer.order_created_email_for_seller(seller_email, seller_name, transaction_url, payment_status, listing_url, params))
+      MailCarrier.deliver_now(TransactionMailer.order_created_email_for_seller(seller_email, seller.given_name, transaction_url, payment_status, listing_url, params))
     end
     
     # redirect to transaction's history of conversations
@@ -309,7 +309,7 @@ Thanks."
     transaction = Transaction.where("id = '#{params[:txn_id]}'").first
     transaction.order_status = 'cancelled by seller'
     transaction.save
-    buyer_address = ShippingAddress.where("transaction_id = #{tx_id} and address_type = 'buyer'").first
+    buyer_address = ShippingAddress.where("transaction_id = #{transaction.id} and address_type = 'buyer'").first
     buyer_email = Email.where("person_id = '#{transaction.starter_id}' and confirmed_at is not null").first
 
     order_id = "#{transaction.created_at.strftime('%y-%m-%d').gsub('-','')}{transaction.id}"

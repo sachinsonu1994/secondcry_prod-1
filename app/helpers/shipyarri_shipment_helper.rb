@@ -1,4 +1,8 @@
 module ShipyarriShipmentHelper
+  SHIPYARRI_USERNAME = "demoAVNBIZ"
+  SHIPYARRI_CLIENTID = "1413"
+  SHIPYARRI_PARENTID = "333"
+  SHIPYARRI_URL = "http://avnbiz.co.in/test/AVNBIZ/webservice/test_upload_consignment.php"
 
   def self.get_label_from_shipyarri(tx_id, schedule_pickup_date)
     buyer_address = ShippingAddress.where("transaction_id = #{tx_id} and address_type = 'buyer'").first
@@ -54,7 +58,7 @@ module ShipyarriShipmentHelper
       "partner_id"=> Base64.encode64("324")
     }
 
-    uri = URI("http://avnbiz.co.in/test/AVNBIZ/webservice/test_upload_consignment.php")
+    uri = URI("#{SHIPYARRI_URL}")
     shipment_response = Net::HTTP.post_form(uri,params)
     response = JSON.parse(shipment_response.body)
     if response["status"] == 'success'
