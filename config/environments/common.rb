@@ -37,4 +37,5 @@ Kassi::Application.configure do
   PAYU_KEY = APP_CONFIG.payu_key
   PAYU_SALT = APP_CONFIG.payu_salt
   PAYU_URL = APP_CONFIG.payu_url
+
 end
