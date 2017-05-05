@@ -98,7 +98,7 @@ class TransactionMailer < ActionMailer::Base
     )
   end
 
-  def shipment_failure_email_seller(seller_name, seller_email)
+  def shipment_failure_email_seller(seller_name, seller_email, order_id)
     @seller_name =  seller_name
 
     premailer_mail(
@@ -117,7 +117,7 @@ class TransactionMailer < ActionMailer::Base
       :to => "#{buyer_email.address}",
       :from => "payments@secondcry.com",
       :bcc => "ops@secondcry.com",
-      :subject => "Shipment information for Order ##{order_id} at SecondCry"
+      :subject => "Seller has declined your Order ##{order_id} at SecondCry"
     )
   end
 

@@ -312,7 +312,7 @@ Thanks."
     buyer_address = ShippingAddress.where("transaction_id = #{transaction.id} and address_type = 'buyer'").first
     buyer_email = Email.where("person_id = '#{transaction.starter_id}' and confirmed_at is not null").first
 
-    order_id = "#{transaction.created_at.strftime('%y-%m-%d').gsub('-','')}{transaction.id}"
+    order_id = "#{transaction.created_at.strftime('20%y-%m-%d').gsub('-','')}#{transaction.id}"
     message = Message.new
     message.conversation_id = transaction.conversation_id
     message.sender_id = @current_user.id

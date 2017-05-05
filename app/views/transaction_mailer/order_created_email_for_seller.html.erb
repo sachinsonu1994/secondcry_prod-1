@@ -1,30 +1,18 @@
 <div style="float:left;margin:0">
 Dear  <%= @seller_name %>,<BR/><BR/>
 
-Your transaction with SecondCry <%= @payment_status_string %><BR/><BR/>
+
+You have received an order for your listing at SecondCry. You MUST go to the link below to either accept the order or decline it:<br/>
+<a href="<%= @transaction_url%>" target="_blank"><%=@transaction_url%></a><br/><br>
 
 <b>Payment Details:</b><BR/>
 Transaction ID: <%= @transaction_id %><BR/>
 Amount: Rs.<%= @payment_amount %><BR/>
 Order Date: <%= @payment_datetime %><BR/>
-<% if !@payment_failure_reason.blank? %>
-Failure Reason: <%= @payment_failure_reason %><BR/>
-<% end %>
 <BR/>
 
-<b>Shipping Details:</b><BR/>
-Name:  <%= @buyer_name %><BR/>
-Address1: <%= @address1 %><BR/>
-Address2: <%= @address2 %><BR/>
-City:  <%= @city %><BR/>
-State:  <%= @state %><BR/>
-Country: <%= @country %><BR/>
-Pincode: <%= @pincode %><BR/>
-Phone number:  <%= @phone %><BR/>
-<BR/>
-
-<b>Transaction Details:</b><BR/>
-<a href=<%= @transaction_url%>" target="_blank"><%=@transaction_url%></a>
+<b>Listing Details:</b><BR/>
+<a href=<%= @listing_url%>" target="_blank"><%=@listing_title%></a>
 <BR/><BR/>
 
 For any information pertaining to the status of your order, you can reply back to the same email or call us at +91-8095117799.<BR/><BR/>

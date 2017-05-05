@@ -21,7 +21,7 @@
   <% elsif (transaction_model.order_status == 'shipment created') && (transaction_model.listing_author_id == @current_user.id)%>
     <div class = "row">
       <div class = "col-7">
-        <%= button_tag t("conversations.show.download_label"), :class => "send_button", :onclick => "window.location.href = '#{transaction_model.shipment_label_url}'" %>
+        <%= button_tag t("conversations.show.download_label"), :class => "send_button", :onclick => "window.open('#{transaction_model.shipment_label_url}', ' _blank')" %>
       </div>
       <div class = "col-5">
         <%= button_tag t("conversations.show.update_bank_detail"), :class => "send_button", :onclick => "window.location.href = '/en/#{@current_user.username}/settings/bank_details'" %>
@@ -40,7 +40,7 @@
   <% elsif (transaction_model.order_status == 'shipment created') && (transaction_model.starter_id == @current_user.id)%>
     <div class = "row">
       <div class = "col-7">
-        <%= button_tag t("conversations.show.track_order"), :class => "send_button", :onclick => "window.location.href = 'https://www.fedex.com/apps/fedextrack/?action=track&trackingnumber=#{transaction_model.tracking_number}&cntry_code=in'" %>
+        <%= button_tag t("conversations.show.track_order"), :class => "send_button", :onclick => "window.open('https://www.fedex.com/apps/fedextrack/?action=track&trackingnumber=#{transaction_model.tracking_number}&cntry_code=in', '_blank')" %>
           </div>
     </div>
   <% end %>

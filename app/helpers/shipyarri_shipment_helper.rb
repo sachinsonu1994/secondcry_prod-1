@@ -10,7 +10,12 @@ module ShipyarriShipmentHelper
     transaction = Transaction.find(tx_id)
     buyer_email = Email.where("person_id = '#{transaction.starter_id}' and confirmed_at is not null").first
     seller_email = Email.where("person_id = '#{transaction.listing_author_id}' and confirmed_at is not null").first
-    
+   
+    weight = transaction.listing.category.weight.blank? ? "1" : "transaction.listing.category.weight"
+    height = transaction.listing.category.height.blank? ? "10" : "transaction.listing.category.height"
+    length = transaction.listing.category.length.blank? ? "10" : "transaction.listing.category.length"
+    width = transaction.listing.category.width.blank? ? "10" : "transaction.listing.category.width"
+ 
     service_name = ""
     if transaction.listing.category.weight == 0.5 
       service_name = "Priority"
@@ -20,7 +25,7 @@ module ShipyarriShipmentHelper
       service_name = "Economy"
     end
 
-    order_date = transaction.created_at.strftime('%y-%m-%d').gsub('-','')
+    order_date = transaction.created_at.strftime('20%y-%m-%d').gsub('-','')
 
     params = {
       "username" => Base64.encode64("#{SHIPYARRI_USERNAME}"),
@@ -49,10 +54,10 @@ module ShipyarriShipmentHelper
       "avnkey"=> Base64.encode64("#{SHIPYARRI_CLIENTID}@#{SHIPYARRI_PARENTID}"), 
       "payment_mode"=> Base64.encode64("online"), 
       "package_name"=> Base64.encode64("#{service_name}"),
-      "package_weight1"=>"1", 
-      "package_height1"=>"1", 
-      "package_width1"=>"1", 
-      "package_length1"=>"1", 
+      "package_weight1"=>"#{weight}", 
+      "package_height1"=>"#{height}", 
+      "package_width1"=>"#{width}", 
+      "package_length1"=>"#{length}", 
       "carrier_value1"=>"1", 
       "quantity1"=>"1",
       "partner_id"=> Base64.encode64("324")
@@ -81,7 +86,7 @@ module ShipyarriShipmentHelper
       message.sender_id = transaction.listing_author_id
       message.content = "I would like to proceed with this transaction; however, there was an error in scheduling the pickup. I will contact Secondcry for further assistance."
       message.save
-      MailCarrier.deliver_now(TransactionMailer.shipment_failure_email_for_seller(buyer_address.name, buyer_email.address))
+      MailCarrier.deliver_now(TransactionMailer.shipment_failure_email_seller(buyer_address.name, buyer_email.address, "#{order_date}""#{transaction.id}"))
     end
   end
 end
