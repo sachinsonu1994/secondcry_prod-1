@@ -9,8 +9,7 @@
 .left-navi-section
   %h2= t("admin.communities.transactions.transactions", community_name: community.name(I18n.locale))
 
-  - if feature_enabled?(:export_transactions_as_csv)
-    #export-as-csv.right= link_to(" " + t("admin.communities.transactions.export_all_as_csv"), {per_page: 99999, format: :csv}, {class: icon_class("download")})
+  #export-as-csv.right= link_to(" " + t("admin.communities.transactions.export_all_as_csv"), {per_page: 99999, format: :csv}, {class: icon_class("download")})
 
   %span#admin_transactions_count= page_entries_info(conversations, :model => "Transaction")
 
@@ -31,8 +30,13 @@
           - listing_title = conversation[:listing_title] || t("admin.communities.transactions.not_available")
           %td=Maybe(conversation[:listing]).map { |listing| link_to_unless(listing[:deleted], listing_title, conversation[:listing_url]) }.or_else(listing_title)
           %td
-            = link_to person_transaction_path(person_id: @current_user.id, id: conversation[:id]) do
-              = t("admin.communities.transactions.status.#{conversation[:status]}")
+            - if !conversation[:order_status].blank?
+              = link_to person_transaction_path(person_id: @current_user.id, id: conversation[:id]) do
+                = "#{conversation[:order_status]}"
+            - else
+              = link_to person_transaction_path(person_id: @current_user.id, id: conversation[:id]) do
+                = "Conversation"
+
           %td=conversation[:payment_total] ? humanized_money_with_symbol(conversation[:payment_total]) : ""
           %td=l(conversation[:created_at], format: :short_date)
           %td=l(conversation[:last_activity_at], format: :short_date)

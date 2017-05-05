@@ -22,6 +22,12 @@ class Admin::CommunityTransactionsController < ApplicationController
         pagination_opts[:limit],
         pagination_opts[:offset])
     end
+    
+    bank_detail_hash = Hash.new
+    bank_details = BraintreeAccount.all
+    bank_details.each{|bank_detail|
+    bank_detail_hash["#{bank_detail.person_id}"] = {:ifsc_number => bank_detail.ifsc_number, :account_number => bank_detail.account_number, :bank_name_and_branch => bank_detail.bank_name_and_branch}
+    }
 
     count = TransactionQuery.transactions_count_for_community(@current_community.id)
 
@@ -65,7 +71,6 @@ class Admin::CommunityTransactionsController < ApplicationController
           }
         })
       end
-      with_feature(:export_transactions_as_csv) do
         format.csv do
           marketplace_name = if @current_community.use_domain
             @current_community.domain
@@ -79,14 +84,13 @@ class Admin::CommunityTransactionsController < ApplicationController
           self.response.headers["Last-Modified"] = Time.now.ctime.to_s
 
           self.response_body = Enumerator.new do |yielder|
-            generate_csv_for(yielder, conversations)
+            generate_csv_for(yielder, conversations, bank_detail_hash)
           end
         end
-      end
     end
   end
 
-  def generate_csv_for(yielder, conversations)
+  def generate_csv_for(yielder, conversations, bank_detail_hash)
     # first line is column names
     yielder << %w{
       transaction_id
@@ -99,8 +103,29 @@ class Admin::CommunityTransactionsController < ApplicationController
       last_activity_at
       starter_username
       other_party_username
+      bank_name_and_branch
+      ifsc_number
+      account_number
     }.to_csv(force_quotes: true)
     conversations.each do |conversation|
+      if !bank_detail_hash["#{conversation[:listing][:author_id]}"].blank? && !bank_detail_hash["#{conversation[:listing][:author_id]}"][:ifsc_number].blank?
+        ifsc_number = bank_detail_hash["#{conversation[:listing][:author_id]}"][:ifsc_number]
+      else
+        ifsc_number = nil
+      end
+
+      if !bank_detail_hash["#{conversation[:listing][:author_id]}"].blank? && !bank_detail_hash["#{conversation[:listing][:author_id]}"][:bank_name_and_branch].blank?
+        bank_name_and_branch = bank_detail_hash["#{conversation[:listing][:author_id]}"][:bank_name_and_branch]
+      else
+        bank_name_and_branch = nil
+      end
+
+      if !bank_detail_hash["#{conversation[:listing][:author_id]}"].blank? && !bank_detail_hash["#{conversation[:listing][:author_id]}"][:account_number].blank?
+        account_number = bank_detail_hash["#{conversation[:listing][:author_id]}"][:account_number]
+      else
+        account_number = nil
+      end
+
       yielder << [
         conversation[:id],
         conversation[:listing] ? conversation[:listing][:id] : "N/A",
@@ -111,7 +136,10 @@ class Admin::CommunityTransactionsController < ApplicationController
         conversation[:created_at],
         conversation[:last_activity_at],
         conversation[:starter] ? conversation[:starter][:username] : "DELETED",
-        conversation[:author] ? conversation[:author][:username] : "DELETED"
+        conversation[:author] ? conversation[:author][:username] : "DELETED",
+        bank_name_and_branch,
+        ifsc_number,
+        account_number
       ].to_csv(force_quotes: true)
     end
   end

@@ -23,7 +23,8 @@ module MarketplaceService
         :conversation,
         :booking,
         :created_at,
-        :__model
+        :__model,
+        :order_status
       )
 
       Transition = EntityUtils.define_entity(
