@@ -22,7 +22,7 @@ class Admin::CommunityTransactionsController < ApplicationController
         pagination_opts[:limit],
         pagination_opts[:offset])
     end
-    
+
     bank_detail_hash = Hash.new
     bank_details = BraintreeAccount.all
     bank_details.each{|bank_detail|
@@ -100,9 +100,13 @@ class Admin::CommunityTransactionsController < ApplicationController
       currency
       sum
       started_at
+      updated_at
       last_activity_at
       starter_username
       other_party_username
+      other_partt_first_name
+      other_party_last_name
+      other_party_phone_number
       bank_name_and_branch
       ifsc_number
       account_number
@@ -134,9 +138,13 @@ class Admin::CommunityTransactionsController < ApplicationController
         conversation[:payment_total].is_a?(Money) ? conversation[:payment_total].currency : "N/A",
         conversation[:payment_total],
         conversation[:created_at],
+        conversation[:updated_at],
         conversation[:last_activity_at],
         conversation[:starter] ? conversation[:starter][:username] : "DELETED",
         conversation[:author] ? conversation[:author][:username] : "DELETED",
+        conversation[:author] ? conversation[:author][:first_name] : "DELETED",
+        conversation[:author] ? conversation[:author][:last_name] : "DELETED",
+        conversation[:author] ? conversation[:author][:phone_number] : "DELETED",
         bank_name_and_branch,
         ifsc_number,
         account_number
