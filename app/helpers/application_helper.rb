@@ -729,6 +729,14 @@ module ApplicationHelper
 
     links << {
       :topic => :configure,
+      :text => t("admin.communities.analytics.google_analytics_access_key"),
+      :icon_class => icon_class("analytics"),
+      :path => google_analytics_api_admin_community_path(@current_community),
+      :name => "google_analyitics_api"
+    }
+
+    links << {
+      :topic => :configure,
       :text => t("admin.communities.edit_text_instructions.edit_text_instructions"),
       :icon_class => icon_class("edit"),
       :path => edit_text_instructions_admin_community_path(@current_community),

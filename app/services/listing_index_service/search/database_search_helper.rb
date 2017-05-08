@@ -14,13 +14,48 @@ module ListingIndexService::Search::DatabaseSearchHelper
         author_id: search[:author_id],
         deleted: 0
       })
+     
+    if search[:sort] == 'price_asc'
+      
+      query = Listing
+              .where(where_opts)
+              .includes(included_models)
+              .order("price_cents ASC")
+              .paginate(per_page: search[:per_page], page: search[:page])
+              
+    elsif search[:sort] == 'price_desc'
+      
+      query = Listing
+              .where(where_opts)
+              .includes(included_models)
+              .order("price_cents DESC")
+              .paginate(per_page: search[:per_page], page: search[:page])
+              
+    elsif search[:sort] == 'popularity'
+      
+      query = Listing
+              .where(where_opts)
+              .includes(included_models)
+              .order("times_viewed DESC")
+              .paginate(per_page: search[:per_page], page: search[:page])
+    
+    elsif search[:sort] == 'new_arrival'        
 
-    query = Listing
-            .where(where_opts)
-            .includes(included_models)
-            .order("listings.sort_date DESC")
-            .paginate(per_page: search[:per_page], page: search[:page])
-
+      query = Listing
+              .where(where_opts)
+              .includes(included_models)
+              .order("created_at DESC")
+              .paginate(per_page: search[:per_page], page: search[:page])
+   
+    else
+       
+      query = Listing
+              .where(where_opts)
+              .includes(included_models)
+              .order("listings.sort_date DESC")
+              .paginate(per_page: search[:per_page], page: search[:page])
+    end
+        
     listings =
       if search[:include_closed]
         query

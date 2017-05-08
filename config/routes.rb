@@ -162,6 +162,8 @@ Kassi::Application.routes.draw do
           get :analytics
           put :social_media, to: 'communities#update_social_media'
           put :analytics, to: 'communities#update_analytics'
+          get :google_analytics_api
+          put :google_analytics_api, to: 'communities#update_google_analytics_api'
           get :menu_links
           put :menu_links, to: 'communities#update_menu_links'
           put :update_settings

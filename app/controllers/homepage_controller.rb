@@ -15,6 +15,16 @@ class HomepageController < ApplicationController
     @main_categories = @categories.select { |c| c.parent_id == nil }
 
     all_shapes = shapes.get(community_id: @current_community.id)[:data]
+    
+    @show_price_sort = 1
+    if (!params[:transaction_type].blank? && (params[:transaction_type] != 'selling' && params[:transaction_type] != 'renting-out' && params[:transaction_type] != 'all')) ||
+          (!params[:category].blank? && params[:category] == 'services')   
+      @show_price_sort = 0
+    end
+    
+    if !params[:sort].blank?
+      @sort = t("homepage.filters.#{params[:sort]}")
+    end
 
     # This assumes that we don't never ever have communities with only 1 main share type and
     # only 1 sub share type, as that would make the listing type menu visible and it would look bit silly
@@ -177,7 +187,8 @@ class HomepageController < ApplicationController
       price_min: params[:price_min],
       price_max: params[:price_max],
       locale: I18n.locale,
-      include_closed: false
+      include_closed: false,
+      sort: params[:sort]
     }
 
     raise_errors = Rails.env.development?
