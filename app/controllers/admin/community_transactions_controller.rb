@@ -104,7 +104,7 @@ class Admin::CommunityTransactionsController < ApplicationController
       last_activity_at
       starter_username
       other_party_username
-      other_partt_first_name
+      other_party_first_name
       other_party_last_name
       other_party_phone_number
       bank_name_and_branch
