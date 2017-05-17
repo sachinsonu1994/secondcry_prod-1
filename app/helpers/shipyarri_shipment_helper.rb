@@ -7,10 +7,10 @@ module ShipyarriShipmentHelper
     buyer_email = Email.where("person_id = '#{transaction.starter_id}' and confirmed_at is not null").first
     seller_email = Email.where("person_id = '#{transaction.listing_author_id}' and confirmed_at is not null").first
    
-    weight = transaction.listing.category.weight.blank? ? "1" : "transaction.listing.category.weight"
-    height = transaction.listing.category.height.blank? ? "10" : "transaction.listing.category.height"
-    length = transaction.listing.category.length.blank? ? "10" : "transaction.listing.category.length"
-    width = transaction.listing.category.width.blank? ? "10" : "transaction.listing.category.width"
+    weight = transaction.listing.category.weight.blank? ? "1" : "#{transaction.listing.category.weight}"
+    height = transaction.listing.category.height.blank? ? "10" : "#{transaction.listing.category.height}"
+    length = transaction.listing.category.length.blank? ? "10" : "#{transaction.listing.category.length}"
+    width = transaction.listing.category.width.blank? ? "10" : "#{transaction.listing.category.width}"
  
     service_name = ""
     if transaction.listing.category.weight == 0.5 
