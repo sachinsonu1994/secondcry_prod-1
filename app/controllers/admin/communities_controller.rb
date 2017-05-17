@@ -120,6 +120,26 @@ class Admin::CommunitiesController < ApplicationController
       knowledge_base_url: APP_CONFIG.knowledge_base_url}
   end
 
+  def google_analytics_api
+    @selected_left_navi_link = "google_analytics_api"
+    @community = @current_community
+  end
+
+  def update_google_analytics_api
+    @community = @current_community
+    @selected_left_navi_link = "analytics"
+
+    params[:community][:google_analytics_access_token] = nil if params[:community][:google_analytics_access_token] == ""
+    analytic_api_params = params.require(:community).permit(:google_analytics_access_token)
+
+    update(@current_community,
+            analytic_api_params,
+            google_analytics_api_admin_community_path(@current_community),
+            :google_analytics_api) {
+      Delayed::Job.enqueue(GoogleAnalyticsApiJob.new(@current_community.google_analytics_access_token))
+    }  
+  end
+
   def menu_links
     @selected_left_navi_link = "menu_links"
     @community = @current_community

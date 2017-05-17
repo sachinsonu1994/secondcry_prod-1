@@ -77,20 +77,79 @@ module ListingIndexService::Search
           custom_dropdown_field_options: (grouped_by_operator[:or] || []).map { |v| v[:value] },
           custom_checkbox_field_options: (grouped_by_operator[:and] || []).flat_map { |v| v[:value] },
         }
+        
+        if search[:sort] == 'price_asc'
+          models = Listing.search(
+            Riddle::Query.escape(search[:keywords] || ""),
+            sql: {
+              include: included_models
+            },
+            page: search[:page],
+            per_page: search[:per_page],
+            star: true,
+            with: with,
+            with_all: with_all,
+            order: 'price_cents ASC',
+            max_query_time: 1000 # Timeout and fail after 1s
+          )
+        elsif search[:sort] == 'price_desc'
+          models = Listing.search(
+            Riddle::Query.escape(search[:keywords] || ""),
+            sql: {
+              include: included_models
+            },
+            page: search[:page],
+            per_page: search[:per_page],
+            star: true,
+            with: with,
+            with_all: with_all,
+            order: 'price_cents DESC',
+            max_query_time: 1000 # Timeout and fail after 1s
+          )
+        elsif search[:sort] == 'popularity'
+          models = Listing.search(
+            Riddle::Query.escape(search[:keywords] || ""),
+            sql: {
+              include: included_models
+            },
+            page: search[:page],
+            per_page: search[:per_page],
+            star: true,
+            with: with,
+            with_all: with_all,
+            order: 'times_viewed DESC',
+            max_query_time: 1000 # Timeout and fail after 1s
+          )
+        elsif search[:sort] == 'new_arrival'
+          models = Listing.search(
+            Riddle::Query.escape(search[:keywords] || ""),
+            sql: {
+              include: included_models
+            },
+            page: search[:page],
+            per_page: search[:per_page],
+            star: true,
+            with: with,
+            with_all: with_all,
+            order: 'created_at DESC',
+            max_query_time: 1000 # Timeout and fail after 1s
+          )
+        else
+          models = Listing.search(
+            Riddle::Query.escape(search[:keywords] || ""),
+            sql: {
+              include: included_models
+            },
+            page: search[:page],
+            per_page: search[:per_page],
+            star: true,
+            with: with,
+            with_all: with_all,
+            order: 'sort_date DESC',
+            max_query_time: 1000 # Timeout and fail after 1s
+          )
+        end
 
-        models = Listing.search(
-          Riddle::Query.escape(search[:keywords] || ""),
-          sql: {
-            include: included_models
-          },
-          page: search[:page],
-          per_page: search[:per_page],
-          star: true,
-          with: with,
-          with_all: with_all,
-          order: 'sort_date DESC',
-          max_query_time: 1000 # Timeout and fail after 1s
-        )
 
         begin
           DatabaseSearchHelper.success_result(models.total_entries, models, includes)

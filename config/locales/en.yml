@@ -287,11 +287,18 @@ en:
         save: "Save settings"
       analytics:
         analytics: Analytics
+        google_analytics_api: "Google Analytics Access Key"
+        google_analytics_access_key: "GA Access Key"
         google_analytics_key: "Google Analytics tracking ID"
         google_analytics_key_info_text: "Tracking ID of your Google Analytics account."
         google_analytics_key_info_text_with_instructions: "Tracking ID of your Google Analytics account. %{instructions_link}."
         google_analytics_instructions_link_text: "Read more about connecting Google Analytics"
         save: "Save settings"
+
+      google_analytics_api:
+        google_analytics_access_token: "Google Analytics Access Token"
+        google_analytics_access_token_info_text: "Access Token of your Google Analytics account."
+
       menu_links:
         menu_links: "Menu links"
         save: "Save settings"
@@ -1249,6 +1256,10 @@ en:
       list_button: List
       all_listing_types: "All listing types"
       all_categories: "All categories"
+      new_arrival: "New Arrival"
+      price_asc: "Price: Low to High"
+      price_desc: "Price: High to Low"
+      popularity: "Popularity"
     errors:
       search_engine_not_responding: "Search is currently unavailable. Try searching again soon."
   infos:
