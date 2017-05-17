@@ -134,7 +134,7 @@ class Admin::CommunityTransactionsController < ApplicationController
         conversation[:id],
         conversation[:listing] ? conversation[:listing][:id] : "N/A",
         conversation[:listing_title] || "N/A",
-        conversation[:status],
+        conversation[:order_status],
         conversation[:payment_total].is_a?(Money) ? conversation[:payment_total].currency : "N/A",
         conversation[:payment_total],
         conversation[:created_at],
